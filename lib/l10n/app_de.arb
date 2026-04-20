@@ -1,0 +1,33 @@
+{
+  "@@locale": "de",
+  "appTitle": "Meine App",
+
+  "profilePageTitle": "Profil",
+  "editProfile": "Profil bearbeiten",
+  "saveChanges": "Änderungen speichern",
+  "cancel": "Abbrechen",
+  "changeAvatar": "Avatar ändern",
+  "uploadAvatar": "Avatar hochladen",
+  "firstName": "Vorname",
+  "lastName": "Nachname",
+  "email": "E-Mail",
+  "bio": "Über mich",
+
+  "fieldRequired": "{fieldName} ist erforderlich.",
+  "@fieldRequired": {
+    "placeholders": {
+      "fieldName": { "type": "String" }
+    }
+  },
+
+  "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
+  "profileUpdated": "Profil erfolgreich aktualisiert.",
+  "refreshProfile": "Profil neu laden",
+  "profileUpdateFailed": "Profil konnte nicht gespeichert werden. Bitte erneut versuchen.",
+  "avatarUploadFailed": "Avatar konnte nicht hochgeladen werden. Bitte erneut versuchen.",
+  "loading": "Wird geladen...",
+  "retry": "Erneut versuchen",
+  "errorUnknown": "Ein unerwarteter Fehler ist aufgetreten.",
+  "galleryOption": "Aus Galerie auswählen",
+  "cameraOption": "Foto aufnehmen"
+}
