@@ -1,0 +1,49 @@
+{
+  "@@locale": "hr",
+  "appTitle": "Audit Aplikacija",
+
+  "login": "Prijava",
+  "loginSubtitle": "Revizija poslovnica i upravljanje",
+  "email": "E-pošta",
+  "password": "Lozinka",
+  "fieldRequired": "Ovo polje je obavezno.",
+  "invalidEmail": "Unesite valjanu adresu e-pošte.",
+
+  "dashboard": "Pregled",
+  "newAudit": "Novi audit",
+  "noAuditsFound": "Nema pronađenih audita.",
+  "retry": "Pokušaj ponovo",
+
+  "auditDetail": "Detalji audita",
+  "auditInfo": "Informacije o auditu",
+  "branch": "Poslovnica",
+  "auditor": "Revizor",
+  "date": "Datum",
+  "status": "Status",
+  "result": "Rezultat",
+  "statistics": "Statistika",
+
+  "yes": "Da",
+  "no": "Ne",
+  "notApplicable": "Nije primjenjivo",
+
+  "finding": "Nalaz",
+  "measure": "Mjera",
+  "rating": "Ocjena",
+  "attachments": "Prilozi",
+
+  "completeAudit": "Završi",
+  "completeAuditConfirm": "Želite li zaista završiti ovaj audit?",
+  "releaseAudit": "Odobri",
+  "confirm": "Potvrdi",
+  "cancel": "Odustani",
+
+  "previousAudit": "Prethodni audit",
+
+  "settings": "Postavke",
+  "language": "Jezik",
+  "logout": "Odjava",
+
+  "loading": "Učitavanje...",
+  "errorUnknown": "Došlo je do neočekivane pogreške."
+}

@@ -1,5 +1,5 @@
-/// Typed exceptions thrown by data sources.
-/// These are caught at the repository boundary and mapped to [Failure].
+// Typed exceptions thrown by data sources.
+// These are caught at the repository boundary and mapped to [Failure].
 
 class ServerException implements Exception {
   final String message;

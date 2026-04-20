@@ -9,72 +9,114 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
-  String get appTitle => 'Meine App';
+  String get appTitle => 'Audit App';
 
   @override
-  String get profilePageTitle => 'Profil';
+  String get login => 'Anmelden';
 
   @override
-  String get editProfile => 'Profil bearbeiten';
-
-  @override
-  String get saveChanges => 'Änderungen speichern';
-
-  @override
-  String get cancel => 'Abbrechen';
-
-  @override
-  String get changeAvatar => 'Avatar ändern';
-
-  @override
-  String get uploadAvatar => 'Avatar hochladen';
-
-  @override
-  String get firstName => 'Vorname';
-
-  @override
-  String get lastName => 'Nachname';
+  String get loginSubtitle => 'Filialrevision & Audit Management';
 
   @override
   String get email => 'E-Mail';
 
   @override
-  String get bio => 'Über mich';
+  String get password => 'Passwort';
 
   @override
-  String fieldRequired(String fieldName) {
-    return '$fieldName ist erforderlich.';
-  }
+  String get fieldRequired => 'Dieses Feld ist erforderlich.';
 
   @override
   String get invalidEmail => 'Bitte gib eine gültige E-Mail-Adresse ein.';
 
   @override
-  String get profileUpdated => 'Profil erfolgreich aktualisiert.';
+  String get dashboard => 'Übersicht';
 
   @override
-  String get refreshProfile => 'Profil neu laden';
+  String get newAudit => 'Neues Audit';
 
   @override
-  String get profileUpdateFailed =>
-      'Profil konnte nicht gespeichert werden. Bitte erneut versuchen.';
-
-  @override
-  String get avatarUploadFailed =>
-      'Avatar konnte nicht hochgeladen werden. Bitte erneut versuchen.';
-
-  @override
-  String get loading => 'Wird geladen...';
+  String get noAuditsFound => 'Keine Audits gefunden.';
 
   @override
   String get retry => 'Erneut versuchen';
 
   @override
+  String get auditDetail => 'Audit-Details';
+
+  @override
+  String get auditInfo => 'Audit-Informationen';
+
+  @override
+  String get branch => 'Filiale';
+
+  @override
+  String get auditor => 'Prüfer';
+
+  @override
+  String get date => 'Datum';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get result => 'Ergebnis';
+
+  @override
+  String get statistics => 'Statistiken';
+
+  @override
+  String get yes => 'Ja';
+
+  @override
+  String get no => 'Nein';
+
+  @override
+  String get notApplicable => 'Entfällt';
+
+  @override
+  String get finding => 'Feststellung';
+
+  @override
+  String get measure => 'Maßnahme';
+
+  @override
+  String get rating => 'Wertung';
+
+  @override
+  String get attachments => 'Anhänge';
+
+  @override
+  String get completeAudit => 'Abschließen';
+
+  @override
+  String get completeAuditConfirm =>
+      'Möchtest du dieses Audit wirklich abschließen?';
+
+  @override
+  String get releaseAudit => 'Freigeben';
+
+  @override
+  String get confirm => 'Bestätigen';
+
+  @override
+  String get cancel => 'Abbrechen';
+
+  @override
+  String get previousAudit => 'Erstprüfung';
+
+  @override
+  String get settings => 'Einstellungen';
+
+  @override
+  String get language => 'Sprache';
+
+  @override
+  String get logout => 'Abmelden';
+
+  @override
+  String get loading => 'Wird geladen...';
+
+  @override
   String get errorUnknown => 'Ein unerwarteter Fehler ist aufgetreten.';
-
-  @override
-  String get galleryOption => 'Aus Galerie auswählen';
-
-  @override
-  String get cameraOption => 'Foto aufnehmen';
 }

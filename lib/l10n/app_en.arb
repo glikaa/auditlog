@@ -1,72 +1,86 @@
 {
   "@@locale": "en",
-  "appTitle": "My App",
+  "appTitle": "Audit App",
   "@appTitle": { "description": "Application title" },
 
-  "profilePageTitle": "Profile",
-  "@profilePageTitle": { "description": "Title of the profile page" },
-
-  "editProfile": "Edit Profile",
-  "@editProfile": {},
-
-  "saveChanges": "Save Changes",
-  "@saveChanges": {},
-
-  "cancel": "Cancel",
-  "@cancel": {},
-
-  "changeAvatar": "Change Avatar",
-  "@changeAvatar": {},
-
-  "uploadAvatar": "Upload Avatar",
-  "@uploadAvatar": {},
-
-  "firstName": "First Name",
-  "@firstName": {},
-
-  "lastName": "Last Name",
-  "@lastName": {},
-
+  "login": "Sign In",
+  "@login": {},
+  "loginSubtitle": "Branch Audit & Management",
+  "@loginSubtitle": {},
   "email": "Email",
   "@email": {},
-
-  "bio": "Bio",
-  "@bio": {},
-
-  "fieldRequired": "{fieldName} is required.",
-  "@fieldRequired": {
-    "placeholders": {
-      "fieldName": { "type": "String" }
-    }
-  },
-
+  "password": "Password",
+  "@password": {},
+  "fieldRequired": "This field is required.",
+  "@fieldRequired": {},
   "invalidEmail": "Please enter a valid email address.",
   "@invalidEmail": {},
 
-  "profileUpdated": "Profile updated successfully.",
-  "@profileUpdated": {},
-
-  "refreshProfile": "Refresh Profile",
-  "@refreshProfile": { "description": "Label for the refresh profile button" },
-
-  "profileUpdateFailed": "Failed to update profile. Please try again.",
-  "@profileUpdateFailed": {},
-
-  "avatarUploadFailed": "Failed to upload avatar. Please try again.",
-  "@avatarUploadFailed": {},
-
-  "loading": "Loading...",
-  "@loading": {},
-
+  "dashboard": "Dashboard",
+  "@dashboard": {},
+  "newAudit": "New Audit",
+  "@newAudit": {},
+  "noAuditsFound": "No audits found.",
+  "@noAuditsFound": {},
   "retry": "Retry",
   "@retry": {},
 
+  "auditDetail": "Audit Details",
+  "@auditDetail": {},
+  "auditInfo": "Audit Information",
+  "@auditInfo": {},
+  "branch": "Branch",
+  "@branch": {},
+  "auditor": "Auditor",
+  "@auditor": {},
+  "date": "Date",
+  "@date": {},
+  "status": "Status",
+  "@status": {},
+  "result": "Result",
+  "@result": {},
+  "statistics": "Statistics",
+  "@statistics": {},
+
+  "yes": "Yes",
+  "@yes": {},
+  "no": "No",
+  "@no": {},
+  "notApplicable": "N/A",
+  "@notApplicable": {},
+
+  "finding": "Finding",
+  "@finding": {},
+  "measure": "Measure",
+  "@measure": {},
+  "rating": "Rating",
+  "@rating": {},
+  "attachments": "Attachments",
+  "@attachments": {},
+
+  "completeAudit": "Complete",
+  "@completeAudit": {},
+  "completeAuditConfirm": "Do you really want to complete this audit?",
+  "@completeAuditConfirm": {},
+  "releaseAudit": "Release",
+  "@releaseAudit": {},
+  "confirm": "Confirm",
+  "@confirm": {},
+  "cancel": "Cancel",
+  "@cancel": {},
+
+  "previousAudit": "Previous Audit",
+  "@previousAudit": {},
+
+  "settings": "Settings",
+  "@settings": {},
+  "language": "Language",
+  "@language": {},
+  "logout": "Sign Out",
+  "@logout": {},
+
+  "loading": "Loading...",
+  "@loading": {},
   "errorUnknown": "An unexpected error occurred.",
-  "@errorUnknown": {},
-
-  "galleryOption": "Choose from Gallery",
-  "@galleryOption": {},
-
-  "cameraOption": "Take a Photo",
-  "@cameraOption": {}
+  "@errorUnknown": {}
 }

@@ -9,71 +9,114 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'My App';
+  String get appTitle => 'Audit App';
 
   @override
-  String get profilePageTitle => 'Profile';
+  String get login => 'Sign In';
 
   @override
-  String get editProfile => 'Edit Profile';
-
-  @override
-  String get saveChanges => 'Save Changes';
-
-  @override
-  String get cancel => 'Cancel';
-
-  @override
-  String get changeAvatar => 'Change Avatar';
-
-  @override
-  String get uploadAvatar => 'Upload Avatar';
-
-  @override
-  String get firstName => 'First Name';
-
-  @override
-  String get lastName => 'Last Name';
+  String get loginSubtitle => 'Branch Audit & Management';
 
   @override
   String get email => 'Email';
 
   @override
-  String get bio => 'Bio';
+  String get password => 'Password';
 
   @override
-  String fieldRequired(String fieldName) {
-    return '$fieldName is required.';
-  }
+  String get fieldRequired => 'This field is required.';
 
   @override
   String get invalidEmail => 'Please enter a valid email address.';
 
   @override
-  String get profileUpdated => 'Profile updated successfully.';
+  String get dashboard => 'Dashboard';
 
   @override
-  String get refreshProfile => 'Refresh Profile';
+  String get newAudit => 'New Audit';
 
   @override
-  String get profileUpdateFailed =>
-      'Failed to update profile. Please try again.';
-
-  @override
-  String get avatarUploadFailed => 'Failed to upload avatar. Please try again.';
-
-  @override
-  String get loading => 'Loading...';
+  String get noAuditsFound => 'No audits found.';
 
   @override
   String get retry => 'Retry';
 
   @override
+  String get auditDetail => 'Audit Details';
+
+  @override
+  String get auditInfo => 'Audit Information';
+
+  @override
+  String get branch => 'Branch';
+
+  @override
+  String get auditor => 'Auditor';
+
+  @override
+  String get date => 'Date';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get result => 'Result';
+
+  @override
+  String get statistics => 'Statistics';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get notApplicable => 'N/A';
+
+  @override
+  String get finding => 'Finding';
+
+  @override
+  String get measure => 'Measure';
+
+  @override
+  String get rating => 'Rating';
+
+  @override
+  String get attachments => 'Attachments';
+
+  @override
+  String get completeAudit => 'Complete';
+
+  @override
+  String get completeAuditConfirm =>
+      'Do you really want to complete this audit?';
+
+  @override
+  String get releaseAudit => 'Release';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get previousAudit => 'Previous Audit';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get logout => 'Sign Out';
+
+  @override
+  String get loading => 'Loading...';
+
+  @override
   String get errorUnknown => 'An unexpected error occurred.';
-
-  @override
-  String get galleryOption => 'Choose from Gallery';
-
-  @override
-  String get cameraOption => 'Take a Photo';
 }

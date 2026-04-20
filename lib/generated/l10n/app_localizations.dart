@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_hr.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,62 +96,27 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('de'),
-    Locale('en')
+    Locale('en'),
+    Locale('hr')
   ];
 
   /// Application title
   ///
   /// In en, this message translates to:
-  /// **'My App'**
+  /// **'Audit App'**
   String get appTitle;
 
-  /// Title of the profile page
+  /// No description provided for @login.
   ///
   /// In en, this message translates to:
-  /// **'Profile'**
-  String get profilePageTitle;
+  /// **'Sign In'**
+  String get login;
 
-  /// No description provided for @editProfile.
+  /// No description provided for @loginSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Edit Profile'**
-  String get editProfile;
-
-  /// No description provided for @saveChanges.
-  ///
-  /// In en, this message translates to:
-  /// **'Save Changes'**
-  String get saveChanges;
-
-  /// No description provided for @cancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancel;
-
-  /// No description provided for @changeAvatar.
-  ///
-  /// In en, this message translates to:
-  /// **'Change Avatar'**
-  String get changeAvatar;
-
-  /// No description provided for @uploadAvatar.
-  ///
-  /// In en, this message translates to:
-  /// **'Upload Avatar'**
-  String get uploadAvatar;
-
-  /// No description provided for @firstName.
-  ///
-  /// In en, this message translates to:
-  /// **'First Name'**
-  String get firstName;
-
-  /// No description provided for @lastName.
-  ///
-  /// In en, this message translates to:
-  /// **'Last Name'**
-  String get lastName;
+  /// **'Branch Audit & Management'**
+  String get loginSubtitle;
 
   /// No description provided for @email.
   ///
@@ -158,17 +124,17 @@ abstract class AppLocalizations {
   /// **'Email'**
   String get email;
 
-  /// No description provided for @bio.
+  /// No description provided for @password.
   ///
   /// In en, this message translates to:
-  /// **'Bio'**
-  String get bio;
+  /// **'Password'**
+  String get password;
 
   /// No description provided for @fieldRequired.
   ///
   /// In en, this message translates to:
-  /// **'{fieldName} is required.'**
-  String fieldRequired(String fieldName);
+  /// **'This field is required.'**
+  String get fieldRequired;
 
   /// No description provided for @invalidEmail.
   ///
@@ -176,35 +142,23 @@ abstract class AppLocalizations {
   /// **'Please enter a valid email address.'**
   String get invalidEmail;
 
-  /// No description provided for @profileUpdated.
+  /// No description provided for @dashboard.
   ///
   /// In en, this message translates to:
-  /// **'Profile updated successfully.'**
-  String get profileUpdated;
+  /// **'Dashboard'**
+  String get dashboard;
 
-  /// Label for the refresh profile button
+  /// No description provided for @newAudit.
   ///
   /// In en, this message translates to:
-  /// **'Refresh Profile'**
-  String get refreshProfile;
+  /// **'New Audit'**
+  String get newAudit;
 
-  /// No description provided for @profileUpdateFailed.
+  /// No description provided for @noAuditsFound.
   ///
   /// In en, this message translates to:
-  /// **'Failed to update profile. Please try again.'**
-  String get profileUpdateFailed;
-
-  /// No description provided for @avatarUploadFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to upload avatar. Please try again.'**
-  String get avatarUploadFailed;
-
-  /// No description provided for @loading.
-  ///
-  /// In en, this message translates to:
-  /// **'Loading...'**
-  String get loading;
+  /// **'No audits found.'**
+  String get noAuditsFound;
 
   /// No description provided for @retry.
   ///
@@ -212,23 +166,161 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get retry;
 
+  /// No description provided for @auditDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit Details'**
+  String get auditDetail;
+
+  /// No description provided for @auditInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit Information'**
+  String get auditInfo;
+
+  /// No description provided for @branch.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch'**
+  String get branch;
+
+  /// No description provided for @auditor.
+  ///
+  /// In en, this message translates to:
+  /// **'Auditor'**
+  String get auditor;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @result.
+  ///
+  /// In en, this message translates to:
+  /// **'Result'**
+  String get result;
+
+  /// No description provided for @statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get statistics;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @notApplicable.
+  ///
+  /// In en, this message translates to:
+  /// **'N/A'**
+  String get notApplicable;
+
+  /// No description provided for @finding.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding'**
+  String get finding;
+
+  /// No description provided for @measure.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure'**
+  String get measure;
+
+  /// No description provided for @rating.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating'**
+  String get rating;
+
+  /// No description provided for @attachments.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments'**
+  String get attachments;
+
+  /// No description provided for @completeAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete'**
+  String get completeAudit;
+
+  /// No description provided for @completeAuditConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you really want to complete this audit?'**
+  String get completeAuditConfirm;
+
+  /// No description provided for @releaseAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Release'**
+  String get releaseAudit;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @previousAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous Audit'**
+  String get previousAudit;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get logout;
+
+  /// No description provided for @loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
   /// No description provided for @errorUnknown.
   ///
   /// In en, this message translates to:
   /// **'An unexpected error occurred.'**
   String get errorUnknown;
-
-  /// No description provided for @galleryOption.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose from Gallery'**
-  String get galleryOption;
-
-  /// No description provided for @cameraOption.
-  ///
-  /// In en, this message translates to:
-  /// **'Take a Photo'**
-  String get cameraOption;
 }
 
 class _AppLocalizationsDelegate
@@ -242,7 +334,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['de', 'en'].contains(locale.languageCode);
+      <String>['de', 'en', 'hr'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -255,6 +347,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsDe();
     case 'en':
       return AppLocalizationsEn();
+    case 'hr':
+      return AppLocalizationsHr();
   }
 
   throw FlutterError(
