@@ -173,7 +173,7 @@ flutter run -d chrome
 - [x] Audit abschliessen + Freigabe
 - [x] Responsive Layout (Mobile/Tablet/Desktop)
 - [x] Mehrsprachigkeit (DE, HR, EN)
-- [ ] Einstellungsseite (Sprache, Profil)
+- [x] Einstellungsseite (Sprache, Profil)
 - [ ] Anhaenge / Bilder Upload
 - [ ] Nachrevision (Gegenueberstellung)
 - [ ] Reporting-Screen

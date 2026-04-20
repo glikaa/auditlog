@@ -7,6 +7,7 @@ import '../../../../generated/l10n/app_localizations.dart';
 import '../../domain/entities/audit_response.dart';
 import '../../domain/entities/question.dart';
 import '../state/audit_detail_cubit.dart';
+import 'attachment_section.dart';
 import 'rating_toggle.dart';
 
 class QuestionCard extends StatefulWidget {
@@ -167,6 +168,15 @@ class _QuestionCardState extends State<QuestionCard> {
               maxLines: null,
               minLines: 2,
               onChanged: (value) => _debouncedAutoSave(measure: value),
+            ),
+
+            // Attachments (Anhänge)
+            const SizedBox(height: 12),
+            AttachmentSection(
+              auditId: widget.auditId,
+              questionId: widget.question.id,
+              attachments: widget.response?.attachments ?? [],
+              isEditable: widget.isEditable,
             ),
 
             // Nachrevision comparison info

@@ -35,4 +35,20 @@ abstract class AuditRepository {
     String auditId,
     AuditResponse response,
   );
+
+  /// Upload an attachment for a question.
+  Future<Either<Failure, Attachment>> uploadAttachment({
+    required String auditId,
+    required String questionId,
+    required List<int> fileBytes,
+    required String fileName,
+    bool isReportRelevant,
+  });
+
+  /// Delete an attachment.
+  Future<Either<Failure, void>> deleteAttachment({
+    required String auditId,
+    required String questionId,
+    required String attachmentId,
+  });
 }

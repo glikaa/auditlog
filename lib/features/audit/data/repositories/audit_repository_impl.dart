@@ -160,4 +160,48 @@ class AuditRepositoryImpl implements AuditRepository {
       return Left(ServerFailure(message: e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, Attachment>> uploadAttachment({
+    required String auditId,
+    required String questionId,
+    required List<int> fileBytes,
+    required String fileName,
+    bool isReportRelevant = true,
+  }) async {
+    try {
+      final attachment = await remote.uploadAttachment(
+        auditId: auditId,
+        questionId: questionId,
+        fileBytes: fileBytes,
+        fileName: fileName,
+        isReportRelevant: isReportRelevant,
+      );
+      return Right(attachment);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteAttachment({
+    required String auditId,
+    required String questionId,
+    required String attachmentId,
+  }) async {
+    try {
+      await remote.deleteAttachment(
+        auditId: auditId,
+        questionId: questionId,
+        attachmentId: attachmentId,
+      );
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
 }
