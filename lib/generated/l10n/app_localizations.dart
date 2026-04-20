@@ -429,6 +429,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unchanged'**
   String get unchanged;
+
+  /// No description provided for @answered.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
+  String get answered;
+
+  /// No description provided for @statusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get statusDraft;
+
+  /// No description provided for @statusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get statusInProgress;
+
+  /// No description provided for @statusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get statusCompleted;
+
+  /// No description provided for @statusReleased.
+  ///
+  /// In en, this message translates to:
+  /// **'Released'**
+  String get statusReleased;
+
+  /// No description provided for @pdfCreating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating PDF...'**
+  String get pdfCreating;
+
+  /// No description provided for @pdfDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF downloaded!'**
+  String get pdfDownloaded;
+
+  /// No description provided for @pdfExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF export failed'**
+  String get pdfExportFailed;
 }
 
 class _AppLocalizationsDelegate

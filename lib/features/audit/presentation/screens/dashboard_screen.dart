@@ -223,13 +223,27 @@ class _StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Chip(
       label: Text(
-        status.name,
+        _statusLabel(l10n, status),
         style: const TextStyle(fontSize: 12),
       ),
       padding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
     );
+  }
+}
+
+String _statusLabel(AppLocalizations l10n, AuditStatus status) {
+  switch (status) {
+    case AuditStatus.draft:
+      return l10n.statusDraft;
+    case AuditStatus.inProgress:
+      return l10n.statusInProgress;
+    case AuditStatus.completed:
+      return l10n.statusCompleted;
+    case AuditStatus.released:
+      return l10n.statusReleased;
   }
 }

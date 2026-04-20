@@ -119,5 +119,23 @@
   "worsened": "Verschlechtert",
   "@worsened": {},
   "unchanged": "Unveraendert",
-  "@unchanged": {}
+  "@unchanged": {},
+
+  "answered": "Beantwortet",
+  "@answered": {},
+  "statusDraft": "Entwurf",
+  "@statusDraft": {},
+  "statusInProgress": "In Bearbeitung",
+  "@statusInProgress": {},
+  "statusCompleted": "Abgeschlossen",
+  "@statusCompleted": {},
+  "statusReleased": "Freigegeben",
+  "@statusReleased": {},
+
+  "pdfCreating": "PDF wird erstellt...",
+  "@pdfCreating": {},
+  "pdfDownloaded": "PDF heruntergeladen!",
+  "@pdfDownloaded": {},
+  "pdfExportFailed": "PDF-Export fehlgeschlagen",
+  "@pdfExportFailed": {}
 }

@@ -182,7 +182,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
         _InfoRow(label: l10n.branch, value: audit.branchName),
         _InfoRow(label: l10n.auditor, value: audit.auditorName),
         _InfoRow(label: l10n.date, value: _formatDate(audit.createdAt)),
-        _InfoRow(label: l10n.status, value: audit.status.name),
+        _InfoRow(label: l10n.status, value: _statusLabel(l10n, audit.status)),
         const Divider(height: 32),
         Text(l10n.statistics, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
@@ -191,7 +191,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
         _InfoRow(label: l10n.notApplicable, value: '$countNA'),
         const Divider(height: 16),
         _InfoRow(
-          label: 'Beantwortet',
+          label: l10n.answered,
           value: '$answered / $total',
         ),
         _InfoRow(
@@ -214,19 +214,22 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AppLocalizations l10n,
   ) {
     final entries = categories.entries.toList();
+    final lang = Localizations.localeOf(context).languageCode;
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: entries.length,
       itemBuilder: (context, index) {
         final category = entries[index];
+        // Use translated category name from the first question in this group
+        final categoryLabel = category.value.first.categoryText(lang);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Text(
-                category.key,
+                categoryLabel,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -307,9 +310,10 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
   }
 
   Future<void> _exportPdf(BuildContext context, String auditId) async {
+    final l10n = AppLocalizations.of(context)!;
     final messenger = ScaffoldMessenger.of(context);
     messenger.showSnackBar(
-      const SnackBar(content: Text('PDF wird erstellt...')),
+      SnackBar(content: Text(l10n.pdfCreating)),
     );
 
     try {
@@ -330,18 +334,31 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
 
       messenger.clearSnackBars();
       messenger.showSnackBar(
-        const SnackBar(content: Text('PDF heruntergeladen!')),
+        SnackBar(content: Text(l10n.pdfDownloaded)),
       );
     } catch (e) {
       messenger.clearSnackBars();
       messenger.showSnackBar(
-        SnackBar(content: Text('PDF-Export fehlgeschlagen: $e')),
+        SnackBar(content: Text('${l10n.pdfExportFailed}: $e')),
       );
     }
   }
 
   String _formatDate(DateTime date) {
     return '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
+  }
+
+  String _statusLabel(AppLocalizations l10n, AuditStatus status) {
+    switch (status) {
+      case AuditStatus.draft:
+        return l10n.statusDraft;
+      case AuditStatus.inProgress:
+        return l10n.statusInProgress;
+      case AuditStatus.completed:
+        return l10n.statusCompleted;
+      case AuditStatus.released:
+        return l10n.statusReleased;
+    }
   }
 }
 

@@ -64,5 +64,15 @@
   "startNachrevisionConfirm": "Želite li pokrenuti naknadnu reviziju za ovaj audit? Postojeći odgovori bit će preuzeti kao usporedne vrijednosti.",
   "improved": "Poboljšano",
   "worsened": "Pogoršano",
-  "unchanged": "Nepromijenjeno"
+  "unchanged": "Nepromijenjeno",
+
+  "answered": "Odgovoreno",
+  "statusDraft": "Nacrt",
+  "statusInProgress": "U tijeku",
+  "statusCompleted": "Zavrseno",
+  "statusReleased": "Odobreno",
+
+  "pdfCreating": "Izrada PDF-a...",
+  "pdfDownloaded": "PDF preuzet!",
+  "pdfExportFailed": "Izvoz PDF-a nije uspio"
 }

@@ -173,4 +173,28 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get unchanged => 'Nepromijenjeno';
+
+  @override
+  String get answered => 'Odgovoreno';
+
+  @override
+  String get statusDraft => 'Nacrt';
+
+  @override
+  String get statusInProgress => 'U tijeku';
+
+  @override
+  String get statusCompleted => 'Zavrseno';
+
+  @override
+  String get statusReleased => 'Odobreno';
+
+  @override
+  String get pdfCreating => 'Izrada PDF-a...';
+
+  @override
+  String get pdfDownloaded => 'PDF preuzet!';
+
+  @override
+  String get pdfExportFailed => 'Izvoz PDF-a nije uspio';
 }

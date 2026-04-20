@@ -8,15 +8,22 @@ class QuestionCreate(BaseModel):
     master_question_id: Optional[str] = None
     order: int
     category: str
+    category_en: Optional[str] = None
+    category_hr: Optional[str] = None
     text_de: str
+    text_en: Optional[str] = None
     text_hr: Optional[str] = None
     explanation_text_de: Optional[str] = None
+    explanation_text_en: Optional[str] = None
     explanation_text_hr: Optional[str] = None
     internal_note_de: Optional[str] = None
+    internal_note_en: Optional[str] = None
     internal_note_hr: Optional[str] = None
     default_finding_de: Optional[str] = None
+    default_finding_en: Optional[str] = None
     default_finding_hr: Optional[str] = None
     default_measure_de: Optional[str] = None
+    default_measure_en: Optional[str] = None
     default_measure_hr: Optional[str] = None
 
 

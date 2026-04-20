@@ -174,4 +174,28 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get unchanged => 'Unveraendert';
+
+  @override
+  String get answered => 'Beantwortet';
+
+  @override
+  String get statusDraft => 'Entwurf';
+
+  @override
+  String get statusInProgress => 'In Bearbeitung';
+
+  @override
+  String get statusCompleted => 'Abgeschlossen';
+
+  @override
+  String get statusReleased => 'Freigegeben';
+
+  @override
+  String get pdfCreating => 'PDF wird erstellt...';
+
+  @override
+  String get pdfDownloaded => 'PDF heruntergeladen!';
+
+  @override
+  String get pdfExportFailed => 'PDF-Export fehlgeschlagen';
 }
