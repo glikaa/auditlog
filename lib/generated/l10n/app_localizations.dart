@@ -393,6 +393,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An unexpected error occurred.'**
   String get errorUnknown;
+
+  /// No description provided for @nachrevision.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up Audit'**
+  String get nachrevision;
+
+  /// No description provided for @startNachrevision.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Follow-up Audit'**
+  String get startNachrevision;
+
+  /// No description provided for @startNachrevisionConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to create a follow-up audit? The current answers will be copied as comparison values.'**
+  String get startNachrevisionConfirm;
+
+  /// No description provided for @improved.
+  ///
+  /// In en, this message translates to:
+  /// **'Improved'**
+  String get improved;
+
+  /// No description provided for @worsened.
+  ///
+  /// In en, this message translates to:
+  /// **'Worsened'**
+  String get worsened;
+
+  /// No description provided for @unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Unchanged'**
+  String get unchanged;
 }
 
 class _AppLocalizationsDelegate

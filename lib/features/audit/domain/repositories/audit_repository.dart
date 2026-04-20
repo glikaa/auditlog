@@ -51,4 +51,7 @@ abstract class AuditRepository {
     required String questionId,
     required String attachmentId,
   });
+
+  /// Create a Nachrevision (follow-up audit) for a completed audit.
+  Future<Either<Failure, Audit>> createNachrevision(String auditId);
 }

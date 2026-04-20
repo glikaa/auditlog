@@ -154,4 +154,23 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get errorUnknown => 'Došlo je do neočekivane pogreške.';
+
+  @override
+  String get nachrevision => 'Naknadna revizija';
+
+  @override
+  String get startNachrevision => 'Pokreni naknadnu reviziju';
+
+  @override
+  String get startNachrevisionConfirm =>
+      'Želite li pokrenuti naknadnu reviziju za ovaj audit? Postojeći odgovori bit će preuzeti kao usporedne vrijednosti.';
+
+  @override
+  String get improved => 'Poboljšano';
+
+  @override
+  String get worsened => 'Pogoršano';
+
+  @override
+  String get unchanged => 'Nepromijenjeno';
 }

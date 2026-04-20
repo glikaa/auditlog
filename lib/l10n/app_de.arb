@@ -106,5 +106,18 @@
   "loading": "Wird geladen...",
   "@loading": {},
   "errorUnknown": "Ein unerwarteter Fehler ist aufgetreten.",
-  "@errorUnknown": {}
+  "@errorUnknown": {},
+
+  "nachrevision": "Nachrevision",
+  "@nachrevision": {},
+  "startNachrevision": "Nachrevision starten",
+  "@startNachrevision": {},
+  "startNachrevisionConfirm": "Moechtest du eine Nachrevision fuer dieses Audit erstellen? Die bisherigen Antworten werden als Vergleichswerte uebernommen.",
+  "@startNachrevisionConfirm": {},
+  "improved": "Verbessert",
+  "@improved": {},
+  "worsened": "Verschlechtert",
+  "@worsened": {},
+  "unchanged": "Unveraendert",
+  "@unchanged": {}
 }

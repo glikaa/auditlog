@@ -211,14 +211,19 @@ async def create_nachrevision(audit_id: str, user: dict = Depends(get_current_us
     # Create new audit
     new_id = str(uuid.uuid4())
     now = datetime.now(timezone.utc)
+
+    # Look up auditor name from users collection
+    user_doc = db.collection("users").document(user["id"]).get()
+    auditor_name = user_doc.to_dict().get("name", user["id"]) if user_doc.exists else user["id"]
+
     new_audit = {
         "id": new_id,
         "type": "nachrevision",
         "catalog_id": orig["catalog_id"],
         "branch_id": orig["branch_id"],
         "branch_name": orig.get("branch_name", ""),
-        "auditor_id": user["uid"],
-        "auditor_name": user.get("name", user["email"]),
+        "auditor_id": user["id"],
+        "auditor_name": auditor_name,
         "preparer_id": None,
         "status": AuditStatus.in_progress.value,
         "result_percent": None,
@@ -256,7 +261,7 @@ async def create_nachrevision(audit_id: str, user: dict = Depends(get_current_us
             .set(new_resp)
         )
 
-    return AuditOut(**new_audit, created_at=now)
+    return AuditOut(**new_audit)
 
 
 @router.post("/{audit_id}/reopen", response_model=AuditOut)

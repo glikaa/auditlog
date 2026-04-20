@@ -16,4 +16,16 @@ class AuditListCubit extends Cubit<AuditListState> {
       (audits) => emit(AuditListLoaded(audits)),
     );
   }
+
+  /// Create a Nachrevision for the given audit. Returns the new audit ID or null.
+  Future<String?> createNachrevision(String auditId) async {
+    final result = await repository.createNachrevision(auditId);
+    return result.fold(
+      (_) => null,
+      (audit) {
+        loadAudits(); // Refresh list
+        return audit.id;
+      },
+    );
+  }
 }

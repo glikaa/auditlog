@@ -57,5 +57,12 @@
   "version": "Verzija",
 
   "loading": "Učitavanje...",
-  "errorUnknown": "Došlo je do neočekivane pogreške."
+  "errorUnknown": "Došlo je do neočekivane pogreške.",
+
+  "nachrevision": "Naknadna revizija",
+  "startNachrevision": "Pokreni naknadnu reviziju",
+  "startNachrevisionConfirm": "Želite li pokrenuti naknadnu reviziju za ovaj audit? Postojeći odgovori bit će preuzeti kao usporedne vrijednosti.",
+  "improved": "Poboljšano",
+  "worsened": "Pogoršano",
+  "unchanged": "Nepromijenjeno"
 }

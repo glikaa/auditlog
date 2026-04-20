@@ -204,4 +204,14 @@ class AuditRepositoryImpl implements AuditRepository {
       return Left(ServerFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, Audit>> createNachrevision(String auditId) async {
+    try {
+      final result = await remote.createNachrevision(auditId);
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    }
+  }
 }

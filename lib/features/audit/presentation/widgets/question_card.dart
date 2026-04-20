@@ -227,7 +227,7 @@ class _PreviousRatingInfo extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text('${l10n.rating}: ${previousRating.name}'),
+          Text('${l10n.rating}: ${_ratingLabel(l10n, previousRating)}'),
           if (previousFinding != null && previousFinding!.isNotEmpty)
             Text('${l10n.finding}: $previousFinding'),
           if (comparisonResult != null) ...[
@@ -248,12 +248,34 @@ class _PreviousRatingInfo extends StatelessWidget {
                   size: 18,
                 ),
                 const SizedBox(width: 4),
-                Text(comparisonResult!.name),
+                Text(_comparisonLabel(l10n, comparisonResult!)),
               ],
             ),
           ],
         ],
       ),
     );
+  }
+
+  String _comparisonLabel(AppLocalizations l10n, ComparisonResult result) {
+    switch (result) {
+      case ComparisonResult.improved:
+        return l10n.improved;
+      case ComparisonResult.worsened:
+        return l10n.worsened;
+      case ComparisonResult.unchanged:
+        return l10n.unchanged;
+    }
+  }
+
+  String _ratingLabel(AppLocalizations l10n, Rating rating) {
+    switch (rating) {
+      case Rating.yes:
+        return l10n.yes;
+      case Rating.no:
+        return l10n.no;
+      case Rating.na:
+        return l10n.notApplicable;
+    }
   }
 }

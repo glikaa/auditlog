@@ -174,7 +174,7 @@ flutter run -d chrome
 - [x] Responsive Layout (Mobile/Tablet/Desktop)
 - [x] Mehrsprachigkeit (DE, HR, EN)
 - [x] Einstellungsseite (Sprache, Profil)
-- [ ] Anhaenge / Bilder Upload
-- [ ] Nachrevision (Gegenueberstellung)
+- [x] Anhaenge / Bilder Upload
+- [x] Nachrevision (Gegenueberstellung)
 - [ ] Reporting-Screen
 - [ ] Cloud Run Deployment

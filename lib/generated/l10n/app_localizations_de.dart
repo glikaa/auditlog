@@ -155,4 +155,23 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get errorUnknown => 'Ein unerwarteter Fehler ist aufgetreten.';
+
+  @override
+  String get nachrevision => 'Nachrevision';
+
+  @override
+  String get startNachrevision => 'Nachrevision starten';
+
+  @override
+  String get startNachrevisionConfirm =>
+      'Moechtest du eine Nachrevision fuer dieses Audit erstellen? Die bisherigen Antworten werden als Vergleichswerte uebernommen.';
+
+  @override
+  String get improved => 'Verbessert';
+
+  @override
+  String get worsened => 'Verschlechtert';
+
+  @override
+  String get unchanged => 'Unveraendert';
 }

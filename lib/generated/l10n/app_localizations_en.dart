@@ -155,4 +155,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorUnknown => 'An unexpected error occurred.';
+
+  @override
+  String get nachrevision => 'Follow-up Audit';
+
+  @override
+  String get startNachrevision => 'Start Follow-up Audit';
+
+  @override
+  String get startNachrevisionConfirm =>
+      'Do you want to create a follow-up audit? The current answers will be copied as comparison values.';
+
+  @override
+  String get improved => 'Improved';
+
+  @override
+  String get worsened => 'Worsened';
+
+  @override
+  String get unchanged => 'Unchanged';
 }

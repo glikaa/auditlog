@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/network/api_client.dart';
+import '../../../../core/router.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../generated/l10n/app_localizations.dart';
 import '../../domain/entities/audit.dart';
@@ -12,6 +13,7 @@ import '../../domain/entities/audit_response.dart';
 import '../../domain/entities/question.dart';
 import '../state/audit_detail_cubit.dart';
 import '../state/audit_detail_state.dart';
+import '../state/audit_list_cubit.dart';
 import '../widgets/question_card.dart';
 
 class AuditDetailScreen extends StatefulWidget {
@@ -65,13 +67,33 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(state.audit.branchName),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(state.audit.branchName),
+            if (state.audit.isNachrevision)
+              Text(
+                l10n.nachrevision,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.deepPurple,
+                    ),
+              ),
+          ],
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.picture_as_pdf),
             tooltip: 'PDF Export',
             onPressed: () => _exportPdf(context, state.audit.id),
           ),
+          if ((state.audit.status == AuditStatus.completed ||
+                  state.audit.status == AuditStatus.released) &&
+              !state.audit.isNachrevision)
+            IconButton(
+              icon: const Icon(Icons.compare_arrows),
+              tooltip: l10n.startNachrevision,
+              onPressed: () => _startNachrevision(context, state.audit.id),
+            ),
           if (state.audit.status == AuditStatus.inProgress)
             TextButton.icon(
               onPressed: () => _completeAudit(context, state.audit.id),
@@ -251,6 +273,37 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
 
   void _releaseAudit(BuildContext context, String auditId) {
     context.read<AuditDetailCubit>().releaseAudit(auditId);
+  }
+
+  Future<void> _startNachrevision(BuildContext context, String auditId) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.nachrevision),
+        content: Text(l10n.startNachrevisionConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.confirm),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final newId = await context.read<AuditListCubit>().createNachrevision(auditId);
+    if (newId != null && context.mounted) {
+      Navigator.pushReplacementNamed(
+        context,
+        AppRouter.auditDetail,
+        arguments: newId,
+      );
+    }
   }
 
   Future<void> _exportPdf(BuildContext context, String auditId) async {

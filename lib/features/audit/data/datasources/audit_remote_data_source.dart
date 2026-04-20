@@ -151,4 +151,14 @@ class AuditRemoteDataSource {
       throw ApiClient.mapDioError(e);
     }
   }
+
+  /// Create a Nachrevision (follow-up audit) based on an existing audit.
+  Future<AuditModel> createNachrevision(String auditId) async {
+    try {
+      final response = await _dio.post('/audits/$auditId/nachrevision');
+      return AuditModel.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiClient.mapDioError(e);
+    }
+  }
 }

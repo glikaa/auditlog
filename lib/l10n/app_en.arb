@@ -106,5 +106,18 @@
   "loading": "Loading...",
   "@loading": {},
   "errorUnknown": "An unexpected error occurred.",
-  "@errorUnknown": {}
+  "@errorUnknown": {},
+
+  "nachrevision": "Follow-up Audit",
+  "@nachrevision": {},
+  "startNachrevision": "Start Follow-up Audit",
+  "@startNachrevision": {},
+  "startNachrevisionConfirm": "Do you want to create a follow-up audit? The current answers will be copied as comparison values.",
+  "@startNachrevisionConfirm": {},
+  "improved": "Improved",
+  "@improved": {},
+  "worsened": "Worsened",
+  "@worsened": {},
+  "unchanged": "Unchanged",
+  "@unchanged": {}
 }
