@@ -11,8 +11,8 @@ import 'features/audit/presentation/state/audit_detail_cubit.dart';
 import 'features/audit/presentation/state/audit_list_cubit.dart';
 import 'generated/l10n/app_localizations.dart';
 
-// Replace with your real base URL when the API is ready.
-const _baseUrl = 'https://api.example.com/v1';
+// Local backend URL – change to production URL before deploy.
+const _baseUrl = 'http://127.0.0.1:8000';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
