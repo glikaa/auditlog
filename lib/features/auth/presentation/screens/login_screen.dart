@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
+import '../../../../core/network/api_client.dart';
+import '../../../../core/router.dart';
 import '../../../../generated/l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -26,14 +30,37 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
-    // TODO: Implement Firebase Auth login
-    await Future.delayed(const Duration(seconds: 1)); // Placeholder
+    try {
+      final dio = ApiClient.instance.dio;
+      final response = await dio.post('/auth/login', data: {
+        'email': _emailController.text.trim(),
+        'password': _passwordController.text,
+      });
 
-    if (mounted) {
-      setState(() => _isLoading = false);
-      // TODO: Navigate to dashboard on success
+      final token = response.data['access_token'] as String;
+      ApiClient.updateAuthToken(token);
+
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed(AppRouter.dashboard);
+      }
+    } on DioException catch (e) {
+      final msg = e.response?.data?['detail'] as String? ?? 'Login fehlgeschlagen';
+      if (mounted) {
+        setState(() => _errorMessage = msg);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _errorMessage = 'Verbindungsfehler: $e');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -73,6 +100,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 32),
+                  if (_errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Text(
+                        _errorMessage!,
+                        style: TextStyle(color: theme.colorScheme.error),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,

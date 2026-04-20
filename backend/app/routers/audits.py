@@ -1,10 +1,13 @@
 """Audit CRUD endpoints + responses."""
 
+import io
 import uuid
 from datetime import datetime, timezone
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi.responses import StreamingResponse
+from fpdf import FPDF
 
 from app.models.audit import AuditCreate, AuditOut, AuditStatus, AuditUpdate
 from app.models.response import ResponseOut, ResponseUpdate
@@ -27,13 +30,14 @@ async def list_audits(user: dict = Depends(get_current_user)):
     if user["role"] in ("branch_manager", "district_manager"):
         query = query.where("status", "==", "released")
 
-    docs = query.order_by("created_at", direction="DESCENDING").stream()
+    docs = query.stream()
 
     audits = []  # type: List[AuditOut]
     for doc in docs:
         data = doc.to_dict()
         data["id"] = doc.id
         audits.append(AuditOut(**data))
+    audits.sort(key=lambda a: a.created_at, reverse=True)
     return audits
 
 
@@ -277,3 +281,170 @@ async def upload_attachment(
         "is_report_relevant": is_report_relevant,
         "message": "Upload placeholder – integrate Firebase Storage",
     }
+
+
+# --------------- PDF Export ---------------
+
+
+def _safe(text):
+    """Replace problematic characters for fpdf latin-1 encoding."""
+    if not text:
+        return ""
+    replacements = {
+        u'\u2013': '-', u'\u2014': '-', u'\u2018': "'", u'\u2019': "'",
+        u'\u201c': '"', u'\u201d': '"', u'\u2026': '...', u'\u00fc': 'ue',
+        u'\u00f6': 'oe', u'\u00e4': 'ae', u'\u00dc': 'Ue', u'\u00d6': 'Oe',
+        u'\u00c4': 'Ae', u'\u00df': 'ss',
+    }
+    for orig, repl in replacements.items():
+        text = text.replace(orig, repl)
+    return text.encode('latin-1', 'replace').decode('latin-1')
+
+
+@router.get("/{audit_id}/export/pdf")
+async def export_audit_pdf(audit_id: str, user: dict = Depends(get_current_user)):
+    """Generate a PDF report for the audit."""
+    db = get_db()
+
+    # Load audit
+    audit_doc = db.collection("audits").document(audit_id).get()
+    if not audit_doc.exists:
+        raise HTTPException(status_code=404, detail="Audit not found")
+    audit = audit_doc.to_dict()
+    audit["id"] = audit_doc.id
+
+    # Load responses
+    resp_docs = (
+        db.collection("audits").document(audit_id).collection("responses").stream()
+    )
+    responses = {}
+    for doc in resp_docs:
+        data = doc.to_dict()
+        responses[doc.id] = data
+
+    # Load questions
+    catalog_id = audit.get("catalog_id", "")
+    q_docs = db.collection("questions").where("catalog_id", "==", catalog_id).stream()
+    questions = []
+    for doc in q_docs:
+        qdata = doc.to_dict()
+        qdata["id"] = doc.id
+        questions.append(qdata)
+    questions.sort(key=lambda q: q.get("order", 0))
+
+    # Count ratings
+    count_yes = sum(1 for r in responses.values() if r.get("rating") == "yes")
+    count_no = sum(1 for r in responses.values() if r.get("rating") == "no")
+    count_na = sum(1 for r in responses.values() if r.get("rating") == "na")
+    total = count_yes + count_no
+    result_pct = (count_yes / total * 100) if total > 0 else 0.0
+
+    # Build PDF
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+
+    # Title
+    pdf.set_font("Arial", "B", 18)
+    pdf.cell(0, 12, _safe("Revisionsbericht"), ln=True, align="C")
+    pdf.ln(4)
+
+    # Audit info
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 8, _safe("Audit-Informationen"), ln=True)
+    pdf.set_font("Arial", "", 10)
+
+    branch = audit.get("branch_name", "")
+    auditor = audit.get("auditor_name", "")
+    status = audit.get("status", "")
+    created = audit.get("created_at", "")
+    if hasattr(created, 'strftime'):
+        created = created.strftime("%d.%m.%Y")
+    else:
+        created = str(created)[:10] if created else ""
+
+    info_rows = [
+        ("Filiale:", branch),
+        ("Pruefer:", auditor),
+        ("Datum:", created),
+        ("Status:", status),
+    ]
+    for label, val in info_rows:
+        pdf.cell(40, 7, _safe(label), border=0)
+        pdf.cell(0, 7, _safe(str(val)), border=0, ln=True)
+
+    pdf.ln(4)
+
+    # Statistics
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 8, _safe("Ergebnis"), ln=True)
+    pdf.set_font("Arial", "", 10)
+    pdf.cell(40, 7, "Ja:", border=0)
+    pdf.cell(0, 7, str(count_yes), border=0, ln=True)
+    pdf.cell(40, 7, "Nein:", border=0)
+    pdf.cell(0, 7, str(count_no), border=0, ln=True)
+    pdf.cell(40, 7, _safe("Entfaellt:"), border=0)
+    pdf.cell(0, 7, str(count_na), border=0, ln=True)
+    pdf.cell(40, 7, _safe("Ergebnis:"), border=0)
+    pdf.cell(0, 7, "{:.1f}%".format(result_pct), border=0, ln=True)
+    pdf.ln(6)
+
+    # Questions table
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 8, _safe("Fragen und Antworten"), ln=True)
+    pdf.ln(2)
+
+    # Group by category
+    categories = {}
+    for q in questions:
+        cat = q.get("category", "Sonstiges")
+        categories.setdefault(cat, []).append(q)
+
+    for cat_name, cat_questions in categories.items():
+        # Category header
+        pdf.set_font("Arial", "B", 11)
+        pdf.set_fill_color(230, 230, 230)
+        pdf.cell(0, 8, _safe(cat_name), ln=True, fill=True)
+        pdf.ln(1)
+
+        for q in cat_questions:
+            qid = q["id"]
+            resp = responses.get(qid, {})
+            rating = resp.get("rating", "-")
+            finding = resp.get("finding", "")
+            measure = resp.get("measure", "")
+
+            rating_display = {"yes": "Ja", "no": "Nein", "na": "Entf."}.get(rating, "-")
+
+            # Question text + rating
+            pdf.set_font("Arial", "B", 9)
+            q_text = q.get("text_de", q.get("text", ""))
+            pdf.cell(150, 6, _safe(q_text[:95]), border=0)
+            pdf.set_font("Arial", "", 9)
+            pdf.cell(0, 6, _safe(rating_display), border=0, ln=True)
+
+            # Finding & Measure (if any)
+            if finding:
+                pdf.set_font("Arial", "I", 8)
+                pdf.cell(10, 5, "", border=0)
+                pdf.cell(0, 5, _safe("Feststellung: " + finding[:120]), border=0, ln=True)
+            if measure:
+                pdf.set_font("Arial", "I", 8)
+                pdf.cell(10, 5, "", border=0)
+                pdf.cell(0, 5, _safe("Massnahme: " + measure[:120]), border=0, ln=True)
+
+            pdf.ln(1)
+
+    # Output
+    pdf_bytes = pdf.output(dest="S")
+    if isinstance(pdf_bytes, str):
+        pdf_bytes = pdf_bytes.encode("latin-1")
+
+    buf = io.BytesIO(pdf_bytes)
+    filename = "audit-{}.pdf".format(audit_id)
+
+    return StreamingResponse(
+        buf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename={}".format(filename)},
+    )

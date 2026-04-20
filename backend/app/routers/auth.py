@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.models.user import TokenResponse, UserCreate, UserOut, UserRole
+from app.models.user import LoginRequest, TokenResponse, UserCreate, UserOut, UserRole
 from app.services.auth_service import create_token, get_current_user
 from app.services.firebase_service import get_db
 
@@ -10,14 +10,14 @@ router = APIRouter()
 
 
 @router.post("/login", response_model=TokenResponse)
-async def login(email: str, password: str):
+async def login(body: LoginRequest):
     """Authenticate and return a JWT.
 
     For now uses Firestore user lookup.
     Replace with Firebase Auth `verify_id_token` in production.
     """
     db = get_db()
-    users_ref = db.collection("users").where("email", "==", email).limit(1)
+    users_ref = db.collection("users").where("email", "==", body.email).limit(1)
     docs = users_ref.stream()
 
     user_doc = next(docs, None)

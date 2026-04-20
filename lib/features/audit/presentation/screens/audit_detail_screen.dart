@@ -1,9 +1,14 @@
+import 'dart:html' as html;
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/network/api_client.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../generated/l10n/app_localizations.dart';
 import '../../domain/entities/audit.dart';
+import '../../domain/entities/audit_response.dart';
 import '../../domain/entities/question.dart';
 import '../state/audit_detail_cubit.dart';
 import '../state/audit_detail_state.dart';
@@ -62,6 +67,11 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
       appBar: AppBar(
         title: Text(state.audit.branchName),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf),
+            tooltip: 'PDF Export',
+            onPressed: () => _exportPdf(context, state.audit.id),
+          ),
           if (state.audit.status == AuditStatus.inProgress)
             TextButton.icon(
               onPressed: () => _completeAudit(context, state.audit.id),
@@ -102,7 +112,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
         // Left: Audit info panel
         SizedBox(
           width: 300,
-          child: _buildAuditInfoPanel(state.audit, l10n),
+          child: _buildAuditInfoPanel(state.audit, state, l10n),
         ),
         const VerticalDivider(width: 1),
         // Right: Questions list
@@ -113,7 +123,35 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     );
   }
 
-  Widget _buildAuditInfoPanel(Audit audit, AppLocalizations l10n) {
+  Widget _buildAuditInfoPanel(
+    Audit audit,
+    AuditDetailLoaded state,
+    AppLocalizations l10n,
+  ) {
+    // Compute live stats from current responses
+    int countYes = 0;
+    int countNo = 0;
+    int countNA = 0;
+    for (final r in state.responses.values) {
+      switch (r.rating) {
+        case Rating.yes:
+          countYes++;
+          break;
+        case Rating.no:
+          countNo++;
+          break;
+        case Rating.na:
+          countNA++;
+          break;
+        default:
+          break;
+      }
+    }
+    final totalRated = countYes + countNo;
+    final livePercent = totalRated > 0 ? (countYes / totalRated * 100) : 0.0;
+    final answered = countYes + countNo + countNA;
+    final total = state.questions.length;
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -123,17 +161,27 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
         _InfoRow(label: l10n.auditor, value: audit.auditorName),
         _InfoRow(label: l10n.date, value: _formatDate(audit.createdAt)),
         _InfoRow(label: l10n.status, value: audit.status.name),
-        if (audit.resultPercent != null)
-          _InfoRow(
-            label: l10n.result,
-            value: '${audit.resultPercent!.toStringAsFixed(1)}%',
-          ),
         const Divider(height: 32),
         Text(l10n.statistics, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
-        _InfoRow(label: l10n.yes, value: '${audit.countYes}'),
-        _InfoRow(label: l10n.no, value: '${audit.countNo}'),
-        _InfoRow(label: l10n.notApplicable, value: '${audit.countNA}'),
+        _InfoRow(label: l10n.yes, value: '$countYes'),
+        _InfoRow(label: l10n.no, value: '$countNo'),
+        _InfoRow(label: l10n.notApplicable, value: '$countNA'),
+        const Divider(height: 16),
+        _InfoRow(
+          label: 'Beantwortet',
+          value: '$answered / $total',
+        ),
+        _InfoRow(
+          label: l10n.result,
+          value: '${livePercent.toStringAsFixed(1)}%',
+        ),
+        const SizedBox(height: 8),
+        LinearProgressIndicator(
+          value: total > 0 ? answered / total : 0,
+          minHeight: 8,
+          borderRadius: BorderRadius.circular(4),
+        ),
       ],
     );
   }
@@ -203,6 +251,40 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
 
   void _releaseAudit(BuildContext context, String auditId) {
     context.read<AuditDetailCubit>().releaseAudit(auditId);
+  }
+
+  Future<void> _exportPdf(BuildContext context, String auditId) async {
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.showSnackBar(
+      const SnackBar(content: Text('PDF wird erstellt...')),
+    );
+
+    try {
+      final dio = ApiClient.instance.dio;
+      final response = await dio.get(
+        '/audits/$auditId/export/pdf',
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      // Trigger download in browser
+      final bytes = response.data as List<int>;
+      final blob = html.Blob([bytes], 'application/pdf');
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      html.AnchorElement(href: url)
+        ..setAttribute('download', 'audit-$auditId.pdf')
+        ..click();
+      html.Url.revokeObjectUrl(url);
+
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        const SnackBar(content: Text('PDF heruntergeladen!')),
+      );
+    } catch (e) {
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        SnackBar(content: Text('PDF-Export fehlgeschlagen: $e')),
+      );
+    }
   }
 
   String _formatDate(DateTime date) {

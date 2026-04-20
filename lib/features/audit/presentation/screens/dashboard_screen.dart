@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/router.dart';
 import '../../../../generated/l10n/app_localizations.dart';
 import '../../domain/entities/audit.dart';
 import '../state/audit_list_cubit.dart';
@@ -112,7 +113,11 @@ class _AuditCard extends StatelessWidget {
               )
             : _StatusChip(status: audit.status),
         onTap: () {
-          // TODO: Navigate to audit detail
+          Navigator.pushNamed(
+            context,
+            AppRouter.auditDetail,
+            arguments: audit.id,
+          );
         },
       ),
     );

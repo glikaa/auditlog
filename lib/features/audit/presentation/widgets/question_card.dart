@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,6 +30,7 @@ class QuestionCard extends StatefulWidget {
 class _QuestionCardState extends State<QuestionCard> {
   late final TextEditingController _findingController;
   late final TextEditingController _measureController;
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -53,6 +56,7 @@ class _QuestionCardState extends State<QuestionCard> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _findingController.dispose();
     _measureController.dispose();
     super.dispose();
@@ -70,6 +74,13 @@ class _QuestionCardState extends State<QuestionCard> {
     );
 
     context.read<AuditDetailCubit>().saveResponse(widget.auditId, updated);
+  }
+
+  void _debouncedAutoSave({String? finding, String? measure}) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 800), () {
+      _autoSave(finding: finding, measure: measure);
+    });
   }
 
   void _onRatingChanged(Rating? rating) {
@@ -139,7 +150,7 @@ class _QuestionCardState extends State<QuestionCard> {
               ),
               maxLines: null, // Auto-expanding
               minLines: 2,
-              onChanged: (value) => _autoSave(finding: value),
+              onChanged: (value) => _debouncedAutoSave(finding: value),
             ),
 
             const SizedBox(height: 8),
@@ -155,7 +166,7 @@ class _QuestionCardState extends State<QuestionCard> {
               ),
               maxLines: null,
               minLines: 2,
-              onChanged: (value) => _autoSave(measure: value),
+              onChanged: (value) => _debouncedAutoSave(measure: value),
             ),
 
             // Nachrevision comparison info

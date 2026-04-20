@@ -6,7 +6,7 @@ import '../models/audit_response_model.dart';
 import '../models/question_model.dart';
 
 class AuditRemoteDataSource {
-  final Dio _dio = ApiClient.instance.dio;
+  Dio get _dio => ApiClient.instance.dio;
 
   Future<List<AuditModel>> getAudits() async {
     try {

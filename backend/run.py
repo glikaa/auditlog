@@ -12,6 +12,10 @@ if sys.version_info < (3, 7):
             loop.close()
     asyncio.run = _asyncio_run
 
+    def _asyncio_current_task():
+        return asyncio.Task.current_task()
+    asyncio.current_task = _asyncio_current_task
+
 import uvicorn
 
 if __name__ == "__main__":

@@ -26,6 +26,11 @@ class UserCreate(UserBase):
     password: str = Field(..., min_length=8)
 
 
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
 class UserOut(UserBase):
     id: str
 
