@@ -4,8 +4,6 @@ In production this verifies Firebase ID tokens.
 For local development it issues/verifies simple JWTs.
 """
 
-from __future__ import annotations
-
 import os
 from datetime import datetime, timedelta, timezone
 

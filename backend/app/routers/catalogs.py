@@ -1,9 +1,8 @@
 """Catalog & Question endpoints."""
 
-from __future__ import annotations
-
 import uuid
 from datetime import datetime, timezone
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -17,10 +16,10 @@ router = APIRouter()
 # --------------- Catalogs ---------------
 
 
-@router.get("", response_model=list[CatalogOut])
+@router.get("", response_model=List[CatalogOut])
 async def list_catalogs(
-    country: str | None = None,
-    year: int | None = None,
+    country: Optional[str] = None,
+    year: Optional[int] = None,
     user: dict = Depends(get_current_user),
 ):
     """List audit catalogs, optionally filtered by country and year."""
@@ -33,7 +32,7 @@ async def list_catalogs(
         query = query.where("year", "==", year)
 
     docs = query.stream()
-    catalogs: list[CatalogOut] = []
+    catalogs = []  # type: List[CatalogOut]
     for doc in docs:
         data = doc.to_dict()
         data["id"] = doc.id
@@ -52,7 +51,7 @@ async def create_catalog(
 
     db = get_db()
     catalog_id = str(uuid.uuid4())
-    data = body.model_dump()
+    data = body.dict()
     data["id"] = catalog_id
     data["question_count"] = 0
     data["created_at"] = datetime.now(timezone.utc).isoformat()
@@ -77,7 +76,7 @@ async def update_catalog(
     if not doc.exists:
         raise HTTPException(status_code=404, detail="Catalog not found")
 
-    updates = body.model_dump()
+    updates = body.dict()
     ref.update(updates)
 
     data = doc.to_dict()
@@ -89,7 +88,7 @@ async def update_catalog(
 # --------------- Questions ---------------
 
 
-@router.get("/{catalog_id}/questions", response_model=list[QuestionOut])
+@router.get("/{catalog_id}/questions", response_model=List[QuestionOut])
 async def list_questions(
     catalog_id: str,
     user: dict = Depends(get_current_user),
@@ -103,7 +102,7 @@ async def list_questions(
         .stream()
     )
 
-    questions: list[QuestionOut] = []
+    questions = []  # type: List[QuestionOut]
     for doc in docs:
         data = doc.to_dict()
         data["id"] = doc.id
@@ -124,7 +123,7 @@ async def create_question(
     db = get_db()
     question_id = str(uuid.uuid4())
 
-    data = body.model_dump()
+    data = body.dict()
     data["id"] = question_id
     data["catalog_id"] = catalog_id
 
@@ -156,7 +155,7 @@ async def update_question(
     if not doc.exists:
         raise HTTPException(status_code=404, detail="Question not found")
 
-    updates = body.model_dump()
+    updates = body.dict()
     ref.update(updates)
 
     data = doc.to_dict()

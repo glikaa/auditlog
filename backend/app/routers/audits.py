@@ -1,9 +1,8 @@
 """Audit CRUD endpoints + responses."""
 
-from __future__ import annotations
-
 import uuid
 from datetime import datetime, timezone
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 
@@ -18,7 +17,7 @@ router = APIRouter()
 # --------------- Audits ---------------
 
 
-@router.get("", response_model=list[AuditOut])
+@router.get("", response_model=List[AuditOut])
 async def list_audits(user: dict = Depends(get_current_user)):
     """List audits filtered by role."""
     db = get_db()
@@ -30,7 +29,7 @@ async def list_audits(user: dict = Depends(get_current_user)):
 
     docs = query.order_by("created_at", direction="DESCENDING").stream()
 
-    audits: list[AuditOut] = []
+    audits = []  # type: List[AuditOut]
     for doc in docs:
         data = doc.to_dict()
         data["id"] = doc.id
@@ -51,7 +50,7 @@ async def create_audit(
     audit_id = str(uuid.uuid4())
     now = datetime.now(timezone.utc)
 
-    data = body.model_dump()
+    data = body.dict()
     data.update(
         id=audit_id,
         status=AuditStatus.draft.value,
@@ -100,7 +99,7 @@ async def update_audit(
     if not doc.exists:
         raise HTTPException(status_code=404, detail="Audit not found")
 
-    updates = body.model_dump(exclude_none=True)
+    updates = body.dict(exclude_none=True)
     ref.update(updates)
 
     data = doc.to_dict()
@@ -199,7 +198,7 @@ async def reopen_audit(audit_id: str, user: dict = Depends(get_current_user)):
 # --------------- Responses ---------------
 
 
-@router.get("/{audit_id}/responses", response_model=list[ResponseOut])
+@router.get("/{audit_id}/responses", response_model=List[ResponseOut])
 async def list_responses(audit_id: str, user: dict = Depends(get_current_user)):
     """Get all responses for an audit."""
     db = get_db()
@@ -209,7 +208,7 @@ async def list_responses(audit_id: str, user: dict = Depends(get_current_user)):
         .collection("responses")
         .stream()
     )
-    responses: list[ResponseOut] = []
+    responses = []  # type: List[ResponseOut]
     for doc in docs:
         data = doc.to_dict()
         data["question_id"] = doc.id
@@ -232,7 +231,7 @@ async def save_response(
     db = get_db()
 
     # If rating is "no" and no measure provided, look up default
-    data = body.model_dump()
+    data = body.dict()
     if body.rating == "no" and not body.measure:
         audit_doc = db.collection("audits").document(audit_id).get()
         if audit_doc.exists:

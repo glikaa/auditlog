@@ -1,7 +1,5 @@
 """Auth endpoints – login, logout, current user."""
 
-from __future__ import annotations
-
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.models.user import TokenResponse, UserCreate, UserOut, UserRole

@@ -1,7 +1,6 @@
-from __future__ import annotations
-
 from datetime import datetime
 from enum import Enum
+from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -27,14 +26,14 @@ class AttachmentData(BaseModel):
 
 class ResponseUpdate(BaseModel):
     question_id: str
-    rating: Rating | None = None
+    rating: Optional[Rating] = None
     finding: str = ""
     measure: str = ""
-    attachments: list[AttachmentData] = []
-    comparison_result: ComparisonResult | None = None
-    previous_rating: Rating | None = None
-    previous_finding: str | None = None
+    attachments: List[AttachmentData] = []
+    comparison_result: Optional[ComparisonResult] = None
+    previous_rating: Optional[Rating] = None
+    previous_finding: Optional[str] = None
 
 
 class ResponseOut(ResponseUpdate):
-    updated_at: datetime | None = None
+    updated_at: Optional[datetime] = None

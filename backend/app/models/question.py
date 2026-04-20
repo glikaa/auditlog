@@ -1,23 +1,23 @@
-from __future__ import annotations
+from typing import Optional
 
 from pydantic import BaseModel
 
 
 class QuestionCreate(BaseModel):
     catalog_id: str
-    master_question_id: str | None = None
+    master_question_id: Optional[str] = None
     order: int
     category: str
     text_de: str
-    text_hr: str | None = None
-    explanation_text_de: str | None = None
-    explanation_text_hr: str | None = None
-    internal_note_de: str | None = None
-    internal_note_hr: str | None = None
-    default_finding_de: str | None = None
-    default_finding_hr: str | None = None
-    default_measure_de: str | None = None
-    default_measure_hr: str | None = None
+    text_hr: Optional[str] = None
+    explanation_text_de: Optional[str] = None
+    explanation_text_hr: Optional[str] = None
+    internal_note_de: Optional[str] = None
+    internal_note_hr: Optional[str] = None
+    default_finding_de: Optional[str] = None
+    default_finding_hr: Optional[str] = None
+    default_measure_de: Optional[str] = None
+    default_measure_hr: Optional[str] = None
 
 
 class QuestionOut(QuestionCreate):
@@ -34,4 +34,4 @@ class CatalogCreate(BaseModel):
 class CatalogOut(CatalogCreate):
     id: str
     question_count: int = 0
-    created_at: str | None = None
+    created_at: Optional[str] = None

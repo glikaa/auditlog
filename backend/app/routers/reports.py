@@ -1,6 +1,6 @@
 """Reporting endpoints."""
 
-from __future__ import annotations
+from typing import Dict, List, Optional
 
 from fastapi import APIRouter, Depends, Query
 
@@ -12,7 +12,7 @@ router = APIRouter()
 
 @router.get("/branches")
 async def report_branches(
-    country: str | None = None,
+    country: Optional[str] = None,
     user: dict = Depends(get_current_user),
 ):
     """Audit results per branch over time."""
@@ -25,7 +25,7 @@ async def report_branches(
 
     docs = query.stream()
 
-    branch_results: dict[str, list[dict]] = {}
+    branch_results = {}  # type: Dict[str, List[dict]]
     for doc in docs:
         data = doc.to_dict()
         branch_name = data.get("branch_name", "Unknown")
@@ -41,8 +41,8 @@ async def report_branches(
 
 @router.get("/questions/top5")
 async def report_top5_questions(
-    country: str | None = None,
-    year: int | None = None,
+    country: Optional[str] = None,
+    year: Optional[int] = None,
     user: dict = Depends(get_current_user),
 ):
     """Top 5 questions with most 'yes' and most 'no' ratings."""
@@ -52,7 +52,7 @@ async def report_top5_questions(
     query = db.collection("audits").where("status", "==", "released")
     audit_docs = list(query.stream())
 
-    question_stats: dict[str, dict[str, int]] = {}
+    question_stats = {}  # type: Dict[str, Dict[str, int]]
 
     for audit_doc in audit_docs:
         responses = (
@@ -103,7 +103,7 @@ async def report_compare(
         .stream()
     )
 
-    question_ids: dict[str, str] = {}  # question_id -> catalog country
+    question_ids = {}  # type: Dict[str, str]
     for q_doc in q_docs:
         q_data = q_doc.to_dict()
         catalog_id = q_data.get("catalog_id")
@@ -114,7 +114,7 @@ async def report_compare(
             question_ids[q_doc.id] = country
 
     # Now gather ratings per country
-    country_stats: dict[str, dict[str, int]] = {}
+    country_stats = {}  # type: Dict[str, Dict[str, int]]
     audit_docs = list(
         db.collection("audits").where("status", "==", "released").stream()
     )

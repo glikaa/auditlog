@@ -1,7 +1,6 @@
-from __future__ import annotations
-
 from datetime import datetime
 from enum import Enum
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -24,7 +23,7 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    password: str = Field(min_length=8)
+    password: str = Field(..., min_length=8)
 
 
 class UserOut(UserBase):
