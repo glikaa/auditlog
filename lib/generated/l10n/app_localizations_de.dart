@@ -115,6 +115,42 @@ class AppLocalizationsDe extends AppLocalizations {
   String get logout => 'Abmelden';
 
   @override
+  String get profile => 'Profil';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get role => 'Rolle';
+
+  @override
+  String get country => 'Land';
+
+  @override
+  String get german => 'Deutsch';
+
+  @override
+  String get croatian => 'Kroatisch';
+
+  @override
+  String get english => 'Englisch';
+
+  @override
+  String get appearance => 'Erscheinungsbild';
+
+  @override
+  String get darkMode => 'Dunkelmodus';
+
+  @override
+  String get languageChanged => 'Sprache geaendert';
+
+  @override
+  String get logoutConfirm => 'Moechtest du dich wirklich abmelden?';
+
+  @override
+  String get version => 'Version';
+
+  @override
   String get loading => 'Wird geladen...';
 
   @override

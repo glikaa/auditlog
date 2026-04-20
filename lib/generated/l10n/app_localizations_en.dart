@@ -115,6 +115,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logout => 'Sign Out';
 
   @override
+  String get profile => 'Profile';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get role => 'Role';
+
+  @override
+  String get country => 'Country';
+
+  @override
+  String get german => 'German';
+
+  @override
+  String get croatian => 'Croatian';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get darkMode => 'Dark Mode';
+
+  @override
+  String get languageChanged => 'Language changed';
+
+  @override
+  String get logoutConfirm => 'Do you really want to sign out?';
+
+  @override
+  String get version => 'Version';
+
+  @override
   String get loading => 'Loading...';
 
   @override

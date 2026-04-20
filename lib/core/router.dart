@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/audit/presentation/screens/audit_detail_screen.dart';
 import '../features/audit/presentation/screens/dashboard_screen.dart';
+import '../features/settings/presentation/screens/settings_screen.dart';
 
 /// Simple named-route based router.
 /// Can be upgraded to GoRouter later.
@@ -10,6 +11,7 @@ class AppRouter {
   static const String login = '/login';
   static const String dashboard = '/dashboard';
   static const String auditDetail = '/audit';
+  static const String settings = '/settings';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -24,6 +26,9 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => AuditDetailScreen(auditId: auditId),
         );
+
+      case AppRouter.settings:
+        return MaterialPageRoute(builder: (_) => const SettingsScreen());
 
       default:
         return MaterialPageRoute(builder: (_) => const LoginScreen());

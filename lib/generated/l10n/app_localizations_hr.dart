@@ -114,6 +114,42 @@ class AppLocalizationsHr extends AppLocalizations {
   String get logout => 'Odjava';
 
   @override
+  String get profile => 'Profil';
+
+  @override
+  String get name => 'Ime';
+
+  @override
+  String get role => 'Uloga';
+
+  @override
+  String get country => 'Zemlja';
+
+  @override
+  String get german => 'Njemački';
+
+  @override
+  String get croatian => 'Hrvatski';
+
+  @override
+  String get english => 'Engleski';
+
+  @override
+  String get appearance => 'Izgled';
+
+  @override
+  String get darkMode => 'Tamni način';
+
+  @override
+  String get languageChanged => 'Jezik promijenjen';
+
+  @override
+  String get logoutConfirm => 'Želite li se zaista odjaviti?';
+
+  @override
+  String get version => 'Verzija';
+
+  @override
   String get loading => 'Učitavanje...';
 
   @override

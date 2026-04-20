@@ -43,6 +43,18 @@
   "settings": "Postavke",
   "language": "Jezik",
   "logout": "Odjava",
+  "profile": "Profil",
+  "name": "Ime",
+  "role": "Uloga",
+  "country": "Zemlja",
+  "german": "Njemački",
+  "croatian": "Hrvatski",
+  "english": "Engleski",
+  "appearance": "Izgled",
+  "darkMode": "Tamni način",
+  "languageChanged": "Jezik promijenjen",
+  "logoutConfirm": "Želite li se zaista odjaviti?",
+  "version": "Verzija",
 
   "loading": "Učitavanje...",
   "errorUnknown": "Došlo je do neočekivane pogreške."
