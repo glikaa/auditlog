@@ -66,6 +66,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get statistics => 'Statistiken';
 
   @override
+  String get tableOfContents => 'Inhaltsverzeichnis';
+
+  @override
   String get yes => 'Ja';
 
   @override

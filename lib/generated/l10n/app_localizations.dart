@@ -214,6 +214,12 @@ abstract class AppLocalizations {
   /// **'Statistics'**
   String get statistics;
 
+  /// No description provided for @tableOfContents.
+  ///
+  /// In en, this message translates to:
+  /// **'Table of Contents'**
+  String get tableOfContents;
+
   /// No description provided for @yes.
   ///
   /// In en, this message translates to:
