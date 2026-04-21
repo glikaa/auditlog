@@ -198,4 +198,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdfExportFailed => 'PDF export failed';
+
+  @override
+  String get createAudit => 'Create Audit';
+
+  @override
+  String get auditCatalog => 'Audit Catalog';
+
+  @override
+  String get selectCatalog => 'Select catalog';
+
+  @override
+  String get selectBranch => 'Select branch';
+
+  @override
+  String get selectAuditor => 'Select auditor';
 }

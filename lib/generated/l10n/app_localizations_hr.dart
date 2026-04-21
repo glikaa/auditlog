@@ -197,4 +197,19 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get pdfExportFailed => 'Izvoz PDF-a nije uspio';
+
+  @override
+  String get createAudit => 'Kreiraj audit';
+
+  @override
+  String get auditCatalog => 'Katalog revizije';
+
+  @override
+  String get selectCatalog => 'Odaberi katalog';
+
+  @override
+  String get selectBranch => 'Odaberi poslovnicu';
+
+  @override
+  String get selectAuditor => 'Odaberi revizora';
 }

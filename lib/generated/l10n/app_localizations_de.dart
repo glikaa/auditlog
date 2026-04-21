@@ -198,4 +198,19 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get pdfExportFailed => 'PDF-Export fehlgeschlagen';
+
+  @override
+  String get createAudit => 'Audit erstellen';
+
+  @override
+  String get auditCatalog => 'Prüfkatalog';
+
+  @override
+  String get selectCatalog => 'Katalog auswählen';
+
+  @override
+  String get selectBranch => 'Filiale auswählen';
+
+  @override
+  String get selectAuditor => 'Prüfer auswählen';
 }

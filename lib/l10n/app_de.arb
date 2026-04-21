@@ -137,5 +137,16 @@
   "pdfDownloaded": "PDF heruntergeladen!",
   "@pdfDownloaded": {},
   "pdfExportFailed": "PDF-Export fehlgeschlagen",
-  "@pdfExportFailed": {}
+  "@pdfExportFailed": {},
+
+  "createAudit": "Audit erstellen",
+  "@createAudit": {},
+  "auditCatalog": "Prüfkatalog",
+  "@auditCatalog": {},
+  "selectCatalog": "Katalog auswählen",
+  "@selectCatalog": {},
+  "selectBranch": "Filiale auswählen",
+  "@selectBranch": {},
+  "selectAuditor": "Prüfer auswählen",
+  "@selectAuditor": {}
 }

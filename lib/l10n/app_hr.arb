@@ -74,5 +74,11 @@
 
   "pdfCreating": "Izrada PDF-a...",
   "pdfDownloaded": "PDF preuzet!",
-  "pdfExportFailed": "Izvoz PDF-a nije uspio"
+  "pdfExportFailed": "Izvoz PDF-a nije uspio",
+
+  "createAudit": "Kreiraj audit",
+  "auditCatalog": "Katalog revizije",
+  "selectCatalog": "Odaberi katalog",
+  "selectBranch": "Odaberi poslovnicu",
+  "selectAuditor": "Odaberi revizora"
 }

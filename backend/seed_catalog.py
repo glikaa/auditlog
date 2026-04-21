@@ -612,3 +612,467 @@ def seed():
 
 if __name__ == "__main__":
     seed()
+
+
+# ---------------------------------------------------------------------------
+# Multi-country seed: branches + catalogs for AT, CH, HR, SI, HU, ES, SK
+# ---------------------------------------------------------------------------
+
+# 10 questions per country (2 × 5 categories).
+# text_de holds the primary local-language text; text_en is always English.
+
+def _q(order, cat_de, cat_en, text_de, text_en, finding_de, finding_en, measure_de, measure_en, note_de=None, note_en=None):
+    return {
+        "order": order,
+        "category": cat_de,
+        "category_en": cat_en,
+        "text_de": text_de,
+        "text_en": text_en,
+        "default_finding_de": finding_de,
+        "default_finding_en": finding_en,
+        "default_measure_de": measure_de,
+        "default_measure_en": measure_en,
+        "internal_note_de": note_de,
+        "internal_note_en": note_en,
+    }
+
+
+# Reusable category labels per language
+_CAT = {
+    "inv": {
+        "de": "Inventursicherheit",        "at": "Inventursicherheit",        "ch": "Inventursicherheit",
+        "hr": "Sigurnost inventure",       "si": "Varnost inventure",         "hu": "Készletbiztonság",
+        "es": "Seguridad de inventario",   "sk": "Bezpečnosť inventára",
+        "en": "Inventory Security",
+    },
+    "cash": {
+        "de": "Geldsicherheit",            "at": "Geldsicherheit",            "ch": "Geldsicherheit",
+        "hr": "Sigurnost gotovine",        "si": "Varnost gotovine",          "hu": "Pénzbiztonság",
+        "es": "Seguridad de caja",         "sk": "Bezpečnosť hotovosti",
+        "en": "Cash Security",
+    },
+    "build": {
+        "de": "Haussicherheit",            "at": "Haussicherheit",            "ch": "Haussicherheit",
+        "hr": "Sigurnost objekta",         "si": "Varnost objekta",           "hu": "Épületbiztonság",
+        "es": "Seguridad del edificio",    "sk": "Bezpečnosť budovy",
+        "en": "Building Security",
+    },
+    "wh": {
+        "de": "Lagerorganisation",         "at": "Lagerorganisation",         "ch": "Lagerorganisation",
+        "hr": "Organizacija skladišta",    "si": "Organizacija skladišča",    "hu": "Raktárszervezés",
+        "es": "Organización del almacén",  "sk": "Organizácia skladu",
+        "en": "Warehouse Organisation",
+    },
+    "branch": {
+        "de": "Filialorganisation",        "at": "Filialorganisation",        "ch": "Filialorganisation",
+        "hr": "Organizacija poslovnice",   "si": "Organizacija poslovalnice",  "hu": "Fiókiroda-szervezés",
+        "es": "Organización de la sucursal", "sk": "Organizácia pobočky",
+        "en": "Branch Organisation",
+    },
+}
+
+
+def _questions_for(lang):
+    """Return 10 standard questions in the given language (2 per category)."""
+    c = {k: v[lang] for k, v in _CAT.items()}
+    en = {k: v["en"] for k, v in _CAT.items()}
+
+    texts = {
+        "de": {
+            "inv": [
+                ("Werden Bestandsdifferenzen zeitnah analysiert und dokumentiert?",
+                 "Differenzen werden nicht zeitnah bearbeitet.", "Differenzbearbeitung innerhalb von 48h sicherstellen."),
+                ("Sind die Warensicherungsanlagen funktionsfähig und aktiviert?",
+                 "Warensicherungsanlage nicht vollständig funktionsfähig.", "Techniker beauftragen, Anlage prüfen und instand setzen."),
+            ],
+            "cash": [
+                ("Wird der Kassenabschluss täglich und korrekt durchgeführt?",
+                 "Kassenabschluss nicht ordnungsgemäß durchgeführt.", "Kassenrichtlinie schulen, tägliche Kontrolle durch Filialleiter."),
+                ("Werden Kassendifferenzen zeitnah aufgeklärt und dokumentiert?",
+                 "Kassendifferenzen werden nicht zeitnah bearbeitet.", "Sofortige Meldepflicht bei Kassendifferenzen einführen."),
+            ],
+            "build": [
+                ("Sind Notausgänge frei zugänglich und gekennzeichnet?",
+                 "Notausgänge teilweise versperrt oder nicht gekennzeichnet.", "Sofortige Freigabe der Notausgänge und Beschilderung prüfen."),
+                ("Sind Feuerlöscher vorhanden, geprüft und zugänglich?",
+                 "Feuerlöscher nicht zugänglich oder Prüfung abgelaufen.", "Feuerlöscher prüfen lassen und Zugänglichkeit sicherstellen."),
+            ],
+            "wh": [
+                ("Ist das Lager sauber, ordentlich und übersichtlich organisiert?",
+                 "Lagerorganisation entspricht nicht den Vorgaben.", "Lager räumen, sortieren und Beschriftung anbringen."),
+                ("Wird die FIFO-Methode korrekt angewendet?",
+                 "FIFO wird nicht konsequent eingehalten.", "FIFO-Prinzip schulen und regelmäßig kontrollieren."),
+            ],
+            "branch": [
+                ("Ist die Verkaufsfläche sauber, ordentlich und einladend?",
+                 "Verkaufsfläche nicht im optimalen Zustand.", "Reinigungsplan erstellen und Zuständigkeiten festlegen."),
+                ("Sind Preisauszeichnungen korrekt und aktuell?",
+                 "Preisauszeichnungen teilweise fehlerhaft oder fehlend.", "Preisauszeichnung korrigieren und wöchentliche Kontrolle einführen."),
+            ],
+        },
+        "hr": {
+            "inv": [
+                ("Analiziraju li se i dokumentiraju inventurne razlike pravovremeno?",
+                 "Razlike se ne obrađuju pravovremeno.", "Osigurati obradu razlika unutar 48 sati."),
+                ("Jesu li sustavi za osiguranje robe funkcionalni i aktivirani?",
+                 "Sustav za osiguranje robe nije potpuno funkcionalan.", "Angažirati tehničara za pregled i popravak sustava."),
+            ],
+            "cash": [
+                ("Provodi li se zaključak blagajne dnevno i ispravno?",
+                 "Zaključak blagajne nije pravilno proveden.", "Educirati o smjernicama za blagajnu, dnevna kontrola voditelja."),
+                ("Razjašnjavaju li se blagajničke razlike pravovremeno?",
+                 "Blagajničke razlike se ne obrađuju pravovremeno.", "Uvesti obvezu trenutnog prijavljivanja blagajničkih razlika."),
+            ],
+            "build": [
+                ("Jesu li izlazi u nuždi slobodno pristupačni i označeni?",
+                 "Izlazi u nuždi djelomično blokirani ili neoznačeni.", "Odmah osloboditi izlaze u nuždi i provjeriti oznake."),
+                ("Jesu li aparati za gašenje prisutni, pregledani i dostupni?",
+                 "Aparati za gašenje nedostupni ili pregled istekao.", "Dati pregledati aparate za gašenje i osigurati pristupačnost."),
+            ],
+            "wh": [
+                ("Je li skladište čisto, uredno i pregledno organizirano?",
+                 "Organizacija skladišta ne zadovoljava zahtjeve.", "Očistiti skladište, sortirati i postaviti oznake."),
+                ("Primjenjuje li se FIFO metoda ispravno?",
+                 "FIFO se ne primjenjuje dosljedno.", "Educirati o FIFO principu i redovito kontrolirati."),
+            ],
+            "branch": [
+                ("Je li prodajna površina čista, uredna i privlačna?",
+                 "Prodajna površina nije u optimalnom stanju.", "Izraditi plan čišćenja i odrediti odgovornosti."),
+                ("Jesu li oznake cijena točne i ažurne?",
+                 "Oznake cijena djelomično netočne ili nedostaju.", "Ispraviti oznake cijena i uvesti tjednu kontrolu."),
+            ],
+        },
+        "si": {
+            "inv": [
+                ("Ali se inventurne razlike pravočasno analizirajo in dokumentirajo?",
+                 "Razlike se ne obravnavajo pravočasno.", "Zagotoviti obravnavo razlik v roku 48 ur."),
+                ("Ali so sistemi za varovanje blaga funkcionalni in aktivirani?",
+                 "Sistem za varovanje blaga ni popolnoma funkcionalen.", "Naročiti tehnika za pregled in popravilo sistema."),
+            ],
+            "cash": [
+                ("Ali se blagajniški zaključek izvaja dnevno in pravilno?",
+                 "Blagajniški zaključek ni bil pravilno izveden.", "Usposobiti zaposlene in zagotoviti dnevni nadzor."),
+                ("Ali se blagajniške razlike pravočasno razjasnijo in dokumentirajo?",
+                 "Blagajniške razlike se ne obravnavajo pravočasno.", "Uvesti takojšnjo obveznost prijave blagajniških razlik."),
+            ],
+            "build": [
+                ("Ali so požarni izhodi prosto dostopni in označeni?",
+                 "Požarni izhodi so delno blokirani ali neoznačeni.", "Takoj sprostiti požarne izhode in preveriti oznake."),
+                ("Ali so gasilniki prisotni, pregledani in dostopni?",
+                 "Gasilniki niso dostopni ali pregled je potekel.", "Dati pregledati gasilnike in zagotoviti dostopnost."),
+            ],
+            "wh": [
+                ("Ali je skladišče čisto, urejeno in pregledno organizirano?",
+                 "Organizacija skladišča ne izpolnjuje zahtev.", "Urediti skladišče, sortirati in namestiti oznake."),
+                ("Ali se metoda FIFO pravilno uporablja?",
+                 "Metoda FIFO se ne uporablja dosledno.", "Usposobiti zaposlene o principu FIFO in redno nadzirati."),
+            ],
+            "branch": [
+                ("Ali je prodajni prostor čist, urejen in privlačen?",
+                 "Prodajni prostor ni v optimalnem stanju.", "Izdelati načrt čiščenja in dodeliti odgovornosti."),
+                ("Ali so cenovne oznake pravilne in ažurne?",
+                 "Cenovne oznake so delno napačne ali manjkajo.", "Popraviti cenovne oznake in uvesti tedenski nadzor."),
+            ],
+        },
+        "hu": {
+            "inv": [
+                ("A készletkülönbözeteket időben elemzik és dokumentálják?",
+                 "A különbözeteket nem kezelik időben.", "Biztosítani kell a különbözetek 48 órán belüli kezelését."),
+                ("Az áruvédelmi rendszerek működőképesek és aktiváltak?",
+                 "Az áruvédelmi rendszer nem teljesen működőképes.", "Szerelőt megbízni a rendszer ellenőrzésére és javítására."),
+            ],
+            "cash": [
+                ("A napi pénztárzárást megfelelően hajtják végre?",
+                 "A pénztárzárás nem megfelelően történt.", "Pénztárszabályzat oktatása, napi ellenőrzés fiókvezető által."),
+                ("A pénztárkülönbözeteket időben tisztázzák és dokumentálják?",
+                 "A pénztárkülönbözeteket nem kezelik időben.", "Azonnali bejelentési kötelezettség bevezetése pénztárkülönbözetnél."),
+            ],
+            "build": [
+                ("A vészkijáratok szabadon hozzáférhetők és jelöltek?",
+                 "A vészkijáratok részben blokkoltak vagy jelöletlenek.", "Azonnal szabaddá tenni a vészkijáratokat és ellenőrizni a jelzéseket."),
+                ("Tűzoltó készülékek jelen vannak, ellenőrzöttek és hozzáférhetők?",
+                 "Tűzoltó készülékek nem hozzáférhetők vagy a vizsgálat lejárt.", "Tűzoltó készülékeket ellenőriztetni és hozzáférhetőséget biztosítani."),
+            ],
+            "wh": [
+                ("A raktár tiszta, rendezett és áttekinthető?",
+                 "A raktár szervezete nem felel meg az előírásoknak.", "Raktárt rendbe tenni, rendezni és jelöléseket elhelyezni."),
+                ("A FIFO módszert megfelelően alkalmazzák?",
+                 "A FIFO módszert nem alkalmazzák következetesen.", "FIFO elvét oktatni és rendszeresen ellenőrizni."),
+            ],
+            "branch": [
+                ("Az értékesítési tér tiszta, rendezett és hívogató?",
+                 "Az értékesítési tér nem optimális állapotban van.", "Takarítási terv készítése és felelősségek meghatározása."),
+                ("Az árcédulák helyesek és naprakészek?",
+                 "Az árcédulák részben hibásak vagy hiányoznak.", "Árcédulákat javítani és heti ellenőrzést bevezetni."),
+            ],
+        },
+        "es": {
+            "inv": [
+                ("¿Se analizan y documentan oportunamente las diferencias de inventario?",
+                 "Las diferencias no se procesan a tiempo.", "Asegurar el procesamiento de diferencias en 48 horas."),
+                ("¿Los sistemas de seguridad de mercancías están operativos y activados?",
+                 "El sistema de seguridad de mercancías no está completamente operativo.", "Contratar técnico para inspección y reparación del sistema."),
+            ],
+            "cash": [
+                ("¿El cierre de caja diario se realiza correctamente?",
+                 "El cierre de caja no se realizó correctamente.", "Capacitar en políticas de caja, control diario por el responsable."),
+                ("¿Las diferencias de caja se aclaran y documentan a tiempo?",
+                 "Las diferencias de caja no se procesan a tiempo.", "Introducir obligación de reporte inmediato para diferencias de caja."),
+            ],
+            "build": [
+                ("¿Las salidas de emergencia están libres y señalizadas?",
+                 "Salidas de emergencia parcialmente bloqueadas o sin señalización.", "Despejar inmediatamente las salidas de emergencia y verificar señalización."),
+                ("¿Los extintores están presentes, revisados y accesibles?",
+                 "Extintores no accesibles o revisión vencida.", "Revisar los extintores y garantizar su accesibilidad."),
+            ],
+            "wh": [
+                ("¿El almacén está limpio, ordenado y organizado claramente?",
+                 "La organización del almacén no cumple los requisitos.", "Ordenar el almacén, clasificar y colocar etiquetas."),
+                ("¿Se aplica correctamente el método FIFO?",
+                 "El método FIFO no se aplica de forma consistente.", "Capacitar en el principio FIFO y controlar regularmente."),
+            ],
+            "branch": [
+                ("¿El área de ventas está limpia, ordenada y acogedora?",
+                 "El área de ventas no está en condiciones óptimas.", "Crear plan de limpieza y asignar responsabilidades."),
+                ("¿Las etiquetas de precios son correctas y actualizadas?",
+                 "Las etiquetas de precios son parcialmente incorrectas o faltan.", "Corregir etiquetas de precios e introducir control semanal."),
+            ],
+        },
+        "sk": {
+            "inv": [
+                ("Analyzujú a dokumentujú sa inventárne rozdiely včas?",
+                 "Rozdiely sa nespracovávajú včas.", "Zabezpečiť spracovanie rozdielov do 48 hodín."),
+                ("Sú systémy zabezpečenia tovaru funkčné a aktivované?",
+                 "Systém zabezpečenia tovaru nie je plne funkčný.", "Privolať technika na kontrolu a opravu systému."),
+            ],
+            "cash": [
+                ("Vykonáva sa denné uzatvorenie pokladne správne?",
+                 "Uzatvorenie pokladne nebolo vykonané správne.", "Vyškoliť zamestnancov a zabezpečiť dennú kontrolu."),
+                ("Objasňujú a dokumentujú sa pokladničné rozdiely včas?",
+                 "Pokladničné rozdiely sa nespracovávajú včas.", "Zaviesť okamžitú povinnosť hlásiť pokladničné rozdiely."),
+            ],
+            "build": [
+                ("Sú núdzové východy voľne prístupné a označené?",
+                 "Núdzové východy sú čiastočne zablokované alebo neoznačené.", "Okamžite uvoľniť núdzové východy a skontrolovať označenie."),
+                ("Sú hasiace prístroje prítomné, skontrolované a dostupné?",
+                 "Hasiace prístroje nie sú dostupné alebo kontrola vypršala.", "Dať skontrolovať hasiace prístroje a zabezpečiť dostupnosť."),
+            ],
+            "wh": [
+                ("Je sklad čistý, uprataný a prehľadne organizovaný?",
+                 "Organizácia skladu nespĺňa požiadavky.", "Upratať sklad, roztriediť a umiestniť označenia."),
+                ("Uplatňuje sa metóda FIFO správne?",
+                 "Metóda FIFO sa neuplatňuje dôsledne.", "Vyškoliť princíp FIFO a pravidelne kontrolovať."),
+            ],
+            "branch": [
+                ("Je predajná plocha čistá, uprataná a pohostinná?",
+                 "Predajná plocha nie je v optimálnom stave.", "Vytvoriť plán upratovania a prideliť zodpovednosti."),
+                ("Sú cenové štítky správne a aktuálne?",
+                 "Cenové štítky sú čiastočne nesprávne alebo chýbajú.", "Opraviť cenové štítky a zaviesť týždenné kontroly."),
+            ],
+        },
+    }
+
+    # AT and CH use German texts
+    if lang in ("at", "ch"):
+        lang_texts = texts["de"]
+    else:
+        lang_texts = texts[lang]
+
+    questions = []
+    order = 1
+    for cat_key, pairs in lang_texts.items():
+        for (text, finding, measure) in pairs:
+            questions.append(_q(
+                order=order,
+                cat_de=c[cat_key],
+                cat_en=en[cat_key],
+                text_de=text,
+                text_en=pairs[0][0] if lang not in ("de", "at", "ch") else text,  # English fallback for non-DACH
+                finding_de=finding,
+                finding_en=finding,
+                measure_de=measure,
+                measure_en=measure,
+            ))
+            order += 1
+
+    # Fix text_en for non-DACH countries with proper English
+    _en_texts = {
+        "inv": [
+            ("Are inventory discrepancies analysed and documented in a timely manner?",
+             "Discrepancies are not processed in a timely manner.", "Ensure discrepancy processing within 48 hours."),
+            ("Are the merchandise security systems functional and activated?",
+             "Merchandise security system not fully functional.", "Commission a technician to inspect and repair the system."),
+        ],
+        "cash": [
+            ("Is the daily cash register closing performed correctly?",
+             "Cash register closing not properly performed.", "Train cash register guidelines, daily checks by branch manager."),
+            ("Are cash register discrepancies clarified and documented promptly?",
+             "Cash discrepancies are not processed in a timely manner.", "Introduce immediate reporting obligation for cash discrepancies."),
+        ],
+        "build": [
+            ("Are emergency exits freely accessible and marked?",
+             "Emergency exits partially blocked or not marked.", "Immediately clear emergency exits and check signage."),
+            ("Are fire extinguishers present, inspected and accessible?",
+             "Fire extinguishers not accessible or inspection expired.", "Have fire extinguishers inspected and ensure accessibility."),
+        ],
+        "wh": [
+            ("Is the warehouse clean, tidy and clearly organised?",
+             "Warehouse organisation does not meet requirements.", "Clear warehouse, sort and apply labelling."),
+            ("Is the FIFO method applied correctly?",
+             "FIFO is not consistently applied.", "Train FIFO principle and check regularly."),
+        ],
+        "branch": [
+            ("Is the sales floor clean, tidy and inviting?",
+             "Sales floor not in optimal condition.", "Create cleaning schedule and assign responsibilities."),
+            ("Are price labels correct and up to date?",
+             "Price labels partially incorrect or missing.", "Correct price labels and introduce weekly checks."),
+        ],
+    }
+
+    if lang not in ("de", "at", "ch"):
+        i = 0
+        for cat_key, pairs in _en_texts.items():
+            for j, (en_text, en_finding, en_measure) in enumerate(pairs):
+                questions[i]["text_en"] = en_text
+                questions[i]["default_finding_en"] = en_finding
+                questions[i]["default_measure_en"] = en_measure
+                i += 1
+
+    return questions
+
+
+MULTI_COUNTRY_DATA = {
+    "AT": {
+        "catalog_id": "catalog-at-2025",
+        "catalog": {"country_code": "AT", "version": "v1.0", "year": 2025, "language": "de"},
+        "branches": [
+            {"id": "branch-vienna", "name": "Filiale Wien Zentrum", "country_code": "AT", "address": "Stephansplatz 1, 1010 Wien"},
+            {"id": "branch-graz",   "name": "Filiale Graz",         "country_code": "AT", "address": "Hauptplatz 5, 8010 Graz"},
+        ],
+    },
+    "CH": {
+        "catalog_id": "catalog-ch-2025",
+        "catalog": {"country_code": "CH", "version": "v1.0", "year": 2025, "language": "de"},
+        "branches": [
+            {"id": "branch-zurich", "name": "Filiale Zürich Zentrum", "country_code": "CH", "address": "Bahnhofstrasse 10, 8001 Zürich"},
+            {"id": "branch-basel",  "name": "Filiale Basel",           "country_code": "CH", "address": "Marktplatz 3, 4001 Basel"},
+        ],
+    },
+    "HR": {
+        "catalog_id": "catalog-hr-2025",
+        "catalog": {"country_code": "HR", "version": "v1.0", "year": 2025, "language": "hr"},
+        "branches": [
+            {"id": "branch-zagreb",  "name": "Poslovnica Zagreb Centar", "country_code": "HR", "address": "Ilica 10, 10000 Zagreb"},
+            {"id": "branch-split",   "name": "Poslovnica Split",          "country_code": "HR", "address": "Marmontova 5, 21000 Split"},
+        ],
+    },
+    "SI": {
+        "catalog_id": "catalog-si-2025",
+        "catalog": {"country_code": "SI", "version": "v1.0", "year": 2025, "language": "sl"},
+        "branches": [
+            {"id": "branch-ljubljana", "name": "Poslovalnica Ljubljana Center", "country_code": "SI", "address": "Prešernov trg 1, 1000 Ljubljana"},
+            {"id": "branch-maribor",   "name": "Poslovalnica Maribor",           "country_code": "SI", "address": "Glavni trg 10, 2000 Maribor"},
+        ],
+    },
+    "HU": {
+        "catalog_id": "catalog-hu-2025",
+        "catalog": {"country_code": "HU", "version": "v1.0", "year": 2025, "language": "hu"},
+        "branches": [
+            {"id": "branch-budapest",  "name": "Budapest Belváros fiók", "country_code": "HU", "address": "Váci utca 1, 1052 Budapest"},
+            {"id": "branch-debrecen",  "name": "Debrecen fiók",           "country_code": "HU", "address": "Piac utca 10, 4024 Debrecen"},
+        ],
+    },
+    "ES": {
+        "catalog_id": "catalog-es-2025",
+        "catalog": {"country_code": "ES", "version": "v1.0", "year": 2025, "language": "es"},
+        "branches": [
+            {"id": "branch-madrid",    "name": "Sucursal Madrid Centro", "country_code": "ES", "address": "Gran Vía 1, 28013 Madrid"},
+            {"id": "branch-barcelona", "name": "Sucursal Barcelona",      "country_code": "ES", "address": "Las Ramblas 20, 08002 Barcelona"},
+        ],
+    },
+    "SK": {
+        "catalog_id": "catalog-sk-2025",
+        "catalog": {"country_code": "SK", "version": "v1.0", "year": 2025, "language": "sk"},
+        "branches": [
+            {"id": "branch-bratislava", "name": "Pobočka Bratislava Centrum", "country_code": "SK", "address": "Obchodná 1, 811 06 Bratislava"},
+            {"id": "branch-kosice",     "name": "Pobočka Košice",              "country_code": "SK", "address": "Hlavná 5, 040 01 Košice"},
+        ],
+    },
+}
+
+_LANG_MAP = {"AT": "at", "CH": "ch", "HR": "hr", "SI": "si", "HU": "hu", "ES": "es", "SK": "sk"}
+
+
+def seed_multi_country():
+    """Seed branches and catalogs (with questions) for AT, CH, HR, SI, HU, ES, SK."""
+    db = get_db()
+
+    for country_code, data in MULTI_COUNTRY_DATA.items():
+        cat_id = data["catalog_id"]
+        lang = _LANG_MAP[country_code]
+        questions = _questions_for(lang)
+
+        # --- Catalog ---
+        cat_ref = db.collection("auditCatalogs").document(cat_id)
+        if cat_ref.get().exists:
+            print("  SKIP  Catalog '{}' already exists.".format(cat_id))
+        else:
+            cat_data = dict(data["catalog"])
+            cat_data["id"] = cat_id
+            cat_data["question_count"] = len(questions)
+            cat_data["created_at"] = datetime.now(timezone.utc).isoformat()
+            cat_ref.set(cat_data)
+            print("  OK    Catalog '{}' ({}) created.".format(cat_id, country_code))
+
+        # --- Questions ---
+        for q in questions:
+            q_id = "q-{}-{}".format(country_code.lower(), q["order"])
+            q_ref = db.collection("questions").document(q_id)
+            if q_ref.get().exists:
+                continue
+            q_data = dict(q)
+            q_data["id"] = q_id
+            q_data["catalog_id"] = cat_id
+            q_data["master_question_id"] = "master-{}-{}".format(country_code.lower(), q["order"])
+            q_ref.set(q_data)
+        print("  OK    {} questions seeded for {}.".format(len(questions), country_code))
+
+        # --- Branches ---
+        for b in data["branches"]:
+            b_ref = db.collection("branches").document(b["id"])
+            if b_ref.get().exists:
+                print("  SKIP  Branch '{}' (exists)".format(b["name"]))
+            else:
+                b_ref.set(b)
+                print("  OK    Branch '{}'".format(b["name"]))
+
+    print("\nMulti-country seed complete.")
+
+
+def seed_all():
+    """Run both the original DE seed and the multi-country seed."""
+    print("=== Seeding DE catalog ===")
+    seed()
+    print("\n=== Seeding multi-country catalogs ===")
+    seed_multi_country()
+
+
+if __name__ == "__main__":
+    import sys as _sys
+    if len(_sys.argv) > 1 and _sys.argv[1] == "all":
+        seed_all()
+    elif len(_sys.argv) > 1 and _sys.argv[1] == "multi":
+        seed_multi_country()
+    else:
+        seed_all()
+
+
+if __name__ == "__main__":
+    import sys as _sys
+    if len(_sys.argv) > 1 and _sys.argv[1] == "all":
+        seed_all()
+    elif len(_sys.argv) > 1 and _sys.argv[1] == "multi":
+        seed_multi_country()
+    else:
+        seed_all()
+

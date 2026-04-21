@@ -76,7 +76,7 @@ async def create_audit(
     )
 
     db.collection("audits").document(audit_id).set(data)
-    return AuditOut(**data, created_at=now)
+    return AuditOut(**data)
 
 
 @router.get("/{audit_id}", response_model=AuditOut)
