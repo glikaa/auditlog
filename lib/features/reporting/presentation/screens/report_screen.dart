@@ -45,8 +45,10 @@ class _ReportScreenState extends State<ReportScreen>
     switch (_tabController.index) {
       case 0:
         cubit.loadBranchResults(country: _selectedCountry);
+        break;
       case 1:
         cubit.loadTop5(country: _top5Country, year: _top5Year);
+        break;
       case 2:
         // Wait for user to enter a master question ID
         break;
