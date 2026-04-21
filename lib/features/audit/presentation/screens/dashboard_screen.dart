@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/router.dart';
 import '../../../../generated/l10n/app_localizations.dart';
+import '../../../settings/presentation/state/settings_cubit.dart';
+import '../../../settings/presentation/state/settings_state.dart';
 import '../../domain/entities/audit.dart';
 import '../../domain/repositories/audit_repository.dart';
 import '../state/audit_list_cubit.dart';
@@ -21,6 +23,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     context.read<AuditListCubit>().loadAudits();
+    context.read<SettingsCubit>().loadProfile();
   }
 
   @override
@@ -29,8 +32,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(l10n.appTitle),
         actions: [
+          BlocBuilder<SettingsCubit, SettingsState>(
+            builder: (context, settings) {
+              const reportRoles = {'department_head', 'branch_manager', 'district_manager'};
+              if (reportRoles.contains(settings.userRole)) {
+                return IconButton(
+                  icon: const Icon(Icons.bar_chart),
+                  tooltip: l10n.reporting,
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRouter.reports);
+                  },
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {

@@ -40,6 +40,21 @@
 
   "previousAudit": "Prethodni audit",
 
+  "reporting": "Izvješćivanje",
+  "reportBranchResults": "Rezultati poslovnica",
+  "reportTop5": "Top-5 pitanja",
+  "reportCountryComparison": "Usporedba zemalja",
+  "reportAllCountries": "Sve zemlje",
+  "reportAllYears": "Sve godine",
+  "reportNoData": "Nema dostupnih podataka.",
+  "reportMasterQuestionId": "ID glavnog pitanja",
+  "reportTop5YesTitle": "Top-5: Najčešći odgovori Da",
+  "reportTop5NoTitle": "Top-5: Najčešći odgovori Ne",
+  "reportLocalQuestionNo": "Lokalni br. pitanja",
+  "reportYesPercent": "Udio Da (%)",
+  "reportLatestResult": "Zadnji rezultat",
+  "reportAuditCount": "Broj audita",
+
   "settings": "Postavke",
   "language": "Jezik",
   "logout": "Odjava",

@@ -105,6 +105,48 @@ class AppLocalizationsHr extends AppLocalizations {
   String get previousAudit => 'Prethodni audit';
 
   @override
+  String get reporting => 'Izvješćivanje';
+
+  @override
+  String get reportBranchResults => 'Rezultati poslovnica';
+
+  @override
+  String get reportTop5 => 'Top-5 pitanja';
+
+  @override
+  String get reportCountryComparison => 'Usporedba zemalja';
+
+  @override
+  String get reportAllCountries => 'Sve zemlje';
+
+  @override
+  String get reportAllYears => 'Sve godine';
+
+  @override
+  String get reportNoData => 'Nema dostupnih podataka.';
+
+  @override
+  String get reportMasterQuestionId => 'ID glavnog pitanja';
+
+  @override
+  String get reportTop5YesTitle => 'Top-5: Najčešći odgovori Da';
+
+  @override
+  String get reportTop5NoTitle => 'Top-5: Najčešći odgovori Ne';
+
+  @override
+  String get reportLocalQuestionNo => 'Lokalni br. pitanja';
+
+  @override
+  String get reportYesPercent => 'Udio Da (%)';
+
+  @override
+  String get reportLatestResult => 'Zadnji rezultat';
+
+  @override
+  String get reportAuditCount => 'Broj audita';
+
+  @override
   String get settings => 'Postavke';
 
   @override
