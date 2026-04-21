@@ -26,6 +26,9 @@ class AuditDetailScreen extends StatefulWidget {
 }
 
 class _AuditDetailScreenState extends State<AuditDetailScreen> {
+  // Shared keys: both the info-panel TOC and the question list use these.
+  final _categoryKeys = <String, GlobalKey>{};
+
   @override
   void initState() {
     super.initState();
@@ -134,12 +137,12 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
         // Left: Audit info panel
         SizedBox(
           width: 300,
-          child: _buildAuditInfoPanel(state.audit, state, l10n),
+          child: _buildAuditInfoPanel(state.audit, state, l10n, categories),
         ),
         const VerticalDivider(width: 1),
-        // Right: Questions list
+        // Right: Questions list (TOC is in the info panel on tablet/desktop)
         Expanded(
-          child: _buildQuestionList(categories, state, l10n),
+          child: _buildQuestionList(categories, state, l10n, showToc: false),
         ),
       ],
     );
@@ -149,6 +152,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     Audit audit,
     AuditDetailLoaded state,
     AppLocalizations l10n,
+    Map<String, List<Question>> categories,
   ) {
     // Compute live stats from current responses
     int countYes = 0;
@@ -204,6 +208,60 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
           minHeight: 8,
           borderRadius: BorderRadius.circular(4),
         ),
+        const Divider(height: 32),
+        // Table of Contents
+        Row(
+          children: [
+            const Icon(Icons.list_alt, size: 18),
+            const SizedBox(width: 8),
+            Text(
+              l10n.tableOfContents,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        ...categories.entries.map((entry) {
+          final label = entry.value.first
+              .categoryText(Localizations.localeOf(context).languageCode);
+          return InkWell(
+            borderRadius: BorderRadius.circular(4),
+            onTap: () {
+              final key = _categoryKeys[entry.key];
+              final ctx = key?.currentContext;
+              if (ctx != null) {
+                Scrollable.ensureVisible(
+                  ctx,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeInOut,
+                );
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: Row(
+                children: [
+                  const Icon(Icons.arrow_right, size: 16),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                    ),
+                  ),
+                  Text(
+                    '${entry.value.length}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          );
+        }),
       ],
     );
   }
@@ -211,19 +269,95 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
   Widget _buildQuestionList(
     Map<String, List<Question>> categories,
     AuditDetailLoaded state,
-    AppLocalizations l10n,
-  ) {
+    AppLocalizations l10n, {
+    bool showToc = true,
+  }) {
     final entries = categories.entries.toList();
     final lang = Localizations.localeOf(context).languageCode;
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: entries.length,
+      itemCount: entries.length + (showToc ? 1 : 0),
       itemBuilder: (context, index) {
-        final category = entries[index];
-        // Use translated category name from the first question in this group
+        // --- Table of Contents (mobile only) ---
+        if (showToc && index == 0) {
+          return Card(
+            margin: const EdgeInsets.only(bottom: 20),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.list_alt, size: 18),
+                      const SizedBox(width: 8),
+                      Text(
+                        l10n.tableOfContents,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  ...entries.map((entry) {
+                    final label = entry.value.first.categoryText(lang);
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(4),
+                      onTap: () {
+                        final key = _categoryKeys[entry.key];
+                        final ctx = key?.currentContext;
+                        if (ctx != null) {
+                          Scrollable.ensureVisible(
+                            ctx,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.arrow_right, size: 16),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                label,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context).colorScheme.primary,
+                                    ),
+                              ),
+                            ),
+                            Text(
+                              '${entry.value.length}',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // --- Category sections ---
+        final categoryIndex = showToc ? index - 1 : index;
+        final category = entries[categoryIndex];
         final categoryLabel = category.value.first.categoryText(lang);
+        final sectionKey = _categoryKeys.putIfAbsent(
+          category.key,
+          () => GlobalKey(),
+        );
         return Column(
+          key: sectionKey,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
