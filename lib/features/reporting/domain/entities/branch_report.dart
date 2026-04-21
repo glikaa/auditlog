@@ -26,9 +26,22 @@ class BranchReport extends Equatable {
   const BranchReport({required this.branchName, required this.entries});
 
   /// Most recent result percent, or null.
-  double? get latestResult =>
-      entries.isEmpty ? null : entries.last.resultPercent;
+  double? get latestResult {
+    if (entries.isEmpty) return null;
 
+    BranchAuditEntry? latestEntry;
+    for (final entry in entries) {
+      final completedAt = entry.completedAt;
+      if (completedAt == null) continue;
+
+      if (latestEntry == null ||
+          completedAt.isAfter(latestEntry.completedAt!)) {
+        latestEntry = entry;
+      }
+    }
+
+    return (latestEntry ?? entries.last).resultPercent;
+  }
   @override
   List<Object?> get props => [branchName, entries];
 }
