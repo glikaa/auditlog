@@ -69,50 +69,88 @@ my_app/
 
 ---
 
-## Backend starten
+## Setup-Anleitung (Schritt fuer Schritt)
 
-```bash
-cd my_app/backend
+### 1. Python Virtual Environment einrichten
+
+Das Projekt nutzt Python 3.6. Das venv liegt im Wurzelverzeichnis `c:\flutter_dev\.venv`.
+
+```powershell
+# Ins Projektverzeichnis wechseln
+cd c:\flutter_dev
 
 # Virtual Environment erstellen (einmalig)
-python -m venv venv
+python -m venv .venv
 
-# Aktivieren
-# Windows:
-venv\Scripts\activate
-# Mac/Linux:
-source venv/bin/activate
-
-# Dependencies installieren (einmalig)
-pip install fastapi==0.83.0 uvicorn==0.17.0 firebase-admin==5.4.0
-pip install python-jose python-multipart pydantic==1.9.2 fpdf
-
-# Firebase Credentials ablegen
-# serviceAccountKey.json aus Firebase Console -> Projekteinstellungen -> Dienstkonten
-
-# Demo-Daten seeden (einmalig)
-python seed_users.py
-python seed_catalog.py
-
-# Server starten
-python run.py
-# -> http://127.0.0.1:8000
-# -> Swagger Docs: http://127.0.0.1:8000/docs
+# Aktivieren (Windows PowerShell)
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+& .\.venv\Scripts\Activate.ps1
 ```
 
----
+### 2. Backend-Dependencies installieren
 
-## Frontend starten
+> **Hinweis:** Python 3.6 ist nicht kompatibel mit `protobuf >= 4.x`.
+> Deshalb muss `protobuf<4` explizit gepinnt werden.
 
-```bash
-cd my_app
+```powershell
+# Alle Dependencies inkl. protobuf-Pin installieren (einmalig)
+pip install fastapi==0.83.0 uvicorn==0.17.0 firebase-admin==5.4.0 ^
+    python-jose python-multipart pydantic==1.9.2 fpdf python-dotenv ^
+    "protobuf<4"
+```
 
-# Dependencies holen
+Falls ein **interner pip-Index** (z.B. Artifactory) genutzt wird, werden
+ggf. Credentials abgefragt – Username und Token eingeben.
+
+### 3. Firebase Credentials ablegen
+
+Die Datei `serviceAccountKey.json` aus der Firebase Console herunterladen
+(Projekteinstellungen → Dienstkonten) und in `my_app/backend/` ablegen.
+
+### 4. Demo-Daten seeden (einmalig)
+
+```powershell
+cd my_app\backend
+python seed_users.py
+python seed_catalog.py
+```
+
+### 5. Backend starten
+
+```powershell
+cd c:\flutter_dev\my_app\backend
+python run.py
+```
+
+Der Server laeuft dann unter:
+- **API:** http://127.0.0.1:8000
+- **Swagger Docs:** http://127.0.0.1:8000/docs
+
+> **Wichtig:** Das Backend muss laufen, bevor die Flutter-App gestartet wird!
+> Ohne laufendes Backend schlaegt jeder HTTP-Request fehl
+> (`XMLHttpRequest error` / `DioException`).
+
+### 6. Frontend starten (neues Terminal)
+
+```powershell
+cd c:\flutter_dev\my_app
+
+# Flutter Dependencies holen (einmalig)
 flutter pub get
 
 # Im Browser starten
 flutter run -d chrome
 ```
+
+### Troubleshooting
+
+| Problem | Ursache | Loesung |
+|---|---|---|
+| `XMLHttpRequest error` in der App | Backend nicht gestartet | Backend mit `python run.py` starten |
+| `ModuleNotFoundError: No module named 'uvicorn'` | Dependencies fehlen | `pip install` wie in Schritt 2 ausfuehren |
+| `ModuleNotFoundError: No module named 'dotenv'` | `python-dotenv` fehlt | `pip install python-dotenv` |
+| `protobuf >= 4.21 requires Python >= 3.7` | protobuf-Version zu hoch fuer Python 3.6 | `pip install "protobuf<4"` |
+| Backend startet, aber App zeigt Fehler | CORS oder Port-Konflikt | Pruefen ob Port 8000 frei ist (`netstat -ano \| findstr :8000`) |
 
 ---
 
