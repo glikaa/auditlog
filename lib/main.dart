@@ -46,7 +46,7 @@ class AuditApp extends StatelessWidget {
           create: (_) => AuditDetailCubit(repository: repository),
         ),
         BlocProvider(
-          create: (_) => SettingsCubit(),
+          create: (_) => SettingsCubit()..init(),
         ),
         BlocProvider(
           create: (_) => ReportCubit(repository: reportRepository),

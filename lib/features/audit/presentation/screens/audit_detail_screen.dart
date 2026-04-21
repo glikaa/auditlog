@@ -45,24 +45,11 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
 
   void _scrollToCategory(String categoryKey) {
     final targetCtx = _categoryKeys[categoryKey]?.currentContext;
-    final listCtx = _questionListKey.currentContext;
-    if (targetCtx == null || listCtx == null) return;
-    if (!_questionScrollController.hasClients) return;
+    if (targetCtx == null) return;
 
-    final targetBox = targetCtx.findRenderObject() as RenderBox?;
-    final listBox = listCtx.findRenderObject() as RenderBox?;
-    if (targetBox == null || listBox == null) return;
-
-    // Compute absolute scroll offset to place the target at the viewport top.
-    final targetY = targetBox.localToGlobal(Offset.zero).dy;
-    final listY = listBox.localToGlobal(Offset.zero).dy;
-    final offset = _questionScrollController.offset + (targetY - listY);
-
-    _questionScrollController.animateTo(
-      offset.clamp(
-        _questionScrollController.position.minScrollExtent,
-        _questionScrollController.position.maxScrollExtent,
-      ),
+    Scrollable.ensureVisible(
+      targetCtx,
+      alignment: 0.0,
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
