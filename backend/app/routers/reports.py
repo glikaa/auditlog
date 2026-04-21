@@ -48,13 +48,39 @@ async def report_top5_questions(
     """Top 5 questions with most 'yes' and most 'no' ratings."""
     db = get_db()
 
-    # Get all released audits
-    query = db.collection("audits").where("status", "==", "released")
-    audit_docs = list(query.stream())
+    # Get all released/completed audits
+    audit_docs = list(
+        db.collection("audits").where("status", "in", ["released", "completed"]).stream()
+    )
+
+    # Build catalog→country map so we can filter by country
+    catalog_country = {}  # catalog_id → country_code
+    for cat in db.collection("auditCatalogs").stream():
+        cat_data = cat.to_dict()
+        catalog_country[cat.id] = (cat_data.get("country_code") or "").upper()
+
+    # Filter audits by country and year
+    filtered_audits = []
+    for audit_doc in audit_docs:
+        data = audit_doc.to_dict()
+
+        # Country filter via catalog
+        if country:
+            cat_id = data.get("catalog_id", "")
+            if catalog_country.get(cat_id, "").upper() != country.upper():
+                continue
+
+        # Year filter via created_at
+        if year:
+            created_at = data.get("created_at", "")
+            if not created_at or str(year) not in created_at[:4]:
+                continue
+
+        filtered_audits.append(audit_doc)
 
     question_stats = {}  # type: Dict[str, Dict[str, int]]
 
-    for audit_doc in audit_docs:
+    for audit_doc in filtered_audits:
         responses = (
             db.collection("audits")
             .document(audit_doc.id)
@@ -70,6 +96,17 @@ async def report_top5_questions(
             if rating in ("yes", "no", "na"):
                 question_stats[q_id][rating] += 1
 
+    # Resolve question texts (question_id → text_de)
+    q_ids = set(question_stats.keys())
+    question_texts = {}
+    for q_id in q_ids:
+        q_doc = db.collection("questions").document(q_id).get()
+        if q_doc.exists:
+            q_data = q_doc.to_dict()
+            question_texts[q_id] = q_data.get("text_de", q_id)
+        else:
+            question_texts[q_id] = q_id
+
     # Sort for top 5 yes and top 5 no
     sorted_by_yes = sorted(
         question_stats.items(), key=lambda x: x[1]["yes"], reverse=True
@@ -80,10 +117,12 @@ async def report_top5_questions(
 
     return {
         "top5_yes": [
-            {"question_id": q_id, **stats} for q_id, stats in sorted_by_yes
+            {"question_id": q_id, "question_text": question_texts.get(q_id, q_id), **stats}
+            for q_id, stats in sorted_by_yes
         ],
         "top5_no": [
-            {"question_id": q_id, **stats} for q_id, stats in sorted_by_no
+            {"question_id": q_id, "question_text": question_texts.get(q_id, q_id), **stats}
+            for q_id, stats in sorted_by_no
         ],
     }
 
