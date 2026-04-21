@@ -488,7 +488,6 @@ class _CountryComparisonTab extends StatelessWidget {
                   controller: controller,
                   decoration: InputDecoration(
                     labelText: l10n.reportMasterQuestionId,
-                    hintText: 'z.B. mq_schaufenster_sauberkeit',
                     border: const OutlineInputBorder(),
                     isDense: true,
                   ),
