@@ -38,6 +38,7 @@ class AppUser extends Equatable {
   bool get canViewReports =>
       role == UserRole.admin ||
       role == UserRole.auditor ||
+      role == UserRole.departmentHead ||
       role == UserRole.branchManager ||
       role == UserRole.districtManager ||
       role == UserRole.salesManager;

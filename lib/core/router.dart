@@ -33,13 +33,6 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
 
       case reports:
-        final args = settings.arguments;
-        final canViewReports = args is Map<String, dynamic> &&
-            args['canViewReports'] == true;
-
-        if (!canViewReports) {
-          return MaterialPageRoute(builder: (_) => const LoginScreen());
-        }
         return MaterialPageRoute(builder: (_) => const ReportScreen());
 
       default:
