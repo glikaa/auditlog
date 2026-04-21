@@ -573,7 +573,7 @@ class _ComparisonResult extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'ID: ${comparison.masterQuestionId}',
+                  '${l10n.reportMasterQuestionId}: ${comparison.masterQuestionId}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const Divider(height: 20),
