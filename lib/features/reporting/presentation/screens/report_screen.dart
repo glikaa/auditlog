@@ -504,7 +504,7 @@ class _CountryComparisonTab extends StatelessWidget {
                   if (v.isNotEmpty) onSearch(v);
                 },
                 icon: const Icon(Icons.search),
-                label: Text(l10n.retry),
+                label: Text(MaterialLocalizations.of(context).searchFieldLabel),
               ),
             ],
           ),
