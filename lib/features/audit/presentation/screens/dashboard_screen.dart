@@ -30,6 +30,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         title: Text(l10n.appTitle),
         actions: [
           IconButton(
+            icon: const Icon(Icons.bar_chart),
+            tooltip: l10n.reporting,
+            onPressed: () {
+              Navigator.pushNamed(context, AppRouter.reports);
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.pushNamed(context, AppRouter.settings);

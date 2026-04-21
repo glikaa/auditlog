@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum UserRole { admin, auditor, preparer, departmentHead, branchManager, districtManager }
+enum UserRole { admin, auditor, preparer, departmentHead, branchManager, districtManager, salesManager }
 
 class AppUser extends Equatable {
   final String id;
@@ -33,6 +33,14 @@ class AppUser extends Equatable {
   /// Whether this user can only view released audits.
   bool get viewReleasedOnly =>
       role == UserRole.branchManager || role == UserRole.districtManager;
+
+  /// Whether this user can view the reporting screen.
+  bool get canViewReports =>
+      role == UserRole.admin ||
+      role == UserRole.auditor ||
+      role == UserRole.branchManager ||
+      role == UserRole.districtManager ||
+      role == UserRole.salesManager;
 
   @override
   List<Object?> get props => [id, name, email, role, language, countryCode];
