@@ -36,12 +36,9 @@ class AppUser extends Equatable {
 
   /// Whether this user can view the reporting screen.
   bool get canViewReports =>
-      role == UserRole.admin ||
-      role == UserRole.auditor ||
       role == UserRole.departmentHead ||
       role == UserRole.branchManager ||
-      role == UserRole.districtManager ||
-      role == UserRole.salesManager;
+      role == UserRole.districtManager;
 
   @override
   List<Object?> get props => [id, name, email, role, language, countryCode];
