@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   AppTheme._();
 
   static const _seedColor = Color(0xFF1976D2); // Material Blue 700
+
+  /// Fallback fonts for emoji rendering across all platforms.
+  static const _fontFamilyFallback = [
+    'Noto Color Emoji',  // Android / Web
+    'Apple Color Emoji',  // macOS / iOS
+    'Segoe UI Emoji',     // Windows
+  ];
+
+  /// Noto Sans text theme – full Latin Extended coverage
+  /// (DE: ä ö ü ß, HR: č ć đ š ž, EN: complete).
+  static TextTheme _buildTextTheme() {
+    final base = GoogleFonts.notoSansTextTheme();
+    // Apply emoji fallback to every text style.
+    return base.apply(
+      fontFamilyFallback: _fontFamilyFallback,
+    );
+  }
 
   static ThemeData light() {
     final colorScheme = ColorScheme.fromSeed(
@@ -13,7 +31,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      textTheme: _textTheme,
+      textTheme: _buildTextTheme(),
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
@@ -56,7 +74,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      textTheme: _textTheme,
+      textTheme: _buildTextTheme(),
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
@@ -84,16 +102,4 @@ class AppTheme {
       ),
     );
   }
-
-  static const _textTheme = TextTheme(
-    headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-    headlineMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-    headlineSmall: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-    titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-    titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-    bodyLarge: TextStyle(fontSize: 16),
-    bodyMedium: TextStyle(fontSize: 14),
-    bodySmall: TextStyle(fontSize: 12),
-    labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-  );
 }
