@@ -258,4 +258,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get selectAuditor => 'Prüfer auswählen';
+
+  @override
+  String get deleteAudit => 'Audit löschen';
+
+  @override
+  String get deleteAuditConfirm =>
+      'Soll dieses Audit wirklich gelöscht werden? Alle Antworten und Anhänge werden unwiderruflich entfernt.';
+
+  @override
+  String get auditDeleted => 'Audit wurde gelöscht.';
 }

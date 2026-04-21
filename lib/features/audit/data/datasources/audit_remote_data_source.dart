@@ -182,6 +182,15 @@ class AuditRemoteDataSource {
     }
   }
 
+  /// Delete an audit (admin only).
+  Future<void> deleteAudit(String auditId) async {
+    try {
+      await _dio.delete('/audits/$auditId');
+    } on DioException catch (e) {
+      throw ApiClient.mapDioError(e);
+    }
+  }
+
   /// Create a Nachrevision (follow-up audit) based on an existing audit.
   Future<AuditModel> createNachrevision(String auditId) async {
     try {

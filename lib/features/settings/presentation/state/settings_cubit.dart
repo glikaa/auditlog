@@ -1,18 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/network/api_client.dart';
 import 'settings_state.dart';
 
 class SettingsCubit extends Cubit<SettingsState> {
+  static const _localeKey = 'app_locale';
+  static const _themeKey = 'app_theme_mode';
+
   SettingsCubit() : super(const SettingsState());
 
+  /// Load persisted locale and theme from SharedPreferences.
+  Future<void> init() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final savedLocale = prefs.getString(_localeKey);
+    final savedTheme = prefs.getString(_themeKey);
+
+    emit(state.copyWith(
+      locale: savedLocale != null ? Locale(savedLocale) : null,
+      themeMode: _themeModeFromString(savedTheme),
+    ));
+  }
+
   void changeLocale(Locale locale) {
+    _persistLocale(locale);
     emit(state.copyWith(locale: locale));
   }
 
   void changeThemeMode(ThemeMode mode) {
+    _persistThemeMode(mode);
     emit(state.copyWith(themeMode: mode));
+  }
+
+  Future<void> _persistLocale(Locale locale) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_localeKey, locale.languageCode);
+  }
+
+  Future<void> _persistThemeMode(ThemeMode mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_themeKey, mode.name);
+  }
+
+  static ThemeMode? _themeModeFromString(String? value) {
+    if (value == null) return null;
+    switch (value) {
+      case 'dark':
+        return ThemeMode.dark;
+      case 'light':
+        return ThemeMode.light;
+      default:
+        return ThemeMode.system;
+    }
   }
 
   Future<void> loadProfile() async {

@@ -597,6 +597,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select auditor'**
   String get selectAuditor;
+
+  /// No description provided for @deleteAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Audit'**
+  String get deleteAudit;
+
+  /// No description provided for @deleteAuditConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this audit? All responses and attachments will be permanently removed.'**
+  String get deleteAuditConfirm;
+
+  /// No description provided for @auditDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit deleted.'**
+  String get auditDeleted;
 }
 
 class _AppLocalizationsDelegate

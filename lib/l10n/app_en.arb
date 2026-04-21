@@ -179,5 +179,11 @@
   "selectBranch": "Select branch",
   "@selectBranch": {},
   "selectAuditor": "Select auditor",
-  "@selectAuditor": {}
+  "@selectAuditor": {},
+  "deleteAudit": "Delete Audit",
+  "@deleteAudit": {},
+  "deleteAuditConfirm": "Are you sure you want to delete this audit? All responses and attachments will be permanently removed.",
+  "@deleteAuditConfirm": {},
+  "auditDeleted": "Audit deleted.",
+  "@auditDeleted": {}
 }

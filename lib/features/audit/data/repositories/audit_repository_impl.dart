@@ -233,6 +233,16 @@ class AuditRepositoryImpl implements AuditRepository {
   }
 
   @override
+  Future<Either<Failure, void>> deleteAudit(String auditId) async {
+    try {
+      await remote.deleteAudit(auditId);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    }
+  }
+
+  @override
   Future<Either<Failure, Audit>> createNachrevision(String auditId) async {
     try {
       final result = await remote.createNachrevision(auditId);

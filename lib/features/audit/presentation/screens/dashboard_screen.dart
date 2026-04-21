@@ -155,6 +155,18 @@ class _AuditCard extends StatelessWidget {
                 tooltip: l10n.startNachrevision,
                 onPressed: () => _startNachrevision(context, audit.id),
               ),
+            BlocBuilder<SettingsCubit, SettingsState>(
+              builder: (context, settings) {
+                if (settings.userRole == 'admin') {
+                  return IconButton(
+                    icon: Icon(Icons.delete_outline, size: 20, color: Colors.red.shade400),
+                    tooltip: l10n.deleteAudit,
+                    onPressed: () => _deleteAudit(context, audit.id),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
             if (audit.resultPercent != null)
               Text(
                 '${audit.resultPercent!.toStringAsFixed(1)}%',
@@ -176,6 +188,36 @@ class _AuditCard extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> _deleteAudit(BuildContext context, String auditId) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.deleteAudit),
+        content: Text(l10n.deleteAuditConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.deleteAudit),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final success = await context.read<AuditListCubit>().deleteAudit(auditId);
+    if (success && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.auditDeleted)),
+      );
+    }
   }
 
   Future<void> _startNachrevision(BuildContext context, String auditId) async {

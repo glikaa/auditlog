@@ -179,5 +179,11 @@
   "selectBranch": "Filiale auswählen",
   "@selectBranch": {},
   "selectAuditor": "Prüfer auswählen",
-  "@selectAuditor": {}
+  "@selectAuditor": {},
+  "deleteAudit": "Audit löschen",
+  "@deleteAudit": {},
+  "deleteAuditConfirm": "Soll dieses Audit wirklich gelöscht werden? Alle Antworten und Anhänge werden unwiderruflich entfernt.",
+  "@deleteAuditConfirm": {},
+  "auditDeleted": "Audit wurde gelöscht.",
+  "@auditDeleted": {}
 }

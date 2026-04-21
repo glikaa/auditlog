@@ -258,4 +258,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectAuditor => 'Select auditor';
+
+  @override
+  String get deleteAudit => 'Delete Audit';
+
+  @override
+  String get deleteAuditConfirm =>
+      'Are you sure you want to delete this audit? All responses and attachments will be permanently removed.';
+
+  @override
+  String get auditDeleted => 'Audit deleted.';
 }

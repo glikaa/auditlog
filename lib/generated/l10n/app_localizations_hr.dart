@@ -257,4 +257,14 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get selectAuditor => 'Odaberi revizora';
+
+  @override
+  String get deleteAudit => 'Obriši audit';
+
+  @override
+  String get deleteAuditConfirm =>
+      'Jeste li sigurni da želite obrisati ovaj audit? Svi odgovori i prilozi bit će trajno uklonjeni.';
+
+  @override
+  String get auditDeleted => 'Audit je obrisan.';
 }

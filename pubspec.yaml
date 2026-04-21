@@ -32,6 +32,9 @@ dependencies:
   # Logging
   logger: ^2.4.0
 
+  # Google Fonts – Noto Sans for full Latin Extended + Emoji support
+  google_fonts: ^6.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
