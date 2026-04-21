@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants.dart';
+import '../../../../core/router.dart';
 import '../../../../generated/l10n/app_localizations.dart';
 import '../../domain/entities/branch_report.dart';
 import '../../domain/entities/country_comparison.dart';
@@ -68,8 +69,11 @@ class _ReportScreenState extends State<ReportScreen>
 
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(
+          onPressed: () =>
+              Navigator.of(context).pushReplacementNamed(AppRouter.dashboard),
+        ),
         title: Text(l10n.reporting),
-        automaticallyImplyLeading: false,
         bottom: TabBar(
           controller: _tabController,
           tabs: [
