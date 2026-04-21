@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/audit/presentation/screens/audit_detail_screen.dart';
 import '../features/audit/presentation/screens/dashboard_screen.dart';
+import '../features/reporting/presentation/screens/report_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
 
 /// Simple named-route based router.
@@ -12,6 +13,7 @@ class AppRouter {
   static const String dashboard = '/dashboard';
   static const String auditDetail = '/audit';
   static const String settings = '/settings';
+  static const String reports = '/reports';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -29,6 +31,16 @@ class AppRouter {
 
       case AppRouter.settings:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
+
+      case reports:
+        final args = settings.arguments;
+        final canViewReports = args is Map<String, dynamic> &&
+            args['canViewReports'] == true;
+
+        if (!canViewReports) {
+          return MaterialPageRoute(builder: (_) => const LoginScreen());
+        }
+        return MaterialPageRoute(builder: (_) => const ReportScreen());
 
       default:
         return MaterialPageRoute(builder: (_) => const LoginScreen());

@@ -106,6 +106,48 @@ class AppLocalizationsDe extends AppLocalizations {
   String get previousAudit => 'Erstprüfung';
 
   @override
+  String get reporting => 'Reporting';
+
+  @override
+  String get reportBranchResults => 'Filialergebnisse';
+
+  @override
+  String get reportTop5 => 'Top-5 Fragen';
+
+  @override
+  String get reportCountryComparison => 'Ländervergleich';
+
+  @override
+  String get reportAllCountries => 'Alle Länder';
+
+  @override
+  String get reportAllYears => 'Alle Jahre';
+
+  @override
+  String get reportNoData => 'Keine Daten vorhanden.';
+
+  @override
+  String get reportMasterQuestionId => 'Master-Fragen-ID';
+
+  @override
+  String get reportTop5YesTitle => 'Top-5: häufigste Ja-Antworten';
+
+  @override
+  String get reportTop5NoTitle => 'Top-5: häufigste Nein-Antworten';
+
+  @override
+  String get reportLocalQuestionNo => 'Lokale Frage-Nr.';
+
+  @override
+  String get reportYesPercent => 'Ja-Anteil (%)';
+
+  @override
+  String get reportLatestResult => 'Letztes Ergebnis';
+
+  @override
+  String get reportAuditCount => 'Anzahl Audits';
+
+  @override
   String get settings => 'Einstellungen';
 
   @override

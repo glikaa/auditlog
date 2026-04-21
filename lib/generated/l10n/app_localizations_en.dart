@@ -106,6 +106,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get previousAudit => 'Previous Audit';
 
   @override
+  String get reporting => 'Reporting';
+
+  @override
+  String get reportBranchResults => 'Branch Results';
+
+  @override
+  String get reportTop5 => 'Top-5 Questions';
+
+  @override
+  String get reportCountryComparison => 'Country Comparison';
+
+  @override
+  String get reportAllCountries => 'All countries';
+
+  @override
+  String get reportAllYears => 'All years';
+
+  @override
+  String get reportNoData => 'No data available.';
+
+  @override
+  String get reportMasterQuestionId => 'Master question ID';
+
+  @override
+  String get reportTop5YesTitle => 'Top-5: Most frequent Yes answers';
+
+  @override
+  String get reportTop5NoTitle => 'Top-5: Most frequent No answers';
+
+  @override
+  String get reportLocalQuestionNo => 'Local question no.';
+
+  @override
+  String get reportYesPercent => 'Yes share (%)';
+
+  @override
+  String get reportLatestResult => 'Latest result';
+
+  @override
+  String get reportAuditCount => 'Audit count';
+
+  @override
   String get settings => 'Settings';
 
   @override
