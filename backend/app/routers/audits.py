@@ -285,6 +285,35 @@ async def reopen_audit(audit_id: str, user: dict = Depends(get_current_user)):
     return AuditOut(**data)
 
 
+@router.delete("/{audit_id}", status_code=200)
+async def delete_audit(audit_id: str, user: dict = Depends(get_current_user)):
+    """Delete an audit and all its responses (admin only)."""
+    if user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Only admins can delete audits")
+
+    db = get_db()
+    ref = db.collection("audits").document(audit_id)
+    doc = ref.get()
+    if not doc.exists:
+        raise HTTPException(status_code=404, detail="Audit not found")
+
+    # Delete all responses (sub-collection)
+    responses = ref.collection("responses").stream()
+    for resp_doc in responses:
+        # Delete attachment files from disk
+        attachments = resp_doc.to_dict().get("attachments", [])
+        for att in attachments:
+            file_path = os.path.join(UPLOAD_DIR, att.get("stored_name", ""))
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+        resp_doc.reference.delete()
+
+    # Delete the audit document
+    ref.delete()
+
+    return {"message": "Audit deleted", "id": audit_id}
+
+
 # --------------- Responses ---------------
 
 

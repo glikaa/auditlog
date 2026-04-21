@@ -96,5 +96,8 @@
   "auditCatalog": "Katalog revizije",
   "selectCatalog": "Odaberi katalog",
   "selectBranch": "Odaberi poslovnicu",
-  "selectAuditor": "Odaberi revizora"
+  "selectAuditor": "Odaberi revizora",
+  "deleteAudit": "Obriši audit",
+  "deleteAuditConfirm": "Jeste li sigurni da želite obrisati ovaj audit? Svi odgovori i prilozi bit će trajno uklonjeni.",
+  "auditDeleted": "Audit je obrisan."
 }

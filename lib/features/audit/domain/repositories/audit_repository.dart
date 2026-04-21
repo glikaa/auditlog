@@ -61,6 +61,9 @@ abstract class AuditRepository {
     required String attachmentId,
   });
 
+  /// Delete an audit (admin only).
+  Future<Either<Failure, void>> deleteAudit(String auditId);
+
   /// Create a Nachrevision (follow-up audit) for a completed audit.
   Future<Either<Failure, Audit>> createNachrevision(String auditId);
 

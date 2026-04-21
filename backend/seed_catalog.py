@@ -1007,10 +1007,50 @@ def seed_multi_country():
     """Seed branches and catalogs (with questions) for AT, CH, HR, SI, HU, ES, SK."""
     db = get_db()
 
+    # German and Croatian translations so every catalog has DE/EN/HR.
+    german_questions = _questions_for("de")
+    croatian_questions = _questions_for("hr")
+
     for country_code, data in MULTI_COUNTRY_DATA.items():
         cat_id = data["catalog_id"]
         lang = _LANG_MAP[country_code]
         questions = _questions_for(lang)
+
+        # Always add Croatian translations for every catalog (app supports DE/EN/HR).
+        for i, q in enumerate(questions):
+            hr_q = croatian_questions[i]
+
+            if lang not in ("de", "at", "ch"):
+                de_q = german_questions[i]
+
+                # For Croatian catalogs, save Croatian from local text_de
+                if lang == "hr":
+                    q["text_hr"] = q["text_de"]
+                    q["category_hr"] = q["category"]
+                    q["default_finding_hr"] = q.get("default_finding_de")
+                    q["default_measure_hr"] = q.get("default_measure_de")
+                    q["internal_note_hr"] = q.get("internal_note_de")
+                else:
+                    # For other non-DACH catalogs, copy Croatian from hr questions
+                    q["text_hr"] = hr_q["text_de"]
+                    q["category_hr"] = hr_q["category"]
+                    q["default_finding_hr"] = hr_q.get("default_finding_de")
+                    q["default_measure_hr"] = hr_q.get("default_measure_de")
+                    q["internal_note_hr"] = hr_q.get("internal_note_de")
+
+                # Replace with German text
+                q["text_de"] = de_q["text_de"]
+                q["category"] = de_q["category"]
+                q["default_finding_de"] = de_q.get("default_finding_de")
+                q["default_measure_de"] = de_q.get("default_measure_de")
+                q["internal_note_de"] = de_q.get("internal_note_de")
+            else:
+                # DACH catalogs: just add Croatian translations
+                q["text_hr"] = hr_q["text_de"]
+                q["category_hr"] = hr_q["category"]
+                q["default_finding_hr"] = hr_q.get("default_finding_de")
+                q["default_measure_hr"] = hr_q.get("default_measure_de")
+                q["internal_note_hr"] = hr_q.get("internal_note_de")
 
         # --- Catalog ---
         cat_ref = db.collection("auditCatalogs").document(cat_id)
@@ -1024,12 +1064,10 @@ def seed_multi_country():
             cat_ref.set(cat_data)
             print("  OK    Catalog '{}' ({}) created.".format(cat_id, country_code))
 
-        # --- Questions ---
+        # --- Questions (overwrite to fix language mapping) ---
         for q in questions:
             q_id = "q-{}-{}".format(country_code.lower(), q["order"])
             q_ref = db.collection("questions").document(q_id)
-            if q_ref.get().exists:
-                continue
             q_data = dict(q)
             q_data["id"] = q_id
             q_data["catalog_id"] = cat_id
@@ -1055,16 +1093,6 @@ def seed_all():
     seed()
     print("\n=== Seeding multi-country catalogs ===")
     seed_multi_country()
-
-
-if __name__ == "__main__":
-    import sys as _sys
-    if len(_sys.argv) > 1 and _sys.argv[1] == "all":
-        seed_all()
-    elif len(_sys.argv) > 1 and _sys.argv[1] == "multi":
-        seed_multi_country()
-    else:
-        seed_all()
 
 
 if __name__ == "__main__":
