@@ -66,6 +66,9 @@ class AppLocalizationsHr extends AppLocalizations {
   String get statistics => 'Statistika';
 
   @override
+  String get tableOfContents => 'Sadržaj';
+
+  @override
   String get yes => 'Da';
 
   @override

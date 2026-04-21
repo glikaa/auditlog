@@ -66,6 +66,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statistics => 'Statistics';
 
   @override
+  String get tableOfContents => 'Table of Contents';
+
+  @override
   String get yes => 'Yes';
 
   @override
