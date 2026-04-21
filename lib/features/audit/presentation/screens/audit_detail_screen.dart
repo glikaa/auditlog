@@ -28,11 +28,44 @@ class AuditDetailScreen extends StatefulWidget {
 class _AuditDetailScreenState extends State<AuditDetailScreen> {
   // Shared keys: both the info-panel TOC and the question list use these.
   final _categoryKeys = <String, GlobalKey>{};
+  final _questionScrollController = ScrollController();
+  final _questionListKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
     context.read<AuditDetailCubit>().loadAudit(widget.auditId);
+  }
+
+  @override
+  void dispose() {
+    _questionScrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToCategory(String categoryKey) {
+    final targetCtx = _categoryKeys[categoryKey]?.currentContext;
+    final listCtx = _questionListKey.currentContext;
+    if (targetCtx == null || listCtx == null) return;
+    if (!_questionScrollController.hasClients) return;
+
+    final targetBox = targetCtx.findRenderObject() as RenderBox?;
+    final listBox = listCtx.findRenderObject() as RenderBox?;
+    if (targetBox == null || listBox == null) return;
+
+    // Compute absolute scroll offset to place the target at the viewport top.
+    final targetY = targetBox.localToGlobal(Offset.zero).dy;
+    final listY = listBox.localToGlobal(Offset.zero).dy;
+    final offset = _questionScrollController.offset + (targetY - listY);
+
+    _questionScrollController.animateTo(
+      offset.clamp(
+        _questionScrollController.position.minScrollExtent,
+        _questionScrollController.position.maxScrollExtent,
+      ),
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -229,15 +262,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
           return InkWell(
             borderRadius: BorderRadius.circular(4),
             onTap: () {
-              final key = _categoryKeys[entry.key];
-              final ctx = key?.currentContext;
-              if (ctx != null) {
-                Scrollable.ensureVisible(
-                  ctx,
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOut,
-                );
-              }
+              _scrollToCategory(entry.key);
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
@@ -275,13 +300,22 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     final entries = categories.entries.toList();
     final lang = Localizations.localeOf(context).languageCode;
 
-    return ListView.builder(
+    // Pre-register all keys so they exist before any TOC tap fires.
+    for (final entry in entries) {
+      _categoryKeys.putIfAbsent(entry.key, () => GlobalKey());
+    }
+
+    // Non-lazy ListView – cacheExtent forces all sections to be laid out
+    // so that localToGlobal works for every category from any scroll position.
+    return ListView(
+      key: _questionListKey,
+      controller: _questionScrollController,
+      cacheExtent: double.infinity,
       padding: const EdgeInsets.all(16),
-      itemCount: entries.length + (showToc ? 1 : 0),
-      itemBuilder: (context, index) {
+      children: [
         // --- Table of Contents (mobile only) ---
-        if (showToc && index == 0) {
-          return Card(
+        if (showToc)
+          Card(
             margin: const EdgeInsets.only(bottom: 20),
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -306,15 +340,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
                     return InkWell(
                       borderRadius: BorderRadius.circular(4),
                       onTap: () {
-                        final key = _categoryKeys[entry.key];
-                        final ctx = key?.currentContext;
-                        if (ctx != null) {
-                          Scrollable.ensureVisible(
-                            ctx,
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.easeInOut,
-                          );
-                        }
+                        _scrollToCategory(entry.key);
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5),
@@ -329,7 +355,9 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
                                     .textTheme
                                     .bodyMedium
                                     ?.copyWith(
-                                      color: Theme.of(context).colorScheme.primary,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary,
                                     ),
                               ),
                             ),
@@ -345,43 +373,39 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
                 ],
               ),
             ),
-          );
-        }
+          ),
 
         // --- Category sections ---
-        final categoryIndex = showToc ? index - 1 : index;
-        final category = entries[categoryIndex];
-        final categoryLabel = category.value.first.categoryText(lang);
-        final sectionKey = _categoryKeys.putIfAbsent(
-          category.key,
-          () => GlobalKey(),
-        );
-        return Column(
-          key: sectionKey,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(
-                categoryLabel,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+        ...entries.map((entry) {
+          final categoryLabel = entry.value.first.categoryText(lang);
+          final sectionKey = _categoryKeys[entry.key]!;
+          return Column(
+            key: sectionKey,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  categoryLabel,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
               ),
-            ),
-            ...category.value.map((question) {
-              final response = state.responses[question.id];
-              return QuestionCard(
-                question: question,
-                response: response,
-                auditId: state.audit.id,
-                isEditable: state.audit.status == AuditStatus.inProgress ||
-                    state.audit.status == AuditStatus.draft,
-              );
-            }),
-          ],
-        );
-      },
+              ...entry.value.map((question) {
+                final response = state.responses[question.id];
+                return QuestionCard(
+                  question: question,
+                  response: response,
+                  auditId: state.audit.id,
+                  isEditable: state.audit.status == AuditStatus.inProgress ||
+                      state.audit.status == AuditStatus.draft,
+                );
+              }),
+            ],
+          );
+        }),
+      ],
     );
   }
 
