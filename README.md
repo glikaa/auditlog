@@ -216,3 +216,67 @@ flutter run -d chrome
 - [x] Nachrevision (Gegenueberstellung)
 - [ ] Reporting-Screen
 - [ ] Cloud Run Deployment
+
+---
+
+## Firebase MCP Server (VS Code Copilot)
+
+Der Firebase MCP Server erlaubt es KI-Assistenten (z.B. GitHub Copilot in VS Code),
+direkt auf das Firebase-Projekt zuzugreifen – z.B. Firestore-Daten abfragen,
+Auth-Nutzer verwalten oder Sicherheitsregeln pruefen.
+
+### Voraussetzungen
+
+- Node.js und npm installiert
+- Firebase CLI via `npx` verfuegbar
+- Firebase-Account mit Zugriff auf `audit-app-53243`
+
+### Einrichtung
+
+#### 1. MCP-Server in VS Code konfigurieren
+
+Datei `.vscode/mcp.json` anlegen (oder vorhandene erweitern):
+
+```json
+{
+  "servers": {
+    "firebase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "firebase-tools@latest",
+        "mcp",
+        "--dir",
+        "C:/projectpath",
+        "--only",
+        "auth,firestore"
+      ]
+    }
+  }
+}
+```
+
+#### 2. Mit Firebase anmelden
+
+```powershell
+npx firebase-tools@latest login
+```
+
+#### 3. Firebase-Projekt initialisieren (einmalig)
+
+```powershell
+npx firebase-tools@latest init firestore --project audit-app-53243
+```
+
+Beantwortet die Prompts mit den Standardwerten (Enter). Dadurch werden
+`firebase.json`, `.firebaserc`, `firestore.rules` und `firestore.indexes.json`
+im Projektverzeichnis erstellt.
+
+#### 4. Aktives Projekt setzen
+
+```powershell
+npx firebase-tools@latest use audit-app-53243
+```
+
+Danach kann Copilot Tools wie `firestore_list_collections`, `firestore_query_collection`
+und `auth_get_users` direkt gegen das Projekt verwenden.
