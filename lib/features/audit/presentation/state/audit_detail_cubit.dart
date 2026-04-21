@@ -99,4 +99,76 @@ class AuditDetailCubit extends Cubit<AuditDetailState> {
       },
     );
   }
+
+  /// Upload an attachment for a question. Returns true on success.
+  Future<bool> uploadAttachment({
+    required String auditId,
+    required String questionId,
+    required List<int> fileBytes,
+    required String fileName,
+    bool isReportRelevant = true,
+  }) async {
+    final result = await repository.uploadAttachment(
+      auditId: auditId,
+      questionId: questionId,
+      fileBytes: fileBytes,
+      fileName: fileName,
+      isReportRelevant: isReportRelevant,
+    );
+
+    return result.fold(
+      (_) => false,
+      (attachment) {
+        final currentState = state;
+        if (currentState is AuditDetailLoaded) {
+          final updatedResponses =
+              Map<String, AuditResponse>.from(currentState.responses);
+          final existing = updatedResponses[questionId] ??
+              AuditResponse(questionId: questionId);
+          updatedResponses[questionId] = existing.copyWith(
+            attachments: [...existing.attachments, attachment],
+          );
+          emit(AuditDetailLoaded(
+            audit: currentState.audit,
+            questions: currentState.questions,
+            responses: updatedResponses,
+          ));
+        }
+        return true;
+      },
+    );
+  }
+
+  /// Delete an attachment.
+  Future<void> deleteAttachment({
+    required String auditId,
+    required String questionId,
+    required String attachmentId,
+  }) async {
+    final currentState = state;
+    if (currentState is! AuditDetailLoaded) return;
+
+    // Optimistic removal
+    final updatedResponses =
+        Map<String, AuditResponse>.from(currentState.responses);
+    final existing = updatedResponses[questionId];
+    if (existing != null) {
+      updatedResponses[questionId] = existing.copyWith(
+        attachments: existing.attachments
+            .where((a) => a.id != attachmentId)
+            .toList(),
+      );
+      emit(AuditDetailLoaded(
+        audit: currentState.audit,
+        questions: currentState.questions,
+        responses: updatedResponses,
+      ));
+    }
+
+    await repository.deleteAttachment(
+      auditId: auditId,
+      questionId: questionId,
+      attachmentId: attachmentId,
+    );
+  }
 }

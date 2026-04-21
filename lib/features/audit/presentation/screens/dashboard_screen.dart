@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/router.dart';
 import '../../../../generated/l10n/app_localizations.dart';
 import '../../domain/entities/audit.dart';
 import '../state/audit_list_cubit.dart';
@@ -31,7 +32,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              // TODO: Navigate to settings
+              Navigator.pushNamed(context, AppRouter.settings);
             },
           ),
         ],
@@ -91,6 +92,7 @@ class _AuditCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Card(
       child: ListTile(
@@ -98,24 +100,83 @@ class _AuditCard extends StatelessWidget {
           backgroundColor: _statusColor(audit.status),
           child: Icon(_statusIcon(audit.status), color: Colors.white, size: 20),
         ),
-        title: Text(audit.branchName),
+        title: Row(
+          children: [
+            Expanded(child: Text(audit.branchName)),
+            if (audit.isNachrevision)
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: Chip(
+                  label: Text(l10n.nachrevision, style: const TextStyle(fontSize: 10)),
+                  padding: EdgeInsets.zero,
+                  visualDensity: VisualDensity.compact,
+                  backgroundColor: Colors.deepPurple.shade50,
+                ),
+              ),
+          ],
+        ),
         subtitle: Text(
           '${audit.auditorName} • ${_formatDate(audit.createdAt)}',
         ),
-        trailing: audit.resultPercent != null
-            ? Text(
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if ((audit.status == AuditStatus.completed ||
+                    audit.status == AuditStatus.released) &&
+                !audit.isNachrevision)
+              IconButton(
+                icon: const Icon(Icons.compare_arrows, size: 20),
+                tooltip: l10n.startNachrevision,
+                onPressed: () => _startNachrevision(context, audit.id),
+              ),
+            if (audit.resultPercent != null)
+              Text(
                 '${audit.resultPercent!.toStringAsFixed(1)}%',
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: _percentColor(audit.resultPercent!),
                   fontWeight: FontWeight.bold,
                 ),
               )
-            : _StatusChip(status: audit.status),
+            else
+              _StatusChip(status: audit.status),
+          ],
+        ),
         onTap: () {
-          // TODO: Navigate to audit detail
+          Navigator.pushNamed(
+            context,
+            AppRouter.auditDetail,
+            arguments: audit.id,
+          );
         },
       ),
     );
+  }
+
+  Future<void> _startNachrevision(BuildContext context, String auditId) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.nachrevision),
+        content: Text(l10n.startNachrevisionConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.confirm),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final newId = await context.read<AuditListCubit>().createNachrevision(auditId);
+    if (newId != null && context.mounted) {
+      Navigator.pushNamed(context, AppRouter.auditDetail, arguments: newId);
+    }
   }
 
   Color _statusColor(AuditStatus status) {
@@ -162,13 +223,27 @@ class _StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Chip(
       label: Text(
-        status.name,
+        _statusLabel(l10n, status),
         style: const TextStyle(fontSize: 12),
       ),
       padding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
     );
+  }
+}
+
+String _statusLabel(AppLocalizations l10n, AuditStatus status) {
+  switch (status) {
+    case AuditStatus.draft:
+      return l10n.statusDraft;
+    case AuditStatus.inProgress:
+      return l10n.statusInProgress;
+    case AuditStatus.completed:
+      return l10n.statusCompleted;
+    case AuditStatus.released:
+      return l10n.statusReleased;
   }
 }

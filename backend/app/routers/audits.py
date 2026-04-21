@@ -1,10 +1,14 @@
 """Audit CRUD endpoints + responses."""
 
+import io
+import os
 import uuid
 from datetime import datetime, timezone
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
+from fastapi.responses import StreamingResponse, FileResponse
+from fpdf import FPDF
 
 from app.models.audit import AuditCreate, AuditOut, AuditStatus, AuditUpdate
 from app.models.response import ResponseOut, ResponseUpdate
@@ -12,6 +16,13 @@ from app.services.auth_service import get_current_user
 from app.services.firebase_service import get_db
 
 router = APIRouter()
+
+# Directory for uploaded attachments
+UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".pdf"}
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 
 # --------------- Audits ---------------
@@ -27,13 +38,14 @@ async def list_audits(user: dict = Depends(get_current_user)):
     if user["role"] in ("branch_manager", "district_manager"):
         query = query.where("status", "==", "released")
 
-    docs = query.order_by("created_at", direction="DESCENDING").stream()
+    docs = query.stream()
 
     audits = []  # type: List[AuditOut]
     for doc in docs:
         data = doc.to_dict()
         data["id"] = doc.id
         audits.append(AuditOut(**data))
+    audits.sort(key=lambda a: a.created_at, reverse=True)
     return audits
 
 
@@ -174,6 +186,84 @@ async def release_audit(audit_id: str, user: dict = Depends(get_current_user)):
     return AuditOut(**data)
 
 
+@router.post("/{audit_id}/nachrevision", response_model=AuditOut, status_code=201)
+async def create_nachrevision(audit_id: str, user: dict = Depends(get_current_user)):
+    """Create a follow-up audit (Nachrevision) based on a completed/released audit.
+
+    Copies the original audit's responses as previous_rating / previous_finding
+    into the new audit's responses so the auditor can compare.
+    """
+    if user["role"] not in ("admin", "auditor"):
+        raise HTTPException(status_code=403, detail="Only revision can create Nachrevision")
+
+    db = get_db()
+
+    # Load original audit
+    orig_ref = db.collection("audits").document(audit_id)
+    orig_doc = orig_ref.get()
+    if not orig_doc.exists:
+        raise HTTPException(status_code=404, detail="Original audit not found")
+
+    orig = orig_doc.to_dict()
+    if orig.get("status") not in (AuditStatus.completed.value, AuditStatus.released.value):
+        raise HTTPException(status_code=400, detail="Original audit must be completed or released")
+
+    # Create new audit
+    new_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc)
+
+    # Look up auditor name from users collection
+    user_doc = db.collection("users").document(user["id"]).get()
+    auditor_name = user_doc.to_dict().get("name", user["id"]) if user_doc.exists else user["id"]
+
+    new_audit = {
+        "id": new_id,
+        "type": "nachrevision",
+        "catalog_id": orig["catalog_id"],
+        "branch_id": orig["branch_id"],
+        "branch_name": orig.get("branch_name", ""),
+        "auditor_id": user["id"],
+        "auditor_name": auditor_name,
+        "preparer_id": None,
+        "status": AuditStatus.in_progress.value,
+        "result_percent": None,
+        "count_yes": 0,
+        "count_no": 0,
+        "count_na": 0,
+        "management_summary": None,
+        "created_at": now.isoformat(),
+        "completed_at": None,
+        "is_nachrevision": True,
+        "linked_audit_id": audit_id,
+    }
+    db.collection("audits").document(new_id).set(new_audit)
+
+    # Copy original responses as previous data
+    orig_responses = orig_ref.collection("responses").stream()
+    for resp_doc in orig_responses:
+        r_data = resp_doc.to_dict()
+        new_resp = {
+            "question_id": resp_doc.id,
+            "rating": None,
+            "finding": "",
+            "measure": "",
+            "attachments": [],
+            "previous_rating": r_data.get("rating"),
+            "previous_finding": r_data.get("finding", ""),
+            "comparison_result": None,
+            "updated_at": now.isoformat(),
+        }
+        (
+            db.collection("audits")
+            .document(new_id)
+            .collection("responses")
+            .document(resp_doc.id)
+            .set(new_resp)
+        )
+
+    return AuditOut(**new_audit)
+
+
 @router.post("/{audit_id}/reopen", response_model=AuditOut)
 async def reopen_audit(audit_id: str, user: dict = Depends(get_current_user)):
     """Reopen a completed audit."""
@@ -245,6 +335,33 @@ async def save_response(
     data["updated_at"] = datetime.now(timezone.utc).isoformat()
     data["question_id"] = question_id
 
+    # Auto-calculate comparison_result for Nachrevision audits
+    existing_doc = (
+        db.collection("audits")
+        .document(audit_id)
+        .collection("responses")
+        .document(question_id)
+        .get()
+    )
+    if existing_doc.exists:
+        existing = existing_doc.to_dict()
+        prev_rating = existing.get("previous_rating") or data.get("previous_rating")
+        if prev_rating and data.get("rating"):
+            new_rating = data["rating"]
+            if prev_rating == "no" and new_rating == "yes":
+                data["comparison_result"] = "improved"
+            elif prev_rating == "yes" and new_rating == "no":
+                data["comparison_result"] = "worsened"
+            elif prev_rating == new_rating:
+                data["comparison_result"] = "unchanged"
+            else:
+                data["comparison_result"] = "unchanged"
+        # Preserve previous_* fields from existing response
+        if "previous_rating" not in data or data.get("previous_rating") is None:
+            data["previous_rating"] = existing.get("previous_rating")
+        if "previous_finding" not in data or data.get("previous_finding") is None:
+            data["previous_finding"] = existing.get("previous_finding")
+
     (
         db.collection("audits")
         .document(audit_id)
@@ -261,19 +378,325 @@ async def upload_attachment(
     audit_id: str,
     question_id: str,
     file: UploadFile = File(...),
-    is_report_relevant: bool = True,
+    is_report_relevant: bool = Form(True),
     user: dict = Depends(get_current_user),
 ):
-    """Upload an attachment for a question response.
+    """Upload an attachment for a question response."""
+    # Validate file extension
+    _, ext = os.path.splitext(file.filename or "")
+    ext = ext.lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=400,
+            detail="File type not allowed. Allowed: " + ", ".join(ALLOWED_EXTENSIONS),
+        )
 
-    TODO: Store file in Firebase Storage and save URL in response.
-    """
+    # Read file content with size check
+    content = await file.read()
+    if len(content) > MAX_FILE_SIZE:
+        raise HTTPException(status_code=400, detail="File too large. Max 10 MB.")
+
     attachment_id = str(uuid.uuid4())
-    # Placeholder – in production upload to Firebase Storage
-    return {
+    safe_filename = attachment_id + ext
+    file_path = os.path.join(UPLOAD_DIR, safe_filename)
+
+    with open(file_path, "wb") as f:
+        f.write(content)
+
+    # Determine file type
+    file_type = "image" if ext in {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"} else "pdf"
+    download_url = "/audits/{}/responses/{}/attachments/{}/download".format(audit_id, question_id, attachment_id)
+
+    # Save attachment reference in Firestore response
+    db = get_db()
+    resp_ref = (
+        db.collection("audits")
+        .document(audit_id)
+        .collection("responses")
+        .document(question_id)
+    )
+    resp_doc = resp_ref.get()
+    attachments = []
+    if resp_doc.exists:
+        attachments = resp_doc.to_dict().get("attachments", [])
+
+    attachment_data = {
         "id": attachment_id,
-        "filename": file.filename,
-        "type": file.content_type,
+        "url": download_url,
+        "type": file_type,
         "is_report_relevant": is_report_relevant,
-        "message": "Upload placeholder – integrate Firebase Storage",
+        "filename": file.filename or safe_filename,
+        "stored_name": safe_filename,
     }
+    attachments.append(attachment_data)
+    resp_ref.set({"attachments": attachments, "question_id": question_id}, merge=True)
+
+    return attachment_data
+
+
+@router.get("/{audit_id}/responses/{question_id}/attachments/{attachment_id}/download")
+async def download_attachment(
+    audit_id: str,
+    question_id: str,
+    attachment_id: str,
+    user: dict = Depends(get_current_user),
+):
+    """Download an attachment file."""
+    db = get_db()
+    resp_doc = (
+        db.collection("audits")
+        .document(audit_id)
+        .collection("responses")
+        .document(question_id)
+        .get()
+    )
+    if not resp_doc.exists:
+        raise HTTPException(status_code=404, detail="Response not found")
+
+    attachments = resp_doc.to_dict().get("attachments", [])
+    attachment = None
+    for a in attachments:
+        if a.get("id") == attachment_id:
+            attachment = a
+            break
+
+    if attachment is None:
+        raise HTTPException(status_code=404, detail="Attachment not found")
+
+    file_path = os.path.join(UPLOAD_DIR, attachment["stored_name"])
+    if not os.path.isfile(file_path):
+        raise HTTPException(status_code=404, detail="File not found on disk")
+
+    return FileResponse(
+        path=file_path,
+        filename=attachment.get("filename", attachment["stored_name"]),
+    )
+
+
+@router.delete("/{audit_id}/responses/{question_id}/attachments/{attachment_id}")
+async def delete_attachment(
+    audit_id: str,
+    question_id: str,
+    attachment_id: str,
+    user: dict = Depends(get_current_user),
+):
+    """Delete an attachment from a question response."""
+    db = get_db()
+    resp_ref = (
+        db.collection("audits")
+        .document(audit_id)
+        .collection("responses")
+        .document(question_id)
+    )
+    resp_doc = resp_ref.get()
+    if not resp_doc.exists:
+        raise HTTPException(status_code=404, detail="Response not found")
+
+    attachments = resp_doc.to_dict().get("attachments", [])
+    new_attachments = []
+    removed = None
+    for a in attachments:
+        if a.get("id") == attachment_id:
+            removed = a
+        else:
+            new_attachments.append(a)
+
+    if removed is None:
+        raise HTTPException(status_code=404, detail="Attachment not found")
+
+    # Delete file from disk
+    file_path = os.path.join(UPLOAD_DIR, removed.get("stored_name", ""))
+    if os.path.isfile(file_path):
+        os.remove(file_path)
+
+    # Update Firestore
+    resp_ref.update({"attachments": new_attachments})
+
+    return {"message": "Attachment deleted", "id": attachment_id}
+
+
+# --------------- PDF Export ---------------
+
+
+def _safe(text):
+    """Replace problematic characters for fpdf latin-1 encoding."""
+    if not text:
+        return ""
+    replacements = {
+        u'\u2013': '-', u'\u2014': '-', u'\u2018': "'", u'\u2019': "'",
+        u'\u201c': '"', u'\u201d': '"', u'\u2026': '...', u'\u00fc': 'ue',
+        u'\u00f6': 'oe', u'\u00e4': 'ae', u'\u00dc': 'Ue', u'\u00d6': 'Oe',
+        u'\u00c4': 'Ae', u'\u00df': 'ss',
+    }
+    for orig, repl in replacements.items():
+        text = text.replace(orig, repl)
+    return text.encode('latin-1', 'replace').decode('latin-1')
+
+
+@router.get("/{audit_id}/export/pdf")
+async def export_audit_pdf(audit_id: str, user: dict = Depends(get_current_user)):
+    """Generate a PDF report for the audit."""
+    db = get_db()
+
+    # Load audit
+    audit_doc = db.collection("audits").document(audit_id).get()
+    if not audit_doc.exists:
+        raise HTTPException(status_code=404, detail="Audit not found")
+    audit = audit_doc.to_dict()
+    audit["id"] = audit_doc.id
+
+    # Load responses
+    resp_docs = (
+        db.collection("audits").document(audit_id).collection("responses").stream()
+    )
+    responses = {}
+    for doc in resp_docs:
+        data = doc.to_dict()
+        responses[doc.id] = data
+
+    # Load questions
+    catalog_id = audit.get("catalog_id", "")
+    q_docs = db.collection("questions").where("catalog_id", "==", catalog_id).stream()
+    questions = []
+    for doc in q_docs:
+        qdata = doc.to_dict()
+        qdata["id"] = doc.id
+        questions.append(qdata)
+    questions.sort(key=lambda q: q.get("order", 0))
+
+    # Count ratings
+    count_yes = sum(1 for r in responses.values() if r.get("rating") == "yes")
+    count_no = sum(1 for r in responses.values() if r.get("rating") == "no")
+    count_na = sum(1 for r in responses.values() if r.get("rating") == "na")
+    total = count_yes + count_no
+    result_pct = (count_yes / total * 100) if total > 0 else 0.0
+
+    # Build PDF
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+
+    # Title
+    pdf.set_font("Arial", "B", 18)
+    pdf.cell(0, 12, _safe("Revisionsbericht"), ln=True, align="C")
+    pdf.ln(4)
+
+    # Audit info
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 8, _safe("Audit-Informationen"), ln=True)
+    pdf.set_font("Arial", "", 10)
+
+    branch = audit.get("branch_name", "")
+    auditor = audit.get("auditor_name", "")
+    status = audit.get("status", "")
+    created = audit.get("created_at", "")
+    if hasattr(created, 'strftime'):
+        created = created.strftime("%d.%m.%Y")
+    else:
+        created = str(created)[:10] if created else ""
+
+    info_rows = [
+        ("Filiale:", branch),
+        ("Pruefer:", auditor),
+        ("Datum:", created),
+        ("Status:", status),
+    ]
+    for label, val in info_rows:
+        pdf.cell(40, 7, _safe(label), border=0)
+        pdf.cell(0, 7, _safe(str(val)), border=0, ln=True)
+
+    pdf.ln(4)
+
+    # Statistics
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 8, _safe("Ergebnis"), ln=True)
+    pdf.set_font("Arial", "", 10)
+    pdf.cell(40, 7, "Ja:", border=0)
+    pdf.cell(0, 7, str(count_yes), border=0, ln=True)
+    pdf.cell(40, 7, "Nein:", border=0)
+    pdf.cell(0, 7, str(count_no), border=0, ln=True)
+    pdf.cell(40, 7, _safe("Entfaellt:"), border=0)
+    pdf.cell(0, 7, str(count_na), border=0, ln=True)
+    pdf.cell(40, 7, _safe("Ergebnis:"), border=0)
+    pdf.cell(0, 7, "{:.1f}%".format(result_pct), border=0, ln=True)
+    pdf.ln(6)
+
+    # Questions table
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 8, _safe("Fragen und Antworten"), ln=True)
+    pdf.ln(2)
+
+    # Group by category
+    categories = {}
+    for q in questions:
+        cat = q.get("category", "Sonstiges")
+        categories.setdefault(cat, []).append(q)
+
+    for cat_name, cat_questions in categories.items():
+        # Category header
+        pdf.set_font("Arial", "B", 11)
+        pdf.set_fill_color(230, 230, 230)
+        pdf.cell(0, 8, _safe(cat_name), ln=True, fill=True)
+        pdf.ln(1)
+
+        for q in cat_questions:
+            qid = q["id"]
+            resp = responses.get(qid, {})
+            rating = resp.get("rating", "-")
+            finding = resp.get("finding", "")
+            measure = resp.get("measure", "")
+
+            rating_display = {"yes": "Ja", "no": "Nein", "na": "Entf."}.get(rating, "-")
+
+            # Question text + rating
+            pdf.set_font("Arial", "B", 9)
+            q_text = q.get("text_de", q.get("text", ""))
+            pdf.cell(150, 6, _safe(q_text[:95]), border=0)
+            pdf.set_font("Arial", "", 9)
+            pdf.cell(0, 6, _safe(rating_display), border=0, ln=True)
+
+            # Finding & Measure (if any)
+            if finding:
+                pdf.set_font("Arial", "I", 8)
+                pdf.cell(10, 5, "", border=0)
+                pdf.cell(0, 5, _safe("Feststellung: " + finding[:120]), border=0, ln=True)
+            if measure:
+                pdf.set_font("Arial", "I", 8)
+                pdf.cell(10, 5, "", border=0)
+                pdf.cell(0, 5, _safe("Massnahme: " + measure[:120]), border=0, ln=True)
+
+            # Report-relevant image attachments
+            attachments = resp.get("attachments", [])
+            for att in attachments:
+                if not att.get("is_report_relevant", False):
+                    continue
+                if att.get("type") != "image":
+                    continue
+                stored = att.get("stored_name", "")
+                img_path = os.path.join(UPLOAD_DIR, stored)
+                if not stored or not os.path.isfile(img_path):
+                    continue
+                # Embed image – max width 80mm, auto height
+                pdf.cell(10, 5, "", border=0)
+                try:
+                    pdf.image(img_path, x=pdf.get_x(), w=80)
+                except Exception:
+                    pdf.set_font("Arial", "I", 8)
+                    pdf.cell(0, 5, _safe("[Bild konnte nicht geladen werden]"), border=0, ln=True)
+                pdf.ln(2)
+
+            pdf.ln(1)
+
+    # Output
+    pdf_bytes = pdf.output(dest="S")
+    if isinstance(pdf_bytes, str):
+        pdf_bytes = pdf_bytes.encode("latin-1")
+
+    buf = io.BytesIO(pdf_bytes)
+    filename = "audit-{}.pdf".format(audit_id)
+
+    return StreamingResponse(
+        buf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename={}".format(filename)},
+    )

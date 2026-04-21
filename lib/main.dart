@@ -9,6 +9,8 @@ import 'features/audit/data/datasources/audit_remote_data_source.dart';
 import 'features/audit/data/repositories/audit_repository_impl.dart';
 import 'features/audit/presentation/state/audit_detail_cubit.dart';
 import 'features/audit/presentation/state/audit_list_cubit.dart';
+import 'features/settings/presentation/state/settings_cubit.dart';
+import 'features/settings/presentation/state/settings_state.dart';
 import 'generated/l10n/app_localizations.dart';
 
 // Local backend URL – change to production URL before deploy.
@@ -38,26 +40,33 @@ class AuditApp extends StatelessWidget {
         BlocProvider(
           create: (_) => AuditDetailCubit(repository: repository),
         ),
+        BlocProvider(
+          create: (_) => SettingsCubit(),
+        ),
       ],
-      child: MaterialApp(
-        title: 'Audit App',
-        theme: AppTheme.light(),
-        darkTheme: AppTheme.dark(),
-        themeMode: ThemeMode.system,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('de'),
-          Locale('hr'),
-          Locale('en'),
-        ],
-        locale: const Locale('de'),
-        onGenerateRoute: AppRouter.onGenerateRoute,
-        initialRoute: AppRouter.login,
+      child: BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (context, settings) {
+          return MaterialApp(
+            title: 'Audit App',
+            theme: AppTheme.light(),
+            darkTheme: AppTheme.dark(),
+            themeMode: settings.themeMode,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('de'),
+              Locale('hr'),
+              Locale('en'),
+            ],
+            locale: settings.locale,
+            onGenerateRoute: AppRouter.onGenerateRoute,
+            initialRoute: AppRouter.login,
+          );
+        },
       ),
     );
   }

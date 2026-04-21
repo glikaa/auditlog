@@ -98,7 +98,6 @@ async def list_questions(
     docs = (
         db.collection("questions")
         .where("catalog_id", "==", catalog_id)
-        .order_by("order")
         .stream()
     )
 
@@ -107,6 +106,7 @@ async def list_questions(
         data = doc.to_dict()
         data["id"] = doc.id
         questions.append(QuestionOut(**data))
+    questions.sort(key=lambda q: q.order)
     return questions
 
 

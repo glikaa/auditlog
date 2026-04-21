@@ -26,6 +26,12 @@ class ApiClient {
 
   Dio get dio => _dio;
 
+  /// Update the auth token on the existing Dio instance.
+  static void updateAuthToken(String token) {
+    assert(_instance != null, 'ApiClient.init() must be called before use.');
+    _instance!._dio.options.headers['Authorization'] = 'Bearer $token';
+  }
+
   static Dio _buildDio(String baseUrl, String? authToken) {
     final dio = Dio(
       BaseOptions(

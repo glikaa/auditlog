@@ -1,12 +1,19 @@
+import 'dart:html' as html;
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/network/api_client.dart';
+import '../../../../core/router.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../generated/l10n/app_localizations.dart';
 import '../../domain/entities/audit.dart';
+import '../../domain/entities/audit_response.dart';
 import '../../domain/entities/question.dart';
 import '../state/audit_detail_cubit.dart';
 import '../state/audit_detail_state.dart';
+import '../state/audit_list_cubit.dart';
 import '../widgets/question_card.dart';
 
 class AuditDetailScreen extends StatefulWidget {
@@ -60,8 +67,33 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(state.audit.branchName),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(state.audit.branchName),
+            if (state.audit.isNachrevision)
+              Text(
+                l10n.nachrevision,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.deepPurple,
+                    ),
+              ),
+          ],
+        ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf),
+            tooltip: 'PDF Export',
+            onPressed: () => _exportPdf(context, state.audit.id),
+          ),
+          if ((state.audit.status == AuditStatus.completed ||
+                  state.audit.status == AuditStatus.released) &&
+              !state.audit.isNachrevision)
+            IconButton(
+              icon: const Icon(Icons.compare_arrows),
+              tooltip: l10n.startNachrevision,
+              onPressed: () => _startNachrevision(context, state.audit.id),
+            ),
           if (state.audit.status == AuditStatus.inProgress)
             TextButton.icon(
               onPressed: () => _completeAudit(context, state.audit.id),
@@ -102,7 +134,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
         // Left: Audit info panel
         SizedBox(
           width: 300,
-          child: _buildAuditInfoPanel(state.audit, l10n),
+          child: _buildAuditInfoPanel(state.audit, state, l10n),
         ),
         const VerticalDivider(width: 1),
         // Right: Questions list
@@ -113,7 +145,35 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     );
   }
 
-  Widget _buildAuditInfoPanel(Audit audit, AppLocalizations l10n) {
+  Widget _buildAuditInfoPanel(
+    Audit audit,
+    AuditDetailLoaded state,
+    AppLocalizations l10n,
+  ) {
+    // Compute live stats from current responses
+    int countYes = 0;
+    int countNo = 0;
+    int countNA = 0;
+    for (final r in state.responses.values) {
+      switch (r.rating) {
+        case Rating.yes:
+          countYes++;
+          break;
+        case Rating.no:
+          countNo++;
+          break;
+        case Rating.na:
+          countNA++;
+          break;
+        default:
+          break;
+      }
+    }
+    final totalRated = countYes + countNo;
+    final livePercent = totalRated > 0 ? (countYes / totalRated * 100) : 0.0;
+    final answered = countYes + countNo + countNA;
+    final total = state.questions.length;
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -122,18 +182,28 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
         _InfoRow(label: l10n.branch, value: audit.branchName),
         _InfoRow(label: l10n.auditor, value: audit.auditorName),
         _InfoRow(label: l10n.date, value: _formatDate(audit.createdAt)),
-        _InfoRow(label: l10n.status, value: audit.status.name),
-        if (audit.resultPercent != null)
-          _InfoRow(
-            label: l10n.result,
-            value: '${audit.resultPercent!.toStringAsFixed(1)}%',
-          ),
+        _InfoRow(label: l10n.status, value: _statusLabel(l10n, audit.status)),
         const Divider(height: 32),
         Text(l10n.statistics, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
-        _InfoRow(label: l10n.yes, value: '${audit.countYes}'),
-        _InfoRow(label: l10n.no, value: '${audit.countNo}'),
-        _InfoRow(label: l10n.notApplicable, value: '${audit.countNA}'),
+        _InfoRow(label: l10n.yes, value: '$countYes'),
+        _InfoRow(label: l10n.no, value: '$countNo'),
+        _InfoRow(label: l10n.notApplicable, value: '$countNA'),
+        const Divider(height: 16),
+        _InfoRow(
+          label: l10n.answered,
+          value: '$answered / $total',
+        ),
+        _InfoRow(
+          label: l10n.result,
+          value: '${livePercent.toStringAsFixed(1)}%',
+        ),
+        const SizedBox(height: 8),
+        LinearProgressIndicator(
+          value: total > 0 ? answered / total : 0,
+          minHeight: 8,
+          borderRadius: BorderRadius.circular(4),
+        ),
       ],
     );
   }
@@ -144,19 +214,22 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AppLocalizations l10n,
   ) {
     final entries = categories.entries.toList();
+    final lang = Localizations.localeOf(context).languageCode;
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: entries.length,
       itemBuilder: (context, index) {
         final category = entries[index];
+        // Use translated category name from the first question in this group
+        final categoryLabel = category.value.first.categoryText(lang);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Text(
-                category.key,
+                categoryLabel,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -205,8 +278,87 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     context.read<AuditDetailCubit>().releaseAudit(auditId);
   }
 
+  Future<void> _startNachrevision(BuildContext context, String auditId) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.nachrevision),
+        content: Text(l10n.startNachrevisionConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.confirm),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final newId = await context.read<AuditListCubit>().createNachrevision(auditId);
+    if (newId != null && context.mounted) {
+      Navigator.pushReplacementNamed(
+        context,
+        AppRouter.auditDetail,
+        arguments: newId,
+      );
+    }
+  }
+
+  Future<void> _exportPdf(BuildContext context, String auditId) async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.showSnackBar(
+      SnackBar(content: Text(l10n.pdfCreating)),
+    );
+
+    try {
+      final dio = ApiClient.instance.dio;
+      final response = await dio.get(
+        '/audits/$auditId/export/pdf',
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      // Trigger download in browser
+      final bytes = response.data as List<int>;
+      final blob = html.Blob([bytes], 'application/pdf');
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      html.AnchorElement(href: url)
+        ..setAttribute('download', 'audit-$auditId.pdf')
+        ..click();
+      html.Url.revokeObjectUrl(url);
+
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.pdfDownloaded)),
+      );
+    } catch (e) {
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        SnackBar(content: Text('${l10n.pdfExportFailed}: $e')),
+      );
+    }
+  }
+
   String _formatDate(DateTime date) {
     return '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
+  }
+
+  String _statusLabel(AppLocalizations l10n, AuditStatus status) {
+    switch (status) {
+      case AuditStatus.draft:
+        return l10n.statusDraft;
+      case AuditStatus.inProgress:
+        return l10n.statusInProgress;
+      case AuditStatus.completed:
+        return l10n.statusCompleted;
+      case AuditStatus.released:
+        return l10n.statusReleased;
+    }
   }
 }
 

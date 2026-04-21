@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
 
 import '../../../../core/network/api_client.dart';
+import '../../domain/entities/audit_response.dart';
 import '../models/audit_model.dart';
 import '../models/audit_response_model.dart';
 import '../models/question_model.dart';
 
 class AuditRemoteDataSource {
-  final Dio _dio = ApiClient.instance.dio;
+  Dio get _dio => ApiClient.instance.dio;
 
   Future<List<AuditModel>> getAudits() async {
     try {
@@ -102,6 +103,60 @@ class AuditRemoteDataSource {
       );
       return AuditResponseModel.fromJson(
           response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiClient.mapDioError(e);
+    }
+  }
+
+  /// Upload an attachment (image/pdf) for a question response.
+  Future<Attachment> uploadAttachment({
+    required String auditId,
+    required String questionId,
+    required List<int> fileBytes,
+    required String fileName,
+    bool isReportRelevant = true,
+  }) async {
+    try {
+      final formData = FormData.fromMap({
+        'file': MultipartFile.fromBytes(fileBytes, filename: fileName),
+        'is_report_relevant': isReportRelevant,
+      });
+      final response = await _dio.post(
+        '/audits/$auditId/responses/$questionId/attachments',
+        data: formData,
+      );
+      final data = response.data as Map<String, dynamic>;
+      return Attachment(
+        id: data['id'] as String,
+        url: data['url'] as String,
+        type: data['type'] as String,
+        isReportRelevant: data['is_report_relevant'] as bool? ?? true,
+      );
+    } on DioException catch (e) {
+      throw ApiClient.mapDioError(e);
+    }
+  }
+
+  /// Delete an attachment.
+  Future<void> deleteAttachment({
+    required String auditId,
+    required String questionId,
+    required String attachmentId,
+  }) async {
+    try {
+      await _dio.delete(
+        '/audits/$auditId/responses/$questionId/attachments/$attachmentId',
+      );
+    } on DioException catch (e) {
+      throw ApiClient.mapDioError(e);
+    }
+  }
+
+  /// Create a Nachrevision (follow-up audit) based on an existing audit.
+  Future<AuditModel> createNachrevision(String auditId) async {
+    try {
+      final response = await _dio.post('/audits/$auditId/nachrevision');
+      return AuditModel.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiClient.mapDioError(e);
     }

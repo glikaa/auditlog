@@ -115,8 +115,87 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logout => 'Sign Out';
 
   @override
+  String get profile => 'Profile';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get role => 'Role';
+
+  @override
+  String get country => 'Country';
+
+  @override
+  String get german => 'German';
+
+  @override
+  String get croatian => 'Croatian';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get darkMode => 'Dark Mode';
+
+  @override
+  String get languageChanged => 'Language changed';
+
+  @override
+  String get logoutConfirm => 'Do you really want to sign out?';
+
+  @override
+  String get version => 'Version';
+
+  @override
   String get loading => 'Loading...';
 
   @override
   String get errorUnknown => 'An unexpected error occurred.';
+
+  @override
+  String get nachrevision => 'Follow-up Audit';
+
+  @override
+  String get startNachrevision => 'Start Follow-up Audit';
+
+  @override
+  String get startNachrevisionConfirm =>
+      'Do you want to create a follow-up audit? The current answers will be copied as comparison values.';
+
+  @override
+  String get improved => 'Improved';
+
+  @override
+  String get worsened => 'Worsened';
+
+  @override
+  String get unchanged => 'Unchanged';
+
+  @override
+  String get answered => 'Answered';
+
+  @override
+  String get statusDraft => 'Draft';
+
+  @override
+  String get statusInProgress => 'In Progress';
+
+  @override
+  String get statusCompleted => 'Completed';
+
+  @override
+  String get statusReleased => 'Released';
+
+  @override
+  String get pdfCreating => 'Creating PDF...';
+
+  @override
+  String get pdfDownloaded => 'PDF downloaded!';
+
+  @override
+  String get pdfExportFailed => 'PDF export failed';
 }

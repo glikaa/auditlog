@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -5,6 +7,7 @@ import '../../../../generated/l10n/app_localizations.dart';
 import '../../domain/entities/audit_response.dart';
 import '../../domain/entities/question.dart';
 import '../state/audit_detail_cubit.dart';
+import 'attachment_section.dart';
 import 'rating_toggle.dart';
 
 class QuestionCard extends StatefulWidget {
@@ -28,6 +31,7 @@ class QuestionCard extends StatefulWidget {
 class _QuestionCardState extends State<QuestionCard> {
   late final TextEditingController _findingController;
   late final TextEditingController _measureController;
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -53,6 +57,7 @@ class _QuestionCardState extends State<QuestionCard> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _findingController.dispose();
     _measureController.dispose();
     super.dispose();
@@ -70,6 +75,13 @@ class _QuestionCardState extends State<QuestionCard> {
     );
 
     context.read<AuditDetailCubit>().saveResponse(widget.auditId, updated);
+  }
+
+  void _debouncedAutoSave({String? finding, String? measure}) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 800), () {
+      _autoSave(finding: finding, measure: measure);
+    });
   }
 
   void _onRatingChanged(Rating? rating) {
@@ -139,7 +151,7 @@ class _QuestionCardState extends State<QuestionCard> {
               ),
               maxLines: null, // Auto-expanding
               minLines: 2,
-              onChanged: (value) => _autoSave(finding: value),
+              onChanged: (value) => _debouncedAutoSave(finding: value),
             ),
 
             const SizedBox(height: 8),
@@ -155,7 +167,16 @@ class _QuestionCardState extends State<QuestionCard> {
               ),
               maxLines: null,
               minLines: 2,
-              onChanged: (value) => _autoSave(measure: value),
+              onChanged: (value) => _debouncedAutoSave(measure: value),
+            ),
+
+            // Attachments (Anhänge)
+            const SizedBox(height: 12),
+            AttachmentSection(
+              auditId: widget.auditId,
+              questionId: widget.question.id,
+              attachments: widget.response?.attachments ?? [],
+              isEditable: widget.isEditable,
             ),
 
             // Nachrevision comparison info
@@ -206,7 +227,7 @@ class _PreviousRatingInfo extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text('${l10n.rating}: ${previousRating.name}'),
+          Text('${l10n.rating}: ${_ratingLabel(l10n, previousRating)}'),
           if (previousFinding != null && previousFinding!.isNotEmpty)
             Text('${l10n.finding}: $previousFinding'),
           if (comparisonResult != null) ...[
@@ -227,12 +248,34 @@ class _PreviousRatingInfo extends StatelessWidget {
                   size: 18,
                 ),
                 const SizedBox(width: 4),
-                Text(comparisonResult!.name),
+                Text(_comparisonLabel(l10n, comparisonResult!)),
               ],
             ),
           ],
         ],
       ),
     );
+  }
+
+  String _comparisonLabel(AppLocalizations l10n, ComparisonResult result) {
+    switch (result) {
+      case ComparisonResult.improved:
+        return l10n.improved;
+      case ComparisonResult.worsened:
+        return l10n.worsened;
+      case ComparisonResult.unchanged:
+        return l10n.unchanged;
+    }
+  }
+
+  String _ratingLabel(AppLocalizations l10n, Rating rating) {
+    switch (rating) {
+      case Rating.yes:
+        return l10n.yes;
+      case Rating.no:
+        return l10n.no;
+      case Rating.na:
+        return l10n.notApplicable;
+    }
   }
 }

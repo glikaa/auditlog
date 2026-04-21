@@ -43,7 +43,36 @@
   "settings": "Postavke",
   "language": "Jezik",
   "logout": "Odjava",
+  "profile": "Profil",
+  "name": "Ime",
+  "role": "Uloga",
+  "country": "Zemlja",
+  "german": "Njemački",
+  "croatian": "Hrvatski",
+  "english": "Engleski",
+  "appearance": "Izgled",
+  "darkMode": "Tamni način",
+  "languageChanged": "Jezik promijenjen",
+  "logoutConfirm": "Želite li se zaista odjaviti?",
+  "version": "Verzija",
 
   "loading": "Učitavanje...",
-  "errorUnknown": "Došlo je do neočekivane pogreške."
+  "errorUnknown": "Došlo je do neočekivane pogreške.",
+
+  "nachrevision": "Naknadna revizija",
+  "startNachrevision": "Pokreni naknadnu reviziju",
+  "startNachrevisionConfirm": "Želite li pokrenuti naknadnu reviziju za ovaj audit? Postojeći odgovori bit će preuzeti kao usporedne vrijednosti.",
+  "improved": "Poboljšano",
+  "worsened": "Pogoršano",
+  "unchanged": "Nepromijenjeno",
+
+  "answered": "Odgovoreno",
+  "statusDraft": "Nacrt",
+  "statusInProgress": "U tijeku",
+  "statusCompleted": "Zavrseno",
+  "statusReleased": "Odobreno",
+
+  "pdfCreating": "Izrada PDF-a...",
+  "pdfDownloaded": "PDF preuzet!",
+  "pdfExportFailed": "Izvoz PDF-a nije uspio"
 }

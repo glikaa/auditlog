@@ -114,8 +114,87 @@ class AppLocalizationsHr extends AppLocalizations {
   String get logout => 'Odjava';
 
   @override
+  String get profile => 'Profil';
+
+  @override
+  String get name => 'Ime';
+
+  @override
+  String get role => 'Uloga';
+
+  @override
+  String get country => 'Zemlja';
+
+  @override
+  String get german => 'Njemački';
+
+  @override
+  String get croatian => 'Hrvatski';
+
+  @override
+  String get english => 'Engleski';
+
+  @override
+  String get appearance => 'Izgled';
+
+  @override
+  String get darkMode => 'Tamni način';
+
+  @override
+  String get languageChanged => 'Jezik promijenjen';
+
+  @override
+  String get logoutConfirm => 'Želite li se zaista odjaviti?';
+
+  @override
+  String get version => 'Verzija';
+
+  @override
   String get loading => 'Učitavanje...';
 
   @override
   String get errorUnknown => 'Došlo je do neočekivane pogreške.';
+
+  @override
+  String get nachrevision => 'Naknadna revizija';
+
+  @override
+  String get startNachrevision => 'Pokreni naknadnu reviziju';
+
+  @override
+  String get startNachrevisionConfirm =>
+      'Želite li pokrenuti naknadnu reviziju za ovaj audit? Postojeći odgovori bit će preuzeti kao usporedne vrijednosti.';
+
+  @override
+  String get improved => 'Poboljšano';
+
+  @override
+  String get worsened => 'Pogoršano';
+
+  @override
+  String get unchanged => 'Nepromijenjeno';
+
+  @override
+  String get answered => 'Odgovoreno';
+
+  @override
+  String get statusDraft => 'Nacrt';
+
+  @override
+  String get statusInProgress => 'U tijeku';
+
+  @override
+  String get statusCompleted => 'Zavrseno';
+
+  @override
+  String get statusReleased => 'Odobreno';
+
+  @override
+  String get pdfCreating => 'Izrada PDF-a...';
+
+  @override
+  String get pdfDownloaded => 'PDF preuzet!';
+
+  @override
+  String get pdfExportFailed => 'Izvoz PDF-a nije uspio';
 }

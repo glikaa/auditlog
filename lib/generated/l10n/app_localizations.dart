@@ -310,6 +310,78 @@ abstract class AppLocalizations {
   /// **'Sign Out'**
   String get logout;
 
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get role;
+
+  /// No description provided for @country.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get country;
+
+  /// No description provided for @german.
+  ///
+  /// In en, this message translates to:
+  /// **'German'**
+  String get german;
+
+  /// No description provided for @croatian.
+  ///
+  /// In en, this message translates to:
+  /// **'Croatian'**
+  String get croatian;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @appearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearance;
+
+  /// No description provided for @darkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get darkMode;
+
+  /// No description provided for @languageChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Language changed'**
+  String get languageChanged;
+
+  /// No description provided for @logoutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you really want to sign out?'**
+  String get logoutConfirm;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
+
   /// No description provided for @loading.
   ///
   /// In en, this message translates to:
@@ -321,6 +393,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An unexpected error occurred.'**
   String get errorUnknown;
+
+  /// No description provided for @nachrevision.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up Audit'**
+  String get nachrevision;
+
+  /// No description provided for @startNachrevision.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Follow-up Audit'**
+  String get startNachrevision;
+
+  /// No description provided for @startNachrevisionConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to create a follow-up audit? The current answers will be copied as comparison values.'**
+  String get startNachrevisionConfirm;
+
+  /// No description provided for @improved.
+  ///
+  /// In en, this message translates to:
+  /// **'Improved'**
+  String get improved;
+
+  /// No description provided for @worsened.
+  ///
+  /// In en, this message translates to:
+  /// **'Worsened'**
+  String get worsened;
+
+  /// No description provided for @unchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Unchanged'**
+  String get unchanged;
+
+  /// No description provided for @answered.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
+  String get answered;
+
+  /// No description provided for @statusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get statusDraft;
+
+  /// No description provided for @statusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get statusInProgress;
+
+  /// No description provided for @statusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get statusCompleted;
+
+  /// No description provided for @statusReleased.
+  ///
+  /// In en, this message translates to:
+  /// **'Released'**
+  String get statusReleased;
+
+  /// No description provided for @pdfCreating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating PDF...'**
+  String get pdfCreating;
+
+  /// No description provided for @pdfDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF downloaded!'**
+  String get pdfDownloaded;
+
+  /// No description provided for @pdfExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF export failed'**
+  String get pdfExportFailed;
 }
 
 class _AppLocalizationsDelegate

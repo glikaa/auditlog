@@ -115,8 +115,87 @@ class AppLocalizationsDe extends AppLocalizations {
   String get logout => 'Abmelden';
 
   @override
+  String get profile => 'Profil';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get role => 'Rolle';
+
+  @override
+  String get country => 'Land';
+
+  @override
+  String get german => 'Deutsch';
+
+  @override
+  String get croatian => 'Kroatisch';
+
+  @override
+  String get english => 'Englisch';
+
+  @override
+  String get appearance => 'Erscheinungsbild';
+
+  @override
+  String get darkMode => 'Dunkelmodus';
+
+  @override
+  String get languageChanged => 'Sprache geaendert';
+
+  @override
+  String get logoutConfirm => 'Moechtest du dich wirklich abmelden?';
+
+  @override
+  String get version => 'Version';
+
+  @override
   String get loading => 'Wird geladen...';
 
   @override
   String get errorUnknown => 'Ein unerwarteter Fehler ist aufgetreten.';
+
+  @override
+  String get nachrevision => 'Nachrevision';
+
+  @override
+  String get startNachrevision => 'Nachrevision starten';
+
+  @override
+  String get startNachrevisionConfirm =>
+      'Moechtest du eine Nachrevision fuer dieses Audit erstellen? Die bisherigen Antworten werden als Vergleichswerte uebernommen.';
+
+  @override
+  String get improved => 'Verbessert';
+
+  @override
+  String get worsened => 'Verschlechtert';
+
+  @override
+  String get unchanged => 'Unveraendert';
+
+  @override
+  String get answered => 'Beantwortet';
+
+  @override
+  String get statusDraft => 'Entwurf';
+
+  @override
+  String get statusInProgress => 'In Bearbeitung';
+
+  @override
+  String get statusCompleted => 'Abgeschlossen';
+
+  @override
+  String get statusReleased => 'Freigegeben';
+
+  @override
+  String get pdfCreating => 'PDF wird erstellt...';
+
+  @override
+  String get pdfDownloaded => 'PDF heruntergeladen!';
+
+  @override
+  String get pdfExportFailed => 'PDF-Export fehlgeschlagen';
 }
