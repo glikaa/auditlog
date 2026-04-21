@@ -67,6 +67,7 @@ class _ReportScreenState extends State<ReportScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.reporting),
+        automaticallyImplyLeading: false,
         bottom: TabBar(
           controller: _tabController,
           tabs: [
