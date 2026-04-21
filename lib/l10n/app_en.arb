@@ -166,5 +166,16 @@
   "pdfDownloaded": "PDF downloaded!",
   "@pdfDownloaded": {},
   "pdfExportFailed": "PDF export failed",
-  "@pdfExportFailed": {}
+  "@pdfExportFailed": {},
+
+  "createAudit": "Create Audit",
+  "@createAudit": {},
+  "auditCatalog": "Audit Catalog",
+  "@auditCatalog": {},
+  "selectCatalog": "Select catalog",
+  "@selectCatalog": {},
+  "selectBranch": "Select branch",
+  "@selectBranch": {},
+  "selectAuditor": "Select auditor",
+  "@selectAuditor": {}
 }

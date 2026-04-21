@@ -6,8 +6,10 @@ import '../../../../generated/l10n/app_localizations.dart';
 import '../../../settings/presentation/state/settings_cubit.dart';
 import '../../../settings/presentation/state/settings_state.dart';
 import '../../domain/entities/audit.dart';
+import '../../domain/repositories/audit_repository.dart';
 import '../state/audit_list_cubit.dart';
 import '../state/audit_list_state.dart';
+import '../state/create_audit_cubit.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -94,7 +96,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // TODO: Navigate to create audit
+          final repository = context.read<AuditListCubit>().repository;
+          Navigator.pushNamed(
+            context,
+            AppRouter.createAudit,
+            arguments: CreateAuditCubit(repository: repository),
+          );
         },
         icon: const Icon(Icons.add),
         label: Text(l10n.newAudit),

@@ -561,6 +561,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'PDF export failed'**
   String get pdfExportFailed;
+
+  /// No description provided for @createAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Audit'**
+  String get createAudit;
+
+  /// No description provided for @auditCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit Catalog'**
+  String get auditCatalog;
+
+  /// No description provided for @selectCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Select catalog'**
+  String get selectCatalog;
+
+  /// No description provided for @selectBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Select branch'**
+  String get selectBranch;
+
+  /// No description provided for @selectAuditor.
+  ///
+  /// In en, this message translates to:
+  /// **'Select auditor'**
+  String get selectAuditor;
 }
 
 class _AppLocalizationsDelegate

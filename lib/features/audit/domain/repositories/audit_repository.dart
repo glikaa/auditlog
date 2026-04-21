@@ -1,11 +1,20 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failures.dart';
+import '../../../../features/auth/domain/entities/app_user.dart';
 import '../entities/audit.dart';
+import '../entities/audit_catalog.dart';
 import '../entities/audit_response.dart';
+import '../entities/branch.dart';
 import '../entities/question.dart';
 
 abstract class AuditRepository {
+  /// Get all available audit catalogs, optionally filtered by country code.
+  Future<Either<Failure, List<AuditCatalog>>> getCatalogs({String? country});
+
+  /// Get all branches.
+  Future<Either<Failure, List<Branch>>> getBranches();
+
   /// Get all audits (filtered by backend based on user role).
   Future<Either<Failure, List<Audit>>> getAudits();
 
@@ -54,4 +63,7 @@ abstract class AuditRepository {
 
   /// Create a Nachrevision (follow-up audit) for a completed audit.
   Future<Either<Failure, Audit>> createNachrevision(String auditId);
+
+  /// Get users with role auditor or preparer.
+  Future<Either<Failure, List<AppUser>>> getAuditors();
 }
