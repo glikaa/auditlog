@@ -117,7 +117,8 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
               tooltip: l10n.startNachrevision,
               onPressed: () => _startNachrevision(context, state.audit.id),
             ),
-          if (state.audit.status == AuditStatus.inProgress)
+          if (state.audit.status == AuditStatus.draft ||
+              state.audit.status == AuditStatus.inProgress)
             TextButton.icon(
               onPressed: () => _completeAudit(context, state.audit.id),
               icon: const Icon(Icons.check),
