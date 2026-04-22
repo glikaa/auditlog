@@ -22,6 +22,7 @@
   "status": "Status",
   "result": "Rezultat",
   "statistics": "Statistika",
+  "tableOfContents": "Sadržaj",
 
   "yes": "Da",
   "no": "Ne",
@@ -39,6 +40,21 @@
   "cancel": "Odustani",
 
   "previousAudit": "Prethodni audit",
+
+  "reporting": "Izvješćivanje",
+  "reportBranchResults": "Rezultati poslovnica",
+  "reportTop5": "Top-5 pitanja",
+  "reportCountryComparison": "Usporedba zemalja",
+  "reportAllCountries": "Sve zemlje",
+  "reportAllYears": "Sve godine",
+  "reportNoData": "Nema dostupnih podataka.",
+  "reportMasterQuestionId": "ID glavnog pitanja",
+  "reportTop5YesTitle": "Top-5: Najčešći odgovori Da",
+  "reportTop5NoTitle": "Top-5: Najčešći odgovori Ne",
+  "reportLocalQuestionNo": "Lokalni br. pitanja",
+  "reportYesPercent": "Udio Da (%)",
+  "reportLatestResult": "Zadnji rezultat",
+  "reportAuditCount": "Broj audita",
 
   "settings": "Postavke",
   "language": "Jezik",
@@ -77,4 +93,12 @@
   "pdfExportFailed": "Izvoz PDF-a nije uspio",
 
   "internalAuditHint": "Interni revizijski savjet"
+  "createAudit": "Kreiraj audit",
+  "auditCatalog": "Katalog revizije",
+  "selectCatalog": "Odaberi katalog",
+  "selectBranch": "Odaberi poslovnicu",
+  "selectAuditor": "Odaberi revizora",
+  "deleteAudit": "Obriši audit",
+  "deleteAuditConfirm": "Jeste li sigurni da želite obrisati ovaj audit? Svi odgovori i prilozi bit će trajno uklonjeni.",
+  "auditDeleted": "Audit je obrisan."
 }

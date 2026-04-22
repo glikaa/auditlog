@@ -3,9 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/router.dart';
 import '../../../../generated/l10n/app_localizations.dart';
+import '../../../settings/presentation/state/settings_cubit.dart';
+import '../../../settings/presentation/state/settings_state.dart';
 import '../../domain/entities/audit.dart';
+import '../../domain/repositories/audit_repository.dart';
 import '../state/audit_list_cubit.dart';
 import '../state/audit_list_state.dart';
+import '../state/create_audit_cubit.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -19,6 +23,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     context.read<AuditListCubit>().loadAudits();
+    context.read<SettingsCubit>().loadProfile();
   }
 
   @override
@@ -27,8 +32,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(l10n.appTitle),
         actions: [
+          BlocBuilder<SettingsCubit, SettingsState>(
+            builder: (context, settings) {
+              const reportRoles = {'department_head', 'branch_manager', 'district_manager'};
+              if (reportRoles.contains(settings.userRole)) {
+                return IconButton(
+                  icon: const Icon(Icons.bar_chart),
+                  tooltip: l10n.reporting,
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRouter.reports);
+                  },
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
@@ -73,12 +94,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return const SizedBox.shrink();
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // TODO: Navigate to create audit
+      floatingActionButton: BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (context, settings) {
+          const viewerRoles = {'branch_manager', 'district_manager', 'department_head'};
+          final userRole = settings.userRole?.trim();
+          if (settings.isLoadingProfile || userRole == null || userRole.isEmpty) {
+            return const SizedBox.shrink();
+          }
+          if (viewerRoles.contains(userRole)) {
+            return const SizedBox.shrink();
+          }
+          return FloatingActionButton.extended(
+            onPressed: () {
+              final repository = context.read<AuditListCubit>().repository;
+              Navigator.pushNamed(
+                context,
+                AppRouter.createAudit,
+                arguments: CreateAuditCubit(repository: repository),
+              );
+            },
+            icon: const Icon(Icons.add),
+            label: Text(l10n.newAudit),
+          );
         },
-        icon: const Icon(Icons.add),
-        label: Text(l10n.newAudit),
       ),
     );
   }
@@ -124,11 +162,32 @@ class _AuditCard extends StatelessWidget {
             if ((audit.status == AuditStatus.completed ||
                     audit.status == AuditStatus.released) &&
                 !audit.isNachrevision)
-              IconButton(
-                icon: const Icon(Icons.compare_arrows, size: 20),
-                tooltip: l10n.startNachrevision,
-                onPressed: () => _startNachrevision(context, audit.id),
+              BlocBuilder<SettingsCubit, SettingsState>(
+                builder: (context, settings) {
+                  const viewerRoles = {'branch_manager', 'district_manager', 'department_head'};
+                  final role = settings.userRole?.trim();
+                  if (settings.isLoadingProfile || role == null || role.isEmpty || viewerRoles.contains(role)) {
+                    return const SizedBox.shrink();
+                  }
+                  return IconButton(
+                    icon: const Icon(Icons.compare_arrows, size: 20),
+                    tooltip: l10n.startNachrevision,
+                    onPressed: () => _startNachrevision(context, audit.id),
+                  );
+                },
               ),
+            BlocBuilder<SettingsCubit, SettingsState>(
+              builder: (context, settings) {
+                if (settings.userRole == 'admin') {
+                  return IconButton(
+                    icon: Icon(Icons.delete_outline, size: 20, color: Colors.red.shade400),
+                    tooltip: l10n.deleteAudit,
+                    onPressed: () => _deleteAudit(context, audit.id),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
             if (audit.resultPercent != null)
               Text(
                 '${audit.resultPercent!.toStringAsFixed(1)}%',
@@ -150,6 +209,36 @@ class _AuditCard extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> _deleteAudit(BuildContext context, String auditId) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.deleteAudit),
+        content: Text(l10n.deleteAuditConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.deleteAudit),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final success = await context.read<AuditListCubit>().deleteAudit(auditId);
+    if (success && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.auditDeleted)),
+      );
+    }
   }
 
   Future<void> _startNachrevision(BuildContext context, String auditId) async {

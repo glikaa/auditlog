@@ -214,6 +214,12 @@ abstract class AppLocalizations {
   /// **'Statistics'**
   String get statistics;
 
+  /// No description provided for @tableOfContents.
+  ///
+  /// In en, this message translates to:
+  /// **'Table of Contents'**
+  String get tableOfContents;
+
   /// No description provided for @yes.
   ///
   /// In en, this message translates to:
@@ -291,6 +297,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Previous Audit'**
   String get previousAudit;
+
+  /// No description provided for @reporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Reporting'**
+  String get reporting;
+
+  /// No description provided for @reportBranchResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch Results'**
+  String get reportBranchResults;
+
+  /// No description provided for @reportTop5.
+  ///
+  /// In en, this message translates to:
+  /// **'Top-5 Questions'**
+  String get reportTop5;
+
+  /// No description provided for @reportCountryComparison.
+  ///
+  /// In en, this message translates to:
+  /// **'Country Comparison'**
+  String get reportCountryComparison;
+
+  /// No description provided for @reportAllCountries.
+  ///
+  /// In en, this message translates to:
+  /// **'All countries'**
+  String get reportAllCountries;
+
+  /// No description provided for @reportAllYears.
+  ///
+  /// In en, this message translates to:
+  /// **'All years'**
+  String get reportAllYears;
+
+  /// No description provided for @reportNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available.'**
+  String get reportNoData;
+
+  /// No description provided for @reportMasterQuestionId.
+  ///
+  /// In en, this message translates to:
+  /// **'Master question ID'**
+  String get reportMasterQuestionId;
+
+  /// No description provided for @reportTop5YesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Top-5: Most frequent Yes answers'**
+  String get reportTop5YesTitle;
+
+  /// No description provided for @reportTop5NoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Top-5: Most frequent No answers'**
+  String get reportTop5NoTitle;
+
+  /// No description provided for @reportLocalQuestionNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Local question no.'**
+  String get reportLocalQuestionNo;
+
+  /// No description provided for @reportYesPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes share (%)'**
+  String get reportYesPercent;
+
+  /// No description provided for @reportLatestResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest result'**
+  String get reportLatestResult;
+
+  /// No description provided for @reportAuditCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit count'**
+  String get reportAuditCount;
 
   /// No description provided for @settings.
   ///
@@ -483,6 +573,53 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Internal Audit Hint'**
   String get internalAuditHint;
+  /// No description provided for @createAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Audit'**
+  String get createAudit;
+
+  /// No description provided for @auditCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit Catalog'**
+  String get auditCatalog;
+
+  /// No description provided for @selectCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Select catalog'**
+  String get selectCatalog;
+
+  /// No description provided for @selectBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Select branch'**
+  String get selectBranch;
+
+  /// No description provided for @selectAuditor.
+  ///
+  /// In en, this message translates to:
+  /// **'Select auditor'**
+  String get selectAuditor;
+
+  /// No description provided for @deleteAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Audit'**
+  String get deleteAudit;
+
+  /// No description provided for @deleteAuditConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this audit? All responses and attachments will be permanently removed.'**
+  String get deleteAuditConfirm;
+
+  /// No description provided for @auditDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit deleted.'**
+  String get auditDeleted;
 }
 
 class _AppLocalizationsDelegate

@@ -1,13 +1,43 @@
 import 'package:dio/dio.dart';
 
 import '../../../../core/network/api_client.dart';
+import '../../../../features/auth/domain/entities/app_user.dart';
 import '../../domain/entities/audit_response.dart';
+import '../models/audit_catalog_model.dart';
 import '../models/audit_model.dart';
 import '../models/audit_response_model.dart';
+import '../models/branch_model.dart';
 import '../models/question_model.dart';
 
 class AuditRemoteDataSource {
   Dio get _dio => ApiClient.instance.dio;
+
+  Future<List<AuditCatalogModel>> getCatalogs({String? country}) async {
+    try {
+      final response = await _dio.get(
+        '/catalogs',
+        queryParameters: country != null ? {'country': country} : null,
+      );
+      final list = response.data as List<dynamic>;
+      return list
+          .map((json) => AuditCatalogModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (e) {
+      throw ApiClient.mapDioError(e);
+    }
+  }
+
+  Future<List<BranchModel>> getBranches() async {
+    try {
+      final response = await _dio.get('/branches');
+      final list = response.data as List<dynamic>;
+      return list
+          .map((json) => BranchModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (e) {
+      throw ApiClient.mapDioError(e);
+    }
+  }
 
   Future<List<AuditModel>> getAudits() async {
     try {
@@ -152,6 +182,15 @@ class AuditRemoteDataSource {
     }
   }
 
+  /// Delete an audit (admin only).
+  Future<void> deleteAudit(String auditId) async {
+    try {
+      await _dio.delete('/audits/$auditId');
+    } on DioException catch (e) {
+      throw ApiClient.mapDioError(e);
+    }
+  }
+
   /// Create a Nachrevision (follow-up audit) based on an existing audit.
   Future<AuditModel> createNachrevision(String auditId) async {
     try {
@@ -159,6 +198,52 @@ class AuditRemoteDataSource {
       return AuditModel.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiClient.mapDioError(e);
+    }
+  }
+
+  /// Fetch users with role auditor or preparer.
+  Future<List<AppUser>> getAuditors() async {
+    try {
+      final response = await _dio.get(
+        '/auth/users',
+        queryParameters: {'roles': 'auditor,preparer'},
+      );
+      final list = response.data as List<dynamic>;
+      return list
+          .map((json) => _mapUserJson(json as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (e) {
+      throw ApiClient.mapDioError(e);
+    }
+  }
+
+  AppUser _mapUserJson(Map<String, dynamic> json) {
+    final roleStr = json['role'] as String? ?? 'auditor';
+    final role = _parseUserRole(roleStr);
+    return AppUser(
+      id: json['id'] as String,
+      name: json['name'] as String? ?? '',
+      email: json['email'] as String? ?? '',
+      role: role,
+      language: json['language'] as String? ?? 'de',
+      countryCode: json['country_code'] as String? ?? 'DE',
+    );
+  }
+
+  UserRole _parseUserRole(String role) {
+    switch (role) {
+      case 'admin':
+        return UserRole.admin;
+      case 'preparer':
+        return UserRole.preparer;
+      case 'department_head':
+        return UserRole.departmentHead;
+      case 'branch_manager':
+        return UserRole.branchManager;
+      case 'district_manager':
+        return UserRole.districtManager;
+      default:
+        return UserRole.auditor;
     }
   }
 }

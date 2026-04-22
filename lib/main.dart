@@ -9,6 +9,9 @@ import 'features/audit/data/datasources/audit_remote_data_source.dart';
 import 'features/audit/data/repositories/audit_repository_impl.dart';
 import 'features/audit/presentation/state/audit_detail_cubit.dart';
 import 'features/audit/presentation/state/audit_list_cubit.dart';
+import 'features/reporting/data/datasources/report_remote_data_source.dart';
+import 'features/reporting/data/repositories/report_repository_impl.dart';
+import 'features/reporting/presentation/state/report_cubit.dart';
 import 'features/settings/presentation/state/settings_cubit.dart';
 import 'features/settings/presentation/state/settings_state.dart';
 import 'generated/l10n/app_localizations.dart';
@@ -31,6 +34,8 @@ class AuditApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final remoteDataSource = AuditRemoteDataSource();
     final repository = AuditRepositoryImpl(remote: remoteDataSource);
+    final reportRemote = ReportRemoteDataSource();
+    final reportRepository = ReportRepositoryImpl(remote: reportRemote);
 
     return MultiBlocProvider(
       providers: [
@@ -41,7 +46,10 @@ class AuditApp extends StatelessWidget {
           create: (_) => AuditDetailCubit(repository: repository),
         ),
         BlocProvider(
-          create: (_) => SettingsCubit(),
+          create: (_) => SettingsCubit()..init(),
+        ),
+        BlocProvider(
+          create: (_) => ReportCubit(repository: reportRepository),
         ),
       ],
       child: BlocBuilder<SettingsCubit, SettingsState>(

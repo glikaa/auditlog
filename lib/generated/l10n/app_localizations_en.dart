@@ -66,6 +66,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statistics => 'Statistics';
 
   @override
+  String get tableOfContents => 'Table of Contents';
+
+  @override
   String get yes => 'Yes';
 
   @override
@@ -104,6 +107,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get previousAudit => 'Previous Audit';
+
+  @override
+  String get reporting => 'Reporting';
+
+  @override
+  String get reportBranchResults => 'Branch Results';
+
+  @override
+  String get reportTop5 => 'Top-5 Questions';
+
+  @override
+  String get reportCountryComparison => 'Country Comparison';
+
+  @override
+  String get reportAllCountries => 'All countries';
+
+  @override
+  String get reportAllYears => 'All years';
+
+  @override
+  String get reportNoData => 'No data available.';
+
+  @override
+  String get reportMasterQuestionId => 'Master question ID';
+
+  @override
+  String get reportTop5YesTitle => 'Top-5: Most frequent Yes answers';
+
+  @override
+  String get reportTop5NoTitle => 'Top-5: Most frequent No answers';
+
+  @override
+  String get reportLocalQuestionNo => 'Local question no.';
+
+  @override
+  String get reportYesPercent => 'Yes share (%)';
+
+  @override
+  String get reportLatestResult => 'Latest result';
+
+  @override
+  String get reportAuditCount => 'Audit count';
 
   @override
   String get settings => 'Settings';
@@ -201,4 +246,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get internalAuditHint => 'Internal Audit Hint';
+  String get createAudit => 'Create Audit';
+
+  @override
+  String get auditCatalog => 'Audit Catalog';
+
+  @override
+  String get selectCatalog => 'Select catalog';
+
+  @override
+  String get selectBranch => 'Select branch';
+
+  @override
+  String get selectAuditor => 'Select auditor';
+
+  @override
+  String get deleteAudit => 'Delete Audit';
+
+  @override
+  String get deleteAuditConfirm =>
+      'Are you sure you want to delete this audit? All responses and attachments will be permanently removed.';
+
+  @override
+  String get auditDeleted => 'Audit deleted.';
 }
