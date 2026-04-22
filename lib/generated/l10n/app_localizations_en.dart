@@ -378,4 +378,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newCategoryLabel => 'New Category';
+
+  @override
+  String get loginTabStaff => 'Staff';
+
+  @override
+  String get loginTabBranch => 'Branch';
+
+  @override
+  String get branchNumber => 'Branch Number';
+
+  @override
+  String get branchNumberHint => '7-digit number, e.g. 1001001';
+
+  @override
+  String get branchLogin => 'Open Branch';
+
+  @override
+  String get branchNotFound => 'Branch not found.';
+
+  @override
+  String get branchNumberInvalid => 'Please enter a 7-digit branch number.';
+
+  @override
+  String get acknowledgeAuditTitle => 'Unread Audits';
+
+  @override
+  String get acknowledgeAuditMessage =>
+      'You have released audits that have not been marked as read yet. Please open the audits and confirm with the \"Read\" button.';
+
+  @override
+  String get acknowledgeAuditButton => 'Read / Acknowledged';
+
+  @override
+  String get auditAcknowledged => 'Audit has been acknowledged.';
 }

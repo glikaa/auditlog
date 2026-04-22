@@ -20,6 +20,7 @@ class AuditModel extends Audit {
     super.completedAt,
     super.isNachrevision,
     super.linkedAuditId,
+    super.acknowledgedAt,
   });
 
   factory AuditModel.fromJson(Map<String, dynamic> json) {
@@ -50,6 +51,9 @@ class AuditModel extends Audit {
           : null,
       isNachrevision: json['is_nachrevision'] as bool? ?? false,
       linkedAuditId: json['linked_audit_id'] as String?,
+      acknowledgedAt: json['acknowledged_at'] != null
+          ? DateTime.parse(json['acknowledged_at'] as String)
+          : null,
     );
   }
 
@@ -73,6 +77,7 @@ class AuditModel extends Audit {
       'completed_at': completedAt?.toIso8601String(),
       'is_nachrevision': isNachrevision,
       'linked_audit_id': linkedAuditId,
+      'acknowledged_at': acknowledgedAt?.toIso8601String(),
     };
   }
 }

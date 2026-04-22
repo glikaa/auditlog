@@ -272,5 +272,29 @@
   "newCategory": "Neue Kategorie...",
   "@newCategory": {},
   "newCategoryLabel": "Neue Kategorie",
-  "@newCategoryLabel": {}
+  "@newCategoryLabel": {},
+
+  "loginTabStaff": "Mitarbeiter",
+  "@loginTabStaff": {},
+  "loginTabBranch": "Filiale",
+  "@loginTabBranch": {},
+  "branchNumber": "Filialnummer",
+  "@branchNumber": {},
+  "branchNumberHint": "7-stellige Nummer, z.B. 1001001",
+  "@branchNumberHint": {},
+  "branchLogin": "Filiale öffnen",
+  "@branchLogin": {},
+  "branchNotFound": "Filiale nicht gefunden.",
+  "@branchNotFound": {},
+  "branchNumberInvalid": "Bitte eine 7-stellige Filialnummer eingeben.",
+  "@branchNumberInvalid": {},
+
+  "acknowledgeAuditTitle": "Ungelesene Audits",
+  "@acknowledgeAuditTitle": {},
+  "acknowledgeAuditMessage": "Sie haben freigegebene Audits, die noch nicht als gelesen best\u00e4tigt wurden. Bitte \u00f6ffnen Sie die Audits und best\u00e4tigen Sie mit dem Button \"Gelesen\".",
+  "@acknowledgeAuditMessage": {},
+  "acknowledgeAuditButton": "Gelesen / Wahrgenommen",
+  "@acknowledgeAuditButton": {},
+  "auditAcknowledged": "Audit wurde zur Kenntnis genommen.",
+  "@auditAcknowledged": {}
 }

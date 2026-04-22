@@ -377,4 +377,38 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get newCategoryLabel => 'Nova kategorija';
+
+  @override
+  String get loginTabStaff => 'Osoblje';
+
+  @override
+  String get loginTabBranch => 'Poslovnica';
+
+  @override
+  String get branchNumber => 'Broj poslovnice';
+
+  @override
+  String get branchNumberHint => '7-znamenkasti broj, npr. 1001001';
+
+  @override
+  String get branchLogin => 'Otvori poslovnicu';
+
+  @override
+  String get branchNotFound => 'Poslovnica nije pronađena.';
+
+  @override
+  String get branchNumberInvalid => 'Unesite 7-znamenkasti broj poslovnice.';
+
+  @override
+  String get acknowledgeAuditTitle => 'Nepročitani auditi';
+
+  @override
+  String get acknowledgeAuditMessage =>
+      'Imate objavljene audite koji još nisu označeni kao pročitani. Molimo otvorite audite i potvrdite s gumbom \"Pročitano\".';
+
+  @override
+  String get acknowledgeAuditButton => 'Pročitano / Primljeno na znanje';
+
+  @override
+  String get auditAcknowledged => 'Audit je primljen na znanje.';
 }

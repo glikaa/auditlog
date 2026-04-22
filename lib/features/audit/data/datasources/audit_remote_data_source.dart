@@ -96,6 +96,15 @@ class AuditRemoteDataSource {
     }
   }
 
+  Future<AuditModel> acknowledgeAudit(String auditId) async {
+    try {
+      final response = await _dio.post('/audits/$auditId/acknowledge');
+      return AuditModel.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiClient.mapDioError(e);
+    }
+  }
+
   Future<List<QuestionModel>> getQuestions(String catalogId) async {
     try {
       final response = await _dio.get('/catalogs/$catalogId/questions');

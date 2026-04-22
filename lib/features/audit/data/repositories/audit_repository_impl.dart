@@ -145,6 +145,16 @@ class AuditRepositoryImpl implements AuditRepository {
   }
 
   @override
+  Future<Either<Failure, Audit>> acknowledgeAudit(String auditId) async {
+    try {
+      final result = await remote.acknowledgeAudit(auditId);
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<Question>>> getQuestions(String catalogId) async {
     try {
       final questions = await remote.getQuestions(catalogId);

@@ -142,5 +142,18 @@
   "roleBranchManager": "Voditelj poslovnice",
   "roleDistrictManager": "Voditelj distrikta",
   "newCategory": "Nova kategorija...",
-  "newCategoryLabel": "Nova kategorija"
+  "newCategoryLabel": "Nova kategorija",
+
+  "loginTabStaff": "Osoblje",
+  "loginTabBranch": "Poslovnica",
+  "branchNumber": "Broj poslovnice",
+  "branchNumberHint": "7-znamenkasti broj, npr. 1001001",
+  "branchLogin": "Otvori poslovnicu",
+  "branchNotFound": "Poslovnica nije pronađena.",
+  "branchNumberInvalid": "Unesite 7-znamenkasti broj poslovnice.",
+
+  "acknowledgeAuditTitle": "Nepročitani auditi",
+  "acknowledgeAuditMessage": "Imate objavljene audite koji još nisu označeni kao pročitani. Molimo otvorite audite i potvrdite s gumbom \"Pročitano\".",
+  "acknowledgeAuditButton": "Pročitano / Primljeno na znanje",
+  "auditAcknowledged": "Audit je primljen na znanje."
 }

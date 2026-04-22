@@ -199,9 +199,9 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
         ],
       ),
       body: ResponsiveLayout(
-        mobile: _buildMobileLayout(categories, state, l10n, canViewInternalHints),
-        tablet: _buildTabletLayout(categories, state, l10n, canViewInternalHints),
-        desktop: _buildTabletLayout(categories, state, l10n, canViewInternalHints),
+        mobile: _buildMobileLayout(categories, state, l10n, canViewInternalHints, userRole),
+        tablet: _buildTabletLayout(categories, state, l10n, canViewInternalHints, userRole),
+        desktop: _buildTabletLayout(categories, state, l10n, canViewInternalHints, userRole),
       ),
     );
   }
@@ -211,9 +211,10 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AuditDetailLoaded state,
     AppLocalizations l10n,
     bool canViewInternalHints,
+    String userRole,
   ) {
     return _buildQuestionList(categories, state, l10n,
-        canViewInternalHints: canViewInternalHints);
+        canViewInternalHints: canViewInternalHints, userRole: userRole);
   }
 
   Widget _buildTabletLayout(
@@ -221,6 +222,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AuditDetailLoaded state,
     AppLocalizations l10n,
     bool canViewInternalHints,
+    String userRole,
   ) {
     return Row(
       children: [
@@ -233,7 +235,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
         // Right: Questions list (TOC is in the info panel on tablet/desktop)
         Expanded(
           child: _buildQuestionList(categories, state, l10n,
-              showToc: false, canViewInternalHints: canViewInternalHints),
+              showToc: false, canViewInternalHints: canViewInternalHints, userRole: userRole),
         ),
       ],
     );
@@ -355,6 +357,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AppLocalizations l10n, {
     bool showToc = true,
     bool canViewInternalHints = false,
+    String userRole = '',
   }) {
     final entries = categories.entries.toList();
     final lang = Localizations.localeOf(context).languageCode;
@@ -472,6 +475,31 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
           hintText: l10n.auditClosingNoteHint,
           onChanged: (value) => _onManagementSummaryChanged(state.audit, value),
         ),
+        // Acknowledge button for branch managers on released, unacknowledged audits
+        if (userRole == 'branch_manager' &&
+            state.audit.status == AuditStatus.released &&
+            state.audit.acknowledgedAt == null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 24),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  context
+                      .read<AuditDetailCubit>()
+                      .acknowledgeAudit(state.audit.id);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.auditAcknowledged)),
+                  );
+                },
+                icon: const Icon(Icons.check_circle_outline),
+                label: Text(l10n.acknowledgeAuditButton),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
