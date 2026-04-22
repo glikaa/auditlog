@@ -269,4 +269,64 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get auditDeleted => 'Audit wurde gelöscht.';
+
+  @override
+  String get adminMenu => 'Admin';
+
+  @override
+  String get addUser => 'Benutzer anlegen';
+
+  @override
+  String get addQuestion => 'Frage anlegen';
+
+  @override
+  String get userCreated => 'Benutzer wurde angelegt.';
+
+  @override
+  String get questionAdded => 'Frage wurde hinzugefügt.';
+
+  @override
+  String get save => 'Speichern';
+
+  @override
+  String get orderLabel => 'Reihenfolge';
+
+  @override
+  String get categoryLabel => 'Kategorie';
+
+  @override
+  String get questionTextDe => 'Fragetext (Deutsch)';
+
+  @override
+  String get questionTextEn => 'Fragetext (Englisch)';
+
+  @override
+  String get questionTextHr => 'Fragetext (Kroatisch)';
+
+  @override
+  String get selectRole => 'Rolle auswählen';
+
+  @override
+  String get roleAdmin => 'Administrator';
+
+  @override
+  String get roleAuditor => 'Prüfer';
+
+  @override
+  String get rolePreparer => 'Vorbereiter';
+
+  @override
+  String get roleDepartmentHead => 'Abteilungsleiter';
+
+  @override
+  String get roleBranchManager => 'Filialleiter';
+
+  @override
+  String get roleDistrictManager => 'Bezirksleiter';
+
+  @override
+  String get newCategory => 'Neue Kategorie...';
+
+  @override
+  String get newCategoryLabel => 'Neue Kategorie';
 }

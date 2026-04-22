@@ -620,6 +620,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Audit deleted.'**
   String get auditDeleted;
+
+  /// No description provided for @adminMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get adminMenu;
+
+  /// No description provided for @addUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Add User'**
+  String get addUser;
+
+  /// No description provided for @addQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Question'**
+  String get addQuestion;
+
+  /// No description provided for @userCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'User created.'**
+  String get userCreated;
+
+  /// No description provided for @questionAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Question added.'**
+  String get questionAdded;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @orderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order'**
+  String get orderLabel;
+
+  /// No description provided for @categoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get categoryLabel;
+
+  /// No description provided for @questionTextDe.
+  ///
+  /// In en, this message translates to:
+  /// **'Question Text (German)'**
+  String get questionTextDe;
+
+  /// No description provided for @questionTextEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Question Text (English)'**
+  String get questionTextEn;
+
+  /// No description provided for @questionTextHr.
+  ///
+  /// In en, this message translates to:
+  /// **'Question Text (Croatian)'**
+  String get questionTextHr;
+
+  /// No description provided for @selectRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Role'**
+  String get selectRole;
+
+  /// No description provided for @roleAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Administrator'**
+  String get roleAdmin;
+
+  /// No description provided for @roleAuditor.
+  ///
+  /// In en, this message translates to:
+  /// **'Auditor'**
+  String get roleAuditor;
+
+  /// No description provided for @rolePreparer.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparer'**
+  String get rolePreparer;
+
+  /// No description provided for @roleDepartmentHead.
+  ///
+  /// In en, this message translates to:
+  /// **'Department Head'**
+  String get roleDepartmentHead;
+
+  /// No description provided for @roleBranchManager.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch Manager'**
+  String get roleBranchManager;
+
+  /// No description provided for @roleDistrictManager.
+  ///
+  /// In en, this message translates to:
+  /// **'District Manager'**
+  String get roleDistrictManager;
+
+  /// No description provided for @newCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'New category...'**
+  String get newCategory;
+
+  /// No description provided for @newCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New Category'**
+  String get newCategoryLabel;
 }
 
 class _AppLocalizationsDelegate

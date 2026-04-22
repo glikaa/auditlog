@@ -1,6 +1,8 @@
-import 'dart:html' as html;
+import 'dart:js_interop';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:web/web.dart' as web;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -524,12 +526,17 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
 
       // Trigger download in browser
       final bytes = response.data as List<int>;
-      final blob = html.Blob([bytes], 'application/pdf');
-      final url = html.Url.createObjectUrlFromBlob(blob);
-      html.AnchorElement(href: url)
-        ..setAttribute('download', 'audit-$auditId.pdf')
-        ..click();
-      html.Url.revokeObjectUrl(url);
+      final uint8Array = Uint8List.fromList(bytes);
+      final blob = web.Blob(
+        [uint8Array.buffer.toJS].toJS,
+        web.BlobPropertyBag(type: 'application/pdf'),
+      );
+      final url = web.URL.createObjectURL(blob);
+      final anchor = web.document.createElement('a') as web.HTMLAnchorElement;
+      anchor.href = url;
+      anchor.setAttribute('download', 'audit-$auditId.pdf');
+      anchor.click();
+      web.URL.revokeObjectURL(url);
 
       messenger.clearSnackBars();
       messenger.showSnackBar(

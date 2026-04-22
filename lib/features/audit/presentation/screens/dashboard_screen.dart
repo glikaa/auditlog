@@ -6,7 +6,6 @@ import '../../../../generated/l10n/app_localizations.dart';
 import '../../../settings/presentation/state/settings_cubit.dart';
 import '../../../settings/presentation/state/settings_state.dart';
 import '../../domain/entities/audit.dart';
-import '../../domain/repositories/audit_repository.dart';
 import '../state/audit_list_cubit.dart';
 import '../state/audit_list_state.dart';
 import '../state/create_audit_cubit.dart';
@@ -29,10 +28,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final settings = context.watch<SettingsCubit>().state;
+    final isAdmin = settings.userRole == 'admin';
 
     return Scaffold(
+      drawer: isAdmin ? _AdminDrawer(l10n: l10n) : null,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: isAdmin,
         title: Text(l10n.appTitle),
         actions: [
           BlocBuilder<SettingsCubit, SettingsState>(
@@ -334,5 +336,50 @@ String _statusLabel(AppLocalizations l10n, AuditStatus status) {
       return l10n.statusCompleted;
     case AuditStatus.released:
       return l10n.statusReleased;
+  }
+}
+
+class _AdminDrawer extends StatelessWidget {
+  final AppLocalizations l10n;
+
+  const _AdminDrawer({required this.l10n});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            child: Text(
+              l10n.adminMenu,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall
+                  ?.copyWith(color: Colors.white),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.person_add_outlined),
+            title: Text(l10n.addUser),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, AppRouter.adminAddUser);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.quiz_outlined),
+            title: Text(l10n.addQuestion),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, AppRouter.adminAddQuestion);
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
