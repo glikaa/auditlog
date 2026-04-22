@@ -97,7 +97,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       floatingActionButton: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, settings) {
           const viewerRoles = {'branch_manager', 'district_manager', 'department_head'};
-          if (viewerRoles.contains(settings.userRole)) {
+          final userRole = settings.userRole?.trim();
+          if (settings.isLoadingProfile || userRole == null || userRole.isEmpty) {
+            return const SizedBox.shrink();
+          }
+          if (viewerRoles.contains(userRole)) {
             return const SizedBox.shrink();
           }
           return FloatingActionButton.extended(
