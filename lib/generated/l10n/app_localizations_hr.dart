@@ -25,7 +25,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String passwordMinLength(int count) {
-    return 'Lozinka mora imati najmanje $count znakova.';
+    return 'Lozinka mora imati najmanje $count znakova';
   }
 
   @override
@@ -281,15 +281,17 @@ class AppLocalizationsHr extends AppLocalizations {
   }
 
   @override
+  String get attachmentReportRelevant => 'Prikazi u izvjescu';
+
+  @override
+  String get attachmentReportRelevantUpdateError =>
+      'Relevantnost priloga za izvjesce nije moguce azurirati.';
+
+  @override
   String get attachmentUnnamed => 'Nepoznata datoteka';
 
   @override
   String get internalAuditHint => 'Interni revizijski savjet';
-
-  @override
-  String passwordMinLength(int count) {
-    return 'Lozinka mora imati najmanje $count znakova';
-  }
 
   @override
   String get createAudit => 'Kreiraj audit';

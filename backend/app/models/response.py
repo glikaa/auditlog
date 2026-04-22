@@ -23,6 +23,7 @@ class AttachmentData(BaseModel):
     type: str  # "image", "pdf", or "document"
     is_report_relevant: bool = True
     filename: Optional[str] = None
+    stored_name: Optional[str] = None
 
 
 class ResponseUpdate(BaseModel):

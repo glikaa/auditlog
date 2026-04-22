@@ -162,6 +162,7 @@ class AuditRemoteDataSource {
         type: data['type'] as String,
         isReportRelevant: data['is_report_relevant'] as bool? ?? true,
         filename: data['filename'] as String?,
+        storedName: data['stored_name'] as String?,
       );
     } on DioException catch (e) {
       throw ApiClient.mapDioError(e);
@@ -177,6 +178,35 @@ class AuditRemoteDataSource {
     try {
       await _dio.delete(
         '/audits/$auditId/responses/$questionId/attachments/$attachmentId',
+      );
+    } on DioException catch (e) {
+      throw ApiClient.mapDioError(e);
+    }
+  }
+
+  /// Update whether an attachment is relevant for the PDF report.
+  Future<Attachment> updateAttachmentReportRelevance({
+    required String auditId,
+    required String questionId,
+    required String attachmentId,
+    required bool isReportRelevant,
+  }) async {
+    try {
+      final formData = FormData.fromMap({
+        'is_report_relevant': isReportRelevant,
+      });
+      final response = await _dio.put(
+        '/audits/$auditId/responses/$questionId/attachments/$attachmentId',
+        data: formData,
+      );
+      final data = response.data as Map<String, dynamic>;
+      return Attachment(
+        id: data['id'] as String,
+        url: data['url'] as String,
+        type: data['type'] as String,
+        isReportRelevant: data['is_report_relevant'] as bool? ?? true,
+        filename: data['filename'] as String?,
+        storedName: data['stored_name'] as String?,
       );
     } on DioException catch (e) {
       throw ApiClient.mapDioError(e);
