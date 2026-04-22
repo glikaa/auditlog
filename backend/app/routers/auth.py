@@ -42,6 +42,7 @@ async def login(body: LoginRequest):
             role=user_data.get("role", "auditor"),
             language=user_data.get("language", "de"),
             country_code=user_data.get("country_code", "DE"),
+            branch_id=user_data.get("branch_id"),
         ),
     )
 
@@ -68,6 +69,7 @@ async def get_me(user: dict = Depends(get_current_user)):
         role=data.get("role", "auditor"),
         language=data.get("language", "de"),
         country_code=data.get("country_code", "DE"),
+        branch_id=data.get("branch_id"),
     )
 
 

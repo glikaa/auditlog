@@ -40,6 +40,13 @@ async def list_audits(user: dict = Depends(get_current_user)):
     if user["role"] in _VIEWER_ROLES:
         query = query.where("status", "==", "released")
 
+    # Branch managers only see audits for their own branch
+    user_branch_id = None
+    if user["role"] == "branch_manager":
+        user_doc = db.collection("users").document(user["id"]).get()
+        if user_doc.exists:
+            user_branch_id = user_doc.to_dict().get("branch_id")
+
     docs = query.stream()
 
     audits = []  # type: List[AuditOut]
@@ -48,6 +55,9 @@ async def list_audits(user: dict = Depends(get_current_user)):
         data["id"] = doc.id
         # Viewer roles must not see Nachrevisionen
         if user["role"] in _VIEWER_ROLES and data.get("is_nachrevision"):
+            continue
+        # Branch managers only see their own branch
+        if user_branch_id and data.get("branch_id") != user_branch_id:
             continue
         audits.append(AuditOut(**data))
     audits.sort(key=lambda a: a.created_at, reverse=True)
