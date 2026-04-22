@@ -47,6 +47,8 @@ class SettingsCubit extends Cubit<SettingsState> {
       userCountry: userCountry,
       isLoadingProfile: false,
     ));
+  }
+
   Future<void> _persistLocale(Locale locale) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_localeKey, locale.languageCode);

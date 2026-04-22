@@ -24,6 +24,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get password => 'Password';
 
   @override
+  String passwordMinLength(int count) {
+    return 'Password must be at least $count characters.';
+  }
+
+  @override
   String get fieldRequired => 'This field is required.';
 
   @override
@@ -260,14 +265,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get attachmentReadError => 'File could not be read';
 
   @override
-  String attachmentUploadSuccess(String fileName) => 'Attachment "$fileName" uploaded';
+  String attachmentUploadSuccess(String fileName) {
+    return 'Attachment \"$fileName\" uploaded';
+  }
 
   @override
-  String attachmentUploadError(String fileName) => 'Error uploading "$fileName"';
+  String attachmentUploadError(String fileName) {
+    return 'Error uploading \"$fileName\"';
+  }
 
   @override
   String get attachmentUnnamed => 'Unknown file';
+
+  @override
   String get internalAuditHint => 'Internal Audit Hint';
+
+  @override
   String get createAudit => 'Create Audit';
 
   @override

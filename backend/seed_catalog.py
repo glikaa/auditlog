@@ -693,6 +693,36 @@ def _questions_for(lang):
     c = {k: v[lang] for k, v in _CAT.items()}
     en = {k: v["en"] for k, v in _CAT.items()}
 
+    # Internal notes (same for all languages – always DE/EN)
+    _notes = {
+        "inv": [
+            ("Differenzbericht der letzten 3 Monate pruefen.",
+             "Review the discrepancy report of the last 3 months."),
+            ("Letzte Inventurergebnisse und Protokolle pruefen.",
+             "Review last stocktaking results and protocols."),
+        ],
+        "cash": [
+            ("Kassenberichte der letzten Woche stichprobenartig pruefen.",
+             "Randomly check cash reports from the last week."),
+            (None, None),
+        ],
+        "build": [
+            ("Sicherheitsrelevant - sofortige Massnahme erforderlich!",
+             "Safety-relevant - immediate action required!"),
+            (None, None),
+        ],
+        "wh": [
+            ("Fotos machen fuer Dokumentation.",
+             "Take photos for documentation."),
+            (None, None),
+        ],
+        "branch": [
+            ("Fotos von Problemstellen machen.",
+             "Take photos of problem areas."),
+            (None, None),
+        ],
+    }
+
     texts = {
         "de": {
             "inv": [
@@ -897,7 +927,9 @@ def _questions_for(lang):
     questions = []
     order = 1
     for cat_key, pairs in lang_texts.items():
-        for (text, finding, measure) in pairs:
+        cat_notes = _notes.get(cat_key, [])
+        for idx, (text, finding, measure) in enumerate(pairs):
+            note_de, note_en = cat_notes[idx] if idx < len(cat_notes) else (None, None)
             questions.append(_q(
                 order=order,
                 cat_de=c[cat_key],
@@ -908,6 +940,8 @@ def _questions_for(lang):
                 finding_en=finding,
                 measure_de=measure,
                 measure_en=measure,
+                note_de=note_de,
+                note_en=note_en,
             ))
             order += 1
 
