@@ -89,6 +89,13 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AppLocalizations l10n,
   ) {
     final categories = state.questionsByCategory;
+    final settings = context.watch<SettingsCubit>().state;
+    const viewerRoles = {'branch_manager', 'district_manager', 'department_head'};
+    final role = settings.userRole?.trim();
+    final canManageAuditActions = !settings.isLoadingProfile &&
+        role != null &&
+        role.isNotEmpty &&
+        !viewerRoles.contains(role);
 
     return Scaffold(
       appBar: AppBar(
@@ -111,40 +118,29 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
             tooltip: 'PDF Export',
             onPressed: () => _exportPdf(context, state.audit.id),
           ),
-          BlocBuilder<SettingsCubit, SettingsState>(
-            builder: (context, settings) {
-              const viewerRoles = {'branch_manager', 'district_manager', 'department_head'};
-              if (viewerRoles.contains(settings.userRole)) {
-                return const SizedBox.shrink();
-              }
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if ((state.audit.status == AuditStatus.completed ||
-                          state.audit.status == AuditStatus.released) &&
-                      !state.audit.isNachrevision)
-                    IconButton(
-                      icon: const Icon(Icons.compare_arrows),
-                      tooltip: l10n.startNachrevision,
-                      onPressed: () => _startNachrevision(context, state.audit.id),
-                    ),
-                  if (state.audit.status == AuditStatus.draft ||
-                      state.audit.status == AuditStatus.inProgress)
-                    TextButton.icon(
-                      onPressed: () => _completeAudit(context, state.audit.id),
-                      icon: const Icon(Icons.check),
-                      label: Text(l10n.completeAudit),
-                    ),
-                  if (state.audit.status == AuditStatus.completed)
-                    TextButton.icon(
-                      onPressed: () => _releaseAudit(context, state.audit.id),
-                      icon: const Icon(Icons.verified),
-                      label: Text(l10n.releaseAudit),
-                    ),
-                ],
-              );
-            },
-          ),
+          if (canManageAuditActions &&
+              (state.audit.status == AuditStatus.completed ||
+                  state.audit.status == AuditStatus.released) &&
+              !state.audit.isNachrevision)
+            IconButton(
+              icon: const Icon(Icons.compare_arrows),
+              tooltip: l10n.startNachrevision,
+              onPressed: () => _startNachrevision(context, state.audit.id),
+            ),
+          if (canManageAuditActions &&
+              (state.audit.status == AuditStatus.draft ||
+                  state.audit.status == AuditStatus.inProgress))
+            TextButton.icon(
+              onPressed: () => _completeAudit(context, state.audit.id),
+              icon: const Icon(Icons.check),
+              label: Text(l10n.completeAudit),
+            ),
+          if (canManageAuditActions && state.audit.status == AuditStatus.completed)
+            TextButton.icon(
+              onPressed: () => _releaseAudit(context, state.audit.id),
+              icon: const Icon(Icons.verified),
+              label: Text(l10n.releaseAudit),
+            ),
         ],
       ),
       body: ResponsiveLayout(
