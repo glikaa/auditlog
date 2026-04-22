@@ -45,10 +45,20 @@ async def list_audits(user: dict = Depends(get_current_user)):
 
     # Branch managers only see audits for their own branch
     user_branch_id = None
-    if user["role"] == "branch_manager":
+    user_country = None
+    if user["role"] in ("branch_manager", "department_head"):
         user_doc = db.collection("users").document(user["id"]).get()
         if user_doc.exists:
-            user_branch_id = user_doc.to_dict().get("branch_id")
+            u_data = user_doc.to_dict()
+            user_branch_id = u_data.get("branch_id")
+            user_country = (u_data.get("country_code") or "").upper()
+
+    # Build branch→country map for department_head filtering
+    branch_country = {}  # type: dict
+    if user["role"] == "department_head" and user_country:
+        for b in db.collection("branches").stream():
+            b_data = b.to_dict()
+            branch_country[b.id] = (b_data.get("country_code") or "").upper()
 
     docs = query.stream()
 
@@ -60,8 +70,13 @@ async def list_audits(user: dict = Depends(get_current_user)):
         if user["role"] in _VIEWER_ROLES and data.get("is_nachrevision"):
             continue
         # Branch managers only see their own branch
-        if user_branch_id and data.get("branch_id") != user_branch_id:
+        if user["role"] == "branch_manager" and user_branch_id and data.get("branch_id") != user_branch_id:
             continue
+        # Department heads only see audits from their country
+        if user["role"] == "department_head" and user_country:
+            audit_country = branch_country.get(data.get("branch_id", ""), "")
+            if audit_country != user_country:
+                continue
         audits.append(AuditOut(**data))
     audits.sort(key=lambda a: a.created_at, reverse=True)
     return audits

@@ -101,7 +101,15 @@
   "attachmentUploadSuccess": "Privitak \"{fileName}\" učitan",
   "attachmentUploadError": "Pogreška pri učitavanju \"{fileName}\"",
   "attachmentUnnamed": "Nepoznata datoteka",
+  "@attachmentUnnamed": {},
   "internalAuditHint": "Interni revizijski savjet",
+  "@internalAuditHint": {},
+  "passwordMinLength": "Lozinka mora imati najmanje {count} znakova",
+  "@passwordMinLength": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "createAudit": "Kreiraj audit",
   "auditCatalog": "Katalog revizije",
   "selectCatalog": "Odaberi katalog",

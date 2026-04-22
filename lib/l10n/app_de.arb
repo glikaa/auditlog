@@ -202,6 +202,12 @@
   "@attachmentUnnamed": {},
   "internalAuditHint": "Interner Prüfhinweis",
   "@internalAuditHint": { "description": "Label for internal audit hint visible to auditors/admins only" },
+  "passwordMinLength": "Passwort muss mindestens {count} Zeichen lang sein",
+  "@passwordMinLength": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "createAudit": "Audit erstellen",
   "@createAudit": {},
   "auditCatalog": "Prüfkatalog",
