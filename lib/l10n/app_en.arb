@@ -65,6 +65,10 @@
   "@rating": {},
   "attachments": "Attachments",
   "@attachments": {},
+  "auditClosingNote": "Additional Remarks",
+  "@auditClosingNote": {},
+  "auditClosingNoteHint": "Enter a summary or final note for this audit",
+  "@auditClosingNoteHint": {},
 
   "completeAudit": "Complete",
   "@completeAudit": {},

@@ -1,5 +1,6 @@
 import 'dart:js_interop';
 import 'dart:typed_data';
+import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:web/web.dart' as web;
@@ -39,15 +40,20 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
   final _categoryKeys = <String, GlobalKey>{};
   final _questionScrollController = ScrollController();
   final _questionListKey = GlobalKey();
+  late final TextEditingController _managementSummaryController;
+  Timer? _managementSummaryDebounce;
 
   @override
   void initState() {
     super.initState();
+    _managementSummaryController = TextEditingController();
     context.read<AuditDetailCubit>().loadAudit(widget.auditId);
   }
 
   @override
   void dispose() {
+    _managementSummaryDebounce?.cancel();
+    _managementSummaryController.dispose();
     _questionScrollController.dispose();
     super.dispose();
   }
@@ -72,6 +78,31 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     final trimmedUserRole = userRole?.trim();
     return (trimmedUserRole?.isNotEmpty ?? false) &&
         !_viewerRoles.contains(trimmedUserRole);
+  }
+
+  bool _isAuditEditable(Audit audit) {
+    return audit.status == AuditStatus.inProgress ||
+        audit.status == AuditStatus.draft;
+  }
+
+  void _syncManagementSummaryController(Audit audit) {
+    final nextText = audit.managementSummary ?? '';
+    if (_managementSummaryController.text == nextText) return;
+
+    _managementSummaryController.value = TextEditingValue(
+      text: nextText,
+      selection: TextSelection.collapsed(offset: nextText.length),
+    );
+  }
+
+  void _onManagementSummaryChanged(Audit audit, String value) {
+    _managementSummaryDebounce?.cancel();
+    _managementSummaryDebounce = Timer(const Duration(milliseconds: 800), () {
+      if (!mounted) return;
+      context.read<AuditDetailCubit>().saveAudit(
+            audit.copyWith(managementSummary: value),
+          );
+    });
   }
 
   @override
@@ -105,6 +136,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AuditDetailLoaded state,
     AppLocalizations l10n,
   ) {
+    _syncManagementSummaryController(state.audit);
     final categories = state.questionsByCategory;
     final settings = context.select(
       (SettingsCubit cubit) => (
@@ -426,13 +458,20 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
                   response: response,
                   auditId: state.audit.id,
                   canViewInternalHints: canViewInternalHints,
-                  isEditable: state.audit.status == AuditStatus.inProgress ||
-                      state.audit.status == AuditStatus.draft,
+                  isEditable: _isAuditEditable(state.audit),
                 );
               }),
             ],
           );
         }),
+        const SizedBox(height: 12),
+        _ManagementSummaryCard(
+          controller: _managementSummaryController,
+          isEditable: _isAuditEditable(state.audit),
+          label: l10n.auditClosingNote,
+          hintText: l10n.auditClosingNoteHint,
+          onChanged: (value) => _onManagementSummaryChanged(state.audit, value),
+        ),
       ],
     );
   }
@@ -550,6 +589,56 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
       case AuditStatus.released:
         return l10n.statusReleased;
     }
+  }
+}
+
+class _ManagementSummaryCard extends StatelessWidget {
+  final TextEditingController controller;
+  final bool isEditable;
+  final String label;
+  final String hintText;
+  final ValueChanged<String> onChanged;
+
+  const _ManagementSummaryCard({
+    required this.controller,
+    required this.isEditable,
+    required this.label,
+    required this.hintText,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              enabled: isEditable,
+              decoration: InputDecoration(
+                labelText: label,
+                hintText: hintText,
+                alignLabelWithHint: true,
+              ),
+              maxLines: null,
+              minLines: 4,
+              onChanged: onChanged,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/entities/audit.dart';
 import '../../domain/entities/audit_response.dart';
 import '../../domain/repositories/audit_repository.dart';
 import 'audit_detail_state.dart';
@@ -62,6 +63,20 @@ class AuditDetailCubit extends Cubit<AuditDetailState> {
 
     // Persist to backend
     await repository.saveResponse(auditId, response);
+  }
+
+  /// Auto-save audit-level fields such as the closing summary.
+  Future<void> saveAudit(Audit audit) async {
+    final currentState = state;
+    if (currentState is! AuditDetailLoaded) return;
+
+    emit(AuditDetailLoaded(
+      audit: audit,
+      questions: currentState.questions,
+      responses: currentState.responses,
+    ));
+
+    await repository.updateAudit(audit);
   }
 
   /// Complete the audit.

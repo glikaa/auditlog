@@ -95,6 +95,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get attachments => 'Attachments';
 
   @override
+  String get auditClosingNote => 'Additional Remarks';
+
+  @override
+  String get auditClosingNoteHint =>
+      'Enter a summary or final note for this audit';
+
+  @override
   String get completeAudit => 'Complete';
 
   @override

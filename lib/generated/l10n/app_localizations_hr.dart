@@ -95,6 +95,13 @@ class AppLocalizationsHr extends AppLocalizations {
   String get attachments => 'Prilozi';
 
   @override
+  String get auditClosingNote => 'Dodatne napomene';
+
+  @override
+  String get auditClosingNoteHint =>
+      'Unesite sažetak ili završnu napomenu za ovaj audit';
+
+  @override
   String get completeAudit => 'Završi';
 
   @override

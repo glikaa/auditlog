@@ -741,6 +741,14 @@ async def export_audit_pdf(audit_id: str, user: dict = Depends(get_current_user)
 
             pdf.ln(1)
 
+    management_summary = (audit.get("management_summary") or "").strip()
+    pdf.ln(4)
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 8, _safe("Zusaetzliche Bemerkungen"), ln=True)
+    pdf.ln(1)
+    pdf.set_font("Arial", "", 10)
+    pdf.multi_cell(0, 6, _safe(management_summary or "-"))
+
     # Output
     pdf_bytes = pdf.output(dest="S")
     if isinstance(pdf_bytes, str):
