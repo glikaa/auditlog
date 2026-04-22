@@ -137,7 +137,7 @@ class _QuestionCardState extends State<QuestionCard> {
                 internalHint != null &&
                 internalHint.trim().isNotEmpty) ...[
               const SizedBox(height: 12),
-              _InternalHintCard(hint: internalHint.trim()),
+              _InternalHintCard(hint: internalHint.trim(), label: l10n.internalAuditHint),
             ],
 
             const SizedBox(height: 12),
@@ -207,8 +207,9 @@ class _QuestionCardState extends State<QuestionCard> {
 
 class _InternalHintCard extends StatelessWidget {
   final String hint;
+  final String label;
 
-  const _InternalHintCard({required this.hint});
+  const _InternalHintCard({required this.hint, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +234,7 @@ class _InternalHintCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'Interner Pruefhinweis',
+                label,
                 style: theme.textTheme.labelLarge?.copyWith(
                   color: theme.colorScheme.onSecondaryContainer,
                   fontWeight: FontWeight.w700,

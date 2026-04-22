@@ -198,4 +198,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get pdfExportFailed => 'PDF-Export fehlgeschlagen';
+
+  @override
+  String get internalAuditHint => 'Interner Prüfhinweis';
 }

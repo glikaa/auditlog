@@ -137,5 +137,8 @@
   "pdfDownloaded": "PDF heruntergeladen!",
   "@pdfDownloaded": {},
   "pdfExportFailed": "PDF-Export fehlgeschlagen",
-  "@pdfExportFailed": {}
+  "@pdfExportFailed": {},
+
+  "internalAuditHint": "Interner Prüfhinweis",
+  "@internalAuditHint": { "description": "Label for internal audit hint visible to auditors/admins only" }
 }

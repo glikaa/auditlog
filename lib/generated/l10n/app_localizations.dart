@@ -477,6 +477,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'PDF export failed'**
   String get pdfExportFailed;
+
+  /// Label for internal audit hint visible to auditors/admins only
+  ///
+  /// In en, this message translates to:
+  /// **'Internal Audit Hint'**
+  String get internalAuditHint;
 }
 
 class _AppLocalizationsDelegate

@@ -74,5 +74,7 @@
 
   "pdfCreating": "Izrada PDF-a...",
   "pdfDownloaded": "PDF preuzet!",
-  "pdfExportFailed": "Izvoz PDF-a nije uspio"
+  "pdfExportFailed": "Izvoz PDF-a nije uspio",
+
+  "internalAuditHint": "Interni revizijski savjet"
 }
