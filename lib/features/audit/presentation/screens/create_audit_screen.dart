@@ -99,7 +99,8 @@ class _CreateAuditScreenState extends State<CreateAuditScreen> {
           Text(l10n.branch, style: Theme.of(context).textTheme.titleSmall),
           const SizedBox(height: 8),
           DropdownButtonFormField<Branch>(
-            value: state.selectedBranch,
+            key: ValueKey(state.selectedBranch),
+            initialValue: state.selectedBranch,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: l10n.selectBranch,
@@ -127,7 +128,8 @@ class _CreateAuditScreenState extends State<CreateAuditScreen> {
               )
             else
               DropdownButtonFormField<String>(
-                value: _selectedCatalogId,
+                key: ValueKey(_selectedCatalogId),
+                initialValue: _selectedCatalogId,
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(),
                   hintText: l10n.selectCatalog,
@@ -149,7 +151,8 @@ class _CreateAuditScreenState extends State<CreateAuditScreen> {
           Text(l10n.auditor, style: Theme.of(context).textTheme.titleSmall),
           const SizedBox(height: 8),
           DropdownButtonFormField<AppUser>(
-            value: state.selectedAuditor,
+            key: ValueKey(state.selectedAuditor),
+            initialValue: state.selectedAuditor,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: l10n.selectAuditor,

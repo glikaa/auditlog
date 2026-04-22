@@ -268,4 +268,64 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get auditDeleted => 'Audit deleted.';
+
+  @override
+  String get adminMenu => 'Admin';
+
+  @override
+  String get addUser => 'Add User';
+
+  @override
+  String get addQuestion => 'Add Question';
+
+  @override
+  String get userCreated => 'User created.';
+
+  @override
+  String get questionAdded => 'Question added.';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get orderLabel => 'Order';
+
+  @override
+  String get categoryLabel => 'Category';
+
+  @override
+  String get questionTextDe => 'Question Text (German)';
+
+  @override
+  String get questionTextEn => 'Question Text (English)';
+
+  @override
+  String get questionTextHr => 'Question Text (Croatian)';
+
+  @override
+  String get selectRole => 'Select Role';
+
+  @override
+  String get roleAdmin => 'Administrator';
+
+  @override
+  String get roleAuditor => 'Auditor';
+
+  @override
+  String get rolePreparer => 'Preparer';
+
+  @override
+  String get roleDepartmentHead => 'Department Head';
+
+  @override
+  String get roleBranchManager => 'Branch Manager';
+
+  @override
+  String get roleDistrictManager => 'District Manager';
+
+  @override
+  String get newCategory => 'New category...';
+
+  @override
+  String get newCategoryLabel => 'New Category';
 }

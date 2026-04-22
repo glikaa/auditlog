@@ -99,5 +99,26 @@
   "selectAuditor": "Odaberi revizora",
   "deleteAudit": "Obriši audit",
   "deleteAuditConfirm": "Jeste li sigurni da želite obrisati ovaj audit? Svi odgovori i prilozi bit će trajno uklonjeni.",
-  "auditDeleted": "Audit je obrisan."
+  "auditDeleted": "Audit je obrisan.",
+
+  "adminMenu": "Admin",
+  "addUser": "Dodaj korisnika",
+  "addQuestion": "Dodaj pitanje",
+  "userCreated": "Korisnik je kreiran.",
+  "questionAdded": "Pitanje je dodano.",
+  "save": "Spremi",
+  "orderLabel": "Redoslijed",
+  "categoryLabel": "Kategorija",
+  "questionTextDe": "Tekst pitanja (Njemački)",
+  "questionTextEn": "Tekst pitanja (Engleski)",
+  "questionTextHr": "Tekst pitanja (Hrvatski)",
+  "selectRole": "Odaberi ulogu",
+  "roleAdmin": "Administrator",
+  "roleAuditor": "Revizor",
+  "rolePreparer": "Pripremač",
+  "roleDepartmentHead": "Voditelj odjela",
+  "roleBranchManager": "Voditelj poslovnice",
+  "roleDistrictManager": "Voditelj distrikta",
+  "newCategory": "Nova kategorija...",
+  "newCategoryLabel": "Nova kategorija"
 }

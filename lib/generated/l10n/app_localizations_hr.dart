@@ -267,4 +267,64 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get auditDeleted => 'Audit je obrisan.';
+
+  @override
+  String get adminMenu => 'Admin';
+
+  @override
+  String get addUser => 'Dodaj korisnika';
+
+  @override
+  String get addQuestion => 'Dodaj pitanje';
+
+  @override
+  String get userCreated => 'Korisnik je kreiran.';
+
+  @override
+  String get questionAdded => 'Pitanje je dodano.';
+
+  @override
+  String get save => 'Spremi';
+
+  @override
+  String get orderLabel => 'Redoslijed';
+
+  @override
+  String get categoryLabel => 'Kategorija';
+
+  @override
+  String get questionTextDe => 'Tekst pitanja (Njemački)';
+
+  @override
+  String get questionTextEn => 'Tekst pitanja (Engleski)';
+
+  @override
+  String get questionTextHr => 'Tekst pitanja (Hrvatski)';
+
+  @override
+  String get selectRole => 'Odaberi ulogu';
+
+  @override
+  String get roleAdmin => 'Administrator';
+
+  @override
+  String get roleAuditor => 'Revizor';
+
+  @override
+  String get rolePreparer => 'Pripremač';
+
+  @override
+  String get roleDepartmentHead => 'Voditelj odjela';
+
+  @override
+  String get roleBranchManager => 'Voditelj poslovnice';
+
+  @override
+  String get roleDistrictManager => 'Voditelj distrikta';
+
+  @override
+  String get newCategory => 'Nova kategorija...';
+
+  @override
+  String get newCategoryLabel => 'Nova kategorija';
 }

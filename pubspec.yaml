@@ -32,6 +32,9 @@ dependencies:
   # Logging
   logger: ^2.4.0
 
+  # Web APIs (replaces dart:html)
+  web: ^1.1.0
+
   # Google Fonts – Noto Sans for full Latin Extended + Emoji support
   google_fonts: ^6.2.1
 

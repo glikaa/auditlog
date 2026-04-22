@@ -332,7 +332,8 @@ class _Top5Tab extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: DropdownButtonFormField<int?>(
-                  value: selectedYear,
+                  key: ValueKey(selectedYear),
+                  initialValue: selectedYear,
                   decoration: InputDecoration(
                     labelText: l10n.reportAllYears,
                     border: const OutlineInputBorder(),
@@ -509,7 +510,8 @@ class _CountryComparisonTabState extends State<_CountryComparisonTab> {
               children: [
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _selectedMasterId,
+                    key: ValueKey(_selectedMasterId),
+                    initialValue: _selectedMasterId,
                     isExpanded: true,
                     decoration: InputDecoration(
                       labelText: l10n.reportMasterQuestionId,

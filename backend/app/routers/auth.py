@@ -1,5 +1,6 @@
 """Auth endpoints – login, logout, current user."""
 
+import uuid
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -68,6 +69,34 @@ async def get_me(user: dict = Depends(get_current_user)):
         role=data.get("role", "auditor"),
         language=data.get("language", "de"),
         country_code=data.get("country_code", "DE"),
+    )
+
+
+@router.post("/users", response_model=UserOut, status_code=201)
+async def create_user(
+    body: UserCreate,
+    user: dict = Depends(get_current_user),
+):
+    """Create a new user (admin only)."""
+    if user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+
+    db = get_db()
+    existing = db.collection("users").where("email", "==", body.email).limit(1).stream()
+    if next(existing, None) is not None:
+        raise HTTPException(status_code=409, detail="Email already exists")
+
+    user_id = str(uuid.uuid4())
+    data = body.dict()
+    db.collection("users").document(user_id).set(data)
+
+    return UserOut(
+        id=user_id,
+        name=data["name"],
+        email=data["email"],
+        role=data["role"],
+        language=data["language"],
+        country_code=data["country_code"],
     )
 
 
