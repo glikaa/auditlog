@@ -48,7 +48,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final data = response.data as Map<String, dynamic>;
       final user = data['user'] as Map<String, dynamic>? ?? const {};
-      final token = response.data['access_token'] as String;
+      final token = data['access_token'];
+      if (token is! String || token.isEmpty) {
+        throw Exception('Ungültige Anmeldeantwort: Zugriffstoken fehlt.');
+      }
       ApiClient.updateAuthToken(token);
 
       settingsCubit.setProfile(
