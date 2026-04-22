@@ -268,6 +268,18 @@ abstract class AppLocalizations {
   /// **'Attachments'**
   String get attachments;
 
+  /// No description provided for @auditClosingNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional Remarks'**
+  String get auditClosingNote;
+
+  /// No description provided for @auditClosingNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a summary or final note for this audit'**
+  String get auditClosingNoteHint;
+
   /// No description provided for @completeAudit.
   ///
   /// In en, this message translates to:

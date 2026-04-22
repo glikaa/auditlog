@@ -120,6 +120,10 @@ class _UploadButton extends StatelessWidget {
   }
 
   Future<void> _pickDocument(BuildContext context) async {
+    final cubit = context.read<AuditDetailCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: const ['pdf', 'docx', 'xlsx'],
@@ -132,8 +136,7 @@ class _UploadButton extends StatelessWidget {
     final bytes = file.bytes;
     if (bytes == null) {
       if (!context.mounted) return;
-      final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text(l10n.attachmentReadError),
           backgroundColor: Colors.red,
@@ -142,7 +145,7 @@ class _UploadButton extends StatelessWidget {
       return;
     }
 
-    final success = await context.read<AuditDetailCubit>().uploadAttachment(
+    final success = await cubit.uploadAttachment(
           auditId: auditId,
           questionId: questionId,
           fileBytes: bytes,
@@ -150,9 +153,8 @@ class _UploadButton extends StatelessWidget {
         );
     if (!context.mounted) return;
 
-    final l10n = AppLocalizations.of(context)!;
     final displayName = file.name.trim().isNotEmpty ? file.name : l10n.attachmentUnnamed;
-    ScaffoldMessenger.of(context).showSnackBar(
+    messenger.showSnackBar(
       SnackBar(
         content: Text(
           success
@@ -166,6 +168,9 @@ class _UploadButton extends StatelessWidget {
   }
 
   Future<void> _pickImage(BuildContext context, ImageSource source) async {
+    final cubit = context.read<AuditDetailCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final picker = ImagePicker();
     final xFile = await picker.pickImage(
       source: source,
@@ -178,7 +183,7 @@ class _UploadButton extends StatelessWidget {
     final bytes = await xFile.readAsBytes();
     if (!context.mounted) return;
 
-    final success = await context.read<AuditDetailCubit>().uploadAttachment(
+    final success = await cubit.uploadAttachment(
           auditId: auditId,
           questionId: questionId,
           fileBytes: bytes,
@@ -186,9 +191,8 @@ class _UploadButton extends StatelessWidget {
         );
     if (!context.mounted) return;
 
-    final l10n = AppLocalizations.of(context)!;
     final displayName = xFile.name.trim().isNotEmpty ? xFile.name : l10n.attachmentUnnamed;
-    ScaffoldMessenger.of(context).showSnackBar(
+    messenger.showSnackBar(
       SnackBar(
         content: Text(
           success

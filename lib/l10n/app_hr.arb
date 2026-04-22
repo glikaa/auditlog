@@ -33,6 +33,8 @@
   "measure": "Mjera",
   "rating": "Ocjena",
   "attachments": "Prilozi",
+  "auditClosingNote": "Dodatne napomene",
+  "auditClosingNoteHint": "Unesite sažetak ili završnu napomenu za ovaj audit",
 
   "completeAudit": "Završi",
   "completeAuditConfirm": "Želite li zaista završiti ovaj audit?",
