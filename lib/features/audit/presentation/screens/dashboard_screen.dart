@@ -39,7 +39,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         actions: [
           BlocBuilder<SettingsCubit, SettingsState>(
             builder: (context, settings) {
-              const reportRoles = {'department_head', 'district_manager'};
+              const reportRoles = {'admin', 'department_head', 'district_manager'};
               if (reportRoles.contains(settings.userRole)) {
                 return IconButton(
                   icon: const Icon(Icons.bar_chart),
@@ -376,6 +376,15 @@ class _AdminDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, AppRouter.adminAddQuestion);
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.bar_chart_outlined),
+            title: Text(l10n.reporting),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, AppRouter.reports);
             },
           ),
         ],
