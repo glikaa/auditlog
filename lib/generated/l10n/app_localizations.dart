@@ -133,7 +133,7 @@ abstract class AppLocalizations {
   /// No description provided for @passwordMinLength.
   ///
   /// In en, this message translates to:
-  /// **'Password must be at least {count} characters.'**
+  /// **'Password must be at least {count} characters'**
   String passwordMinLength(int count);
 
   /// No description provided for @fieldRequired.
@@ -639,12 +639,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Internal Audit Hint'**
   String get internalAuditHint;
-
-  /// No description provided for @passwordMinLength.
-  ///
-  /// In en, this message translates to:
-  /// **'Password must be at least {count} characters'**
-  String passwordMinLength(int count);
 
   /// No description provided for @createAudit.
   ///

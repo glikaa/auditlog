@@ -25,7 +25,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String passwordMinLength(int count) {
-    return 'Passwort muss mindestens $count Zeichen lang sein.';
+    return 'Passwort muss mindestens $count Zeichen lang sein';
   }
 
   @override
@@ -286,11 +286,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get internalAuditHint => 'Interner Prüfhinweis';
-
-  @override
-  String passwordMinLength(int count) {
-    return 'Passwort muss mindestens $count Zeichen lang sein';
-  }
 
   @override
   String get createAudit => 'Audit erstellen';
