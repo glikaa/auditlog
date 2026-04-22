@@ -165,7 +165,8 @@ class _AuditCard extends StatelessWidget {
               BlocBuilder<SettingsCubit, SettingsState>(
                 builder: (context, settings) {
                   const viewerRoles = {'branch_manager', 'district_manager', 'department_head'};
-                  if (viewerRoles.contains(settings.userRole)) {
+                  final role = settings.userRole?.trim();
+                  if (settings.isLoadingProfile || role == null || role.isEmpty || viewerRoles.contains(role)) {
                     return const SizedBox.shrink();
                   }
                   return IconButton(
