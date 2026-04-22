@@ -20,6 +20,7 @@ class UserBase(BaseModel):
     role: UserRole
     language: str = "de"
     country_code: str = "DE"
+    branch_id: Optional[str] = None
 
 
 class UserCreate(UserBase):

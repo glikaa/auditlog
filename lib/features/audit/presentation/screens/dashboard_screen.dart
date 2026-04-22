@@ -37,7 +37,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         actions: [
           BlocBuilder<SettingsCubit, SettingsState>(
             builder: (context, settings) {
-              const reportRoles = {'department_head', 'branch_manager', 'district_manager'};
+              const reportRoles = {'department_head', 'district_manager'};
               if (reportRoles.contains(settings.userRole)) {
                 return IconButton(
                   icon: const Icon(Icons.bar_chart),
