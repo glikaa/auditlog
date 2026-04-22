@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 import '../../../../generated/l10n/app_localizations.dart';
+import '../../../../core/widgets/formatted_text_field.dart';
 import '../../domain/entities/audit_response.dart';
 import '../../domain/entities/question.dart';
 import '../state/audit_detail_cubit.dart';
@@ -31,29 +33,41 @@ class QuestionCard extends StatefulWidget {
 }
 
 class _QuestionCardState extends State<QuestionCard> {
-  late final TextEditingController _findingController;
-  late final TextEditingController _measureController;
+  late QuillController _findingController;
+  late QuillController _measureController;
   Timer? _debounce;
+
+  // Track local edits so didUpdateWidget won't reset the controller (and cursor).
+  String _lastSavedFinding = '';
+  String _lastSavedMeasure = '';
 
   @override
   void initState() {
     super.initState();
-    _findingController = TextEditingController(
-      text: widget.response?.finding ?? '',
-    );
-    _measureController = TextEditingController(
-      text: widget.response?.measure ?? '',
-    );
+    _lastSavedFinding = widget.response?.finding ?? '';
+    _lastSavedMeasure = widget.response?.measure ?? '';
+    _findingController = quillControllerFromText(_lastSavedFinding);
+    _measureController = quillControllerFromText(_lastSavedMeasure);
   }
 
   @override
   void didUpdateWidget(covariant QuestionCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.response?.finding != widget.response?.finding) {
-      _findingController.text = widget.response?.finding ?? '';
+    final newFinding = widget.response?.finding ?? '';
+    final newMeasure = widget.response?.measure ?? '';
+
+    // Only recreate if the change came from outside (not from our own autosave).
+    if (newFinding != oldWidget.response?.finding &&
+        newFinding != _lastSavedFinding) {
+      _lastSavedFinding = newFinding;
+      _findingController.dispose();
+      _findingController = quillControllerFromText(newFinding);
     }
-    if (oldWidget.response?.measure != widget.response?.measure) {
-      _measureController.text = widget.response?.measure ?? '';
+    if (newMeasure != oldWidget.response?.measure &&
+        newMeasure != _lastSavedMeasure) {
+      _lastSavedMeasure = newMeasure;
+      _measureController.dispose();
+      _measureController = quillControllerFromText(newMeasure);
     }
   }
 
@@ -80,6 +94,10 @@ class _QuestionCardState extends State<QuestionCard> {
   }
 
   void _debouncedAutoSave({String? finding, String? measure}) {
+    // Remember what we're about to save so didUpdateWidget won't reset the cursor.
+    if (finding != null) _lastSavedFinding = finding;
+    if (measure != null) _lastSavedMeasure = measure;
+
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 800), () {
       _autoSave(finding: finding, measure: measure);
@@ -91,10 +109,14 @@ class _QuestionCardState extends State<QuestionCard> {
 
     String? measure;
     // If "no" is selected, pre-fill default measure if empty
-    if (rating == Rating.no && (widget.response?.measure.isEmpty ?? true)) {
+    if (rating == Rating.no &&
+        isQuillContentEmpty(widget.response?.measure ?? '')) {
       final lang = Localizations.localeOf(context).languageCode;
-      measure = widget.question.defaultMeasure(lang) ?? '';
-      _measureController.text = measure;
+      final defaultMeasure = widget.question.defaultMeasure(lang) ?? '';
+      if (defaultMeasure.isNotEmpty) {
+        setQuillPlainText(_measureController, defaultMeasure);
+        measure = quillToJson(_measureController);
+      }
     }
 
     _autoSave(rating: rating, measure: measure);
@@ -151,7 +173,7 @@ class _QuestionCardState extends State<QuestionCard> {
             const SizedBox(height: 12),
 
             // Feststellung (Finding) - free text, auto-expanding
-            TextField(
+            FormattedTextField(
               controller: _findingController,
               enabled: widget.isEditable,
               decoration: InputDecoration(
@@ -167,7 +189,7 @@ class _QuestionCardState extends State<QuestionCard> {
             const SizedBox(height: 8),
 
             // Maßnahme (Measure) - free text, auto-expanding
-            TextField(
+            FormattedTextField(
               controller: _measureController,
               enabled: widget.isEditable,
               decoration: InputDecoration(

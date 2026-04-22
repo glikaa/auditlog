@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 import 'core/network/api_client.dart';
 import 'core/router.dart';
@@ -64,6 +65,7 @@ class AuditApp extends StatelessWidget {
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
+              FlutterQuillLocalizations.delegate,
             ],
             supportedLocales: const [
               Locale('de'),
