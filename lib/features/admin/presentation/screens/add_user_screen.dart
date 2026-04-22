@@ -157,7 +157,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                 textInputAction: TextInputAction.next,
                 validator: (v) {
                   if (v == null || v.isEmpty) return l10n.fieldRequired;
-                  if (v.length < 8) return '≥ 8 Zeichen erforderlich';
+                  if (v.length < 8) return l10n.passwordMinLength(8);
                   return null;
                 },
               ),
