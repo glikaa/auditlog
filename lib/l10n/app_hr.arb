@@ -6,6 +6,7 @@
   "loginSubtitle": "Revizija poslovnica i upravljanje",
   "email": "E-pošta",
   "password": "Lozinka",
+  "passwordMinLength": "Lozinka mora imati najmanje {count} znakova.",
   "fieldRequired": "Ovo polje je obavezno.",
   "invalidEmail": "Unesite valjanu adresu e-pošte.",
 

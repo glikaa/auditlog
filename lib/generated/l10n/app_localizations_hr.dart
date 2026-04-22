@@ -24,6 +24,11 @@ class AppLocalizationsHr extends AppLocalizations {
   String get password => 'Lozinka';
 
   @override
+  String passwordMinLength(int count) {
+    return 'Lozinka mora imati najmanje $count znakova.';
+  }
+
+  @override
   String get fieldRequired => 'Ovo polje je obavezno.';
 
   @override

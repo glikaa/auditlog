@@ -24,6 +24,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get password => 'Passwort';
 
   @override
+  String passwordMinLength(int count) {
+    return 'Passwort muss mindestens $count Zeichen lang sein.';
+  }
+
+  @override
   String get fieldRequired => 'Dieses Feld ist erforderlich.';
 
   @override

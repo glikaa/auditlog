@@ -43,12 +43,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
   @override
   void initState() {
     super.initState();
-    final userRole = context.read<SettingsCubit>().state.userRole ?? '';
-    final canViewInternalHints = userRole == 'auditor' || userRole == 'admin';
-    context.read<AuditDetailCubit>().loadAudit(
-          widget.auditId,
-          canViewInternalHints: canViewInternalHints,
-        );
+    context.read<AuditDetailCubit>().loadAudit(widget.auditId);
   }
 
   @override
@@ -121,6 +116,9 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
       isLoadingProfile: settings.isLoadingProfile,
       userRole: settings.userRole,
     );
+    final userRole = settings.userRole?.trim() ?? '';
+    final canViewInternalHints =
+        userRole == 'auditor' || userRole == 'admin';
 
     return Scaffold(
       appBar: AppBar(
@@ -169,9 +167,9 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
         ],
       ),
       body: ResponsiveLayout(
-        mobile: _buildMobileLayout(categories, state, l10n),
-        tablet: _buildTabletLayout(categories, state, l10n),
-        desktop: _buildTabletLayout(categories, state, l10n),
+        mobile: _buildMobileLayout(categories, state, l10n, canViewInternalHints),
+        tablet: _buildTabletLayout(categories, state, l10n, canViewInternalHints),
+        desktop: _buildTabletLayout(categories, state, l10n, canViewInternalHints),
       ),
     );
   }
@@ -180,14 +178,17 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     Map<String, List<Question>> categories,
     AuditDetailLoaded state,
     AppLocalizations l10n,
+    bool canViewInternalHints,
   ) {
-    return _buildQuestionList(categories, state, l10n);
+    return _buildQuestionList(categories, state, l10n,
+        canViewInternalHints: canViewInternalHints);
   }
 
   Widget _buildTabletLayout(
     Map<String, List<Question>> categories,
     AuditDetailLoaded state,
     AppLocalizations l10n,
+    bool canViewInternalHints,
   ) {
     return Row(
       children: [
@@ -199,7 +200,8 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
         const VerticalDivider(width: 1),
         // Right: Questions list (TOC is in the info panel on tablet/desktop)
         Expanded(
-          child: _buildQuestionList(categories, state, l10n, showToc: false),
+          child: _buildQuestionList(categories, state, l10n,
+              showToc: false, canViewInternalHints: canViewInternalHints),
         ),
       ],
     );
@@ -320,12 +322,10 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AuditDetailLoaded state,
     AppLocalizations l10n, {
     bool showToc = true,
+    bool canViewInternalHints = false,
   }) {
     final entries = categories.entries.toList();
     final lang = Localizations.localeOf(context).languageCode;
-    final userRole = context.read<SettingsCubit>().state.userRole ?? '';
-    final canViewInternalHints =
-        userRole == 'auditor' || userRole == 'admin';
 
     // Pre-register all keys so they exist before any TOC tap fires.
     for (final entry in entries) {

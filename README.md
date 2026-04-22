@@ -164,7 +164,7 @@ flutter run -d chrome
 | admin@audit.de | admin123 | Administrator |
 | auditor@audit.de | auditor123 | Pruefer / Revision |
 | preparer@audit.de | preparer123 | Vorbereitende Person |
-| branch_berlin@audit.hr | branch123 | Filialleitung | -> 1 Filiale
+| branch_berlin@audit.de | branch123 | Filialleitung | -> 1 Filiale
 | department@audit.de | department123 | Abteilungsleitung | -> 1 Land
 | district@audit.de | district123 | Bezirksleitung | -> alle Länder
 

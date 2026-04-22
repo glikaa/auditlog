@@ -11,6 +11,12 @@
   "@email": {},
   "password": "Password",
   "@password": {},
+  "passwordMinLength": "Password must be at least {count} characters.",
+  "@passwordMinLength": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "fieldRequired": "This field is required.",
   "@fieldRequired": {},
   "invalidEmail": "Please enter a valid email address.",

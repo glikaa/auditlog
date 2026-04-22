@@ -24,6 +24,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get password => 'Password';
 
   @override
+  String passwordMinLength(int count) {
+    return 'Password must be at least $count characters.';
+  }
+
+  @override
   String get fieldRequired => 'This field is required.';
 
   @override
