@@ -186,4 +186,78 @@ class AuditDetailCubit extends Cubit<AuditDetailState> {
       attachmentId: attachmentId,
     );
   }
+
+  Future<bool> updateAttachmentReportRelevance({
+    required String auditId,
+    required String questionId,
+    required String attachmentId,
+    required bool isReportRelevant,
+  }) async {
+    final currentState = state;
+    if (currentState is! AuditDetailLoaded) return false;
+
+    final updatedResponses =
+        Map<String, AuditResponse>.from(currentState.responses);
+    final existing = updatedResponses[questionId];
+    if (existing == null) return false;
+
+    final originalAttachments = existing.attachments;
+    final optimisticAttachments = originalAttachments
+        .map(
+          (attachment) => attachment.id == attachmentId
+              ? Attachment(
+                  id: attachment.id,
+                  url: attachment.url,
+                  type: attachment.type,
+                  isReportRelevant: isReportRelevant,
+                  filename: attachment.filename,
+                  storedName: attachment.storedName,
+                )
+              : attachment,
+        )
+        .toList();
+
+    updatedResponses[questionId] = existing.copyWith(
+      attachments: optimisticAttachments,
+    );
+    emit(AuditDetailLoaded(
+      audit: currentState.audit,
+      questions: currentState.questions,
+      responses: updatedResponses,
+    ));
+
+    final result = await repository.updateAttachmentReportRelevance(
+      auditId: auditId,
+      questionId: questionId,
+      attachmentId: attachmentId,
+      isReportRelevant: isReportRelevant,
+    );
+
+    return result.fold(
+      (_) {
+        updatedResponses[questionId] = existing.copyWith(
+          attachments: originalAttachments,
+        );
+        emit(AuditDetailLoaded(
+          audit: currentState.audit,
+          questions: currentState.questions,
+          responses: updatedResponses,
+        ));
+        return false;
+      },
+      (attachment) {
+        updatedResponses[questionId] = existing.copyWith(
+          attachments: originalAttachments
+              .map((item) => item.id == attachmentId ? attachment : item)
+              .toList(),
+        );
+        emit(AuditDetailLoaded(
+          audit: currentState.audit,
+          questions: currentState.questions,
+          responses: updatedResponses,
+        ));
+        return true;
+      },
+    );
+  }
 }

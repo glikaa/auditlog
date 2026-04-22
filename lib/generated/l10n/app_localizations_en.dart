@@ -25,7 +25,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String passwordMinLength(int count) {
-    return 'Password must be at least $count characters.';
+    return 'Password must be at least $count characters';
   }
 
   @override
@@ -282,15 +282,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get attachmentReportRelevant => 'Show in report';
+
+  @override
+  String get attachmentReportRelevantUpdateError =>
+      'The attachment report relevance could not be updated.';
+
+  @override
   String get attachmentUnnamed => 'Unknown file';
 
   @override
   String get internalAuditHint => 'Internal Audit Hint';
-
-  @override
-  String passwordMinLength(int count) {
-    return 'Password must be at least $count characters';
-  }
 
   @override
   String get createAudit => 'Create Audit';

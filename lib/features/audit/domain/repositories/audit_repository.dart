@@ -61,6 +61,14 @@ abstract class AuditRepository {
     required String attachmentId,
   });
 
+  /// Update whether an attachment should appear in the PDF report.
+  Future<Either<Failure, Attachment>> updateAttachmentReportRelevance({
+    required String auditId,
+    required String questionId,
+    required String attachmentId,
+    required bool isReportRelevant,
+  });
+
   /// Delete an audit (admin only).
   Future<Either<Failure, void>> deleteAudit(String auditId);
 

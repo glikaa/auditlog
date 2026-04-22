@@ -133,7 +133,7 @@ abstract class AppLocalizations {
   /// No description provided for @passwordMinLength.
   ///
   /// In en, this message translates to:
-  /// **'Password must be at least {count} characters.'**
+  /// **'Password must be at least {count} characters'**
   String passwordMinLength(int count);
 
   /// No description provided for @fieldRequired.
@@ -628,6 +628,18 @@ abstract class AppLocalizations {
   /// **'Error uploading \"{fileName}\"'**
   String attachmentUploadError(String fileName);
 
+  /// No description provided for @attachmentReportRelevant.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in report'**
+  String get attachmentReportRelevant;
+
+  /// No description provided for @attachmentReportRelevantUpdateError.
+  ///
+  /// In en, this message translates to:
+  /// **'The attachment report relevance could not be updated.'**
+  String get attachmentReportRelevantUpdateError;
+
   /// No description provided for @attachmentUnnamed.
   ///
   /// In en, this message translates to:
@@ -639,12 +651,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Internal Audit Hint'**
   String get internalAuditHint;
-
-  /// No description provided for @passwordMinLength.
-  ///
-  /// In en, this message translates to:
-  /// **'Password must be at least {count} characters'**
-  String passwordMinLength(int count);
 
   /// No description provided for @createAudit.
   ///

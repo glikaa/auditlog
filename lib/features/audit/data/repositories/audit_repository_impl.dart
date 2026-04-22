@@ -233,6 +233,28 @@ class AuditRepositoryImpl implements AuditRepository {
   }
 
   @override
+  Future<Either<Failure, Attachment>> updateAttachmentReportRelevance({
+    required String auditId,
+    required String questionId,
+    required String attachmentId,
+    required bool isReportRelevant,
+  }) async {
+    try {
+      final attachment = await remote.updateAttachmentReportRelevance(
+        auditId: auditId,
+        questionId: questionId,
+        attachmentId: attachmentId,
+        isReportRelevant: isReportRelevant,
+      );
+      return Right(attachment);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> deleteAudit(String auditId) async {
     try {
       await remote.deleteAudit(auditId);

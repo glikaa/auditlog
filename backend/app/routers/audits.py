@@ -396,10 +396,6 @@ async def save_response(
                     q_data = q_doc.to_dict()
                     data["measure"] = q_data.get("default_measure_de", "")
 
-    data["updated_at"] = datetime.now(timezone.utc).isoformat()
-    data["question_id"] = question_id
-
-    # Auto-calculate comparison_result for Nachrevision audits
     existing_doc = (
         db.collection("audits")
         .document(audit_id)
@@ -407,6 +403,27 @@ async def save_response(
         .document(question_id)
         .get()
     )
+    data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    data["question_id"] = question_id
+
+    if existing_doc.exists:
+        existing = existing_doc.to_dict()
+
+        # Preserve attachment metadata the client does not know about,
+        # especially stored_name which is required for PDF image export.
+        existing_attachments = {
+            att.get("id"): att for att in existing.get("attachments", [])
+            if att.get("id")
+        }
+        merged_attachments = []
+        for attachment in data.get("attachments", []):
+            previous = existing_attachments.get(attachment.get("id"), {})
+            merged = dict(previous)
+            merged.update(attachment)
+            merged_attachments.append(merged)
+        data["attachments"] = merged_attachments
+
+    # Auto-calculate comparison_result for Nachrevision audits
     if existing_doc.exists:
         existing = existing_doc.to_dict()
         prev_rating = existing.get("previous_rating") or data.get("previous_rating")
@@ -501,6 +518,41 @@ async def upload_attachment(
     resp_ref.set({"attachments": attachments, "question_id": question_id}, merge=True)
 
     return attachment_data
+
+
+@router.put("/{audit_id}/responses/{question_id}/attachments/{attachment_id}")
+async def update_attachment(
+    audit_id: str,
+    question_id: str,
+    attachment_id: str,
+    is_report_relevant: bool = Form(...),
+    user: dict = Depends(get_current_user),
+):
+    """Update attachment metadata such as report relevance."""
+    db = get_db()
+    resp_ref = (
+        db.collection("audits")
+        .document(audit_id)
+        .collection("responses")
+        .document(question_id)
+    )
+    resp_doc = resp_ref.get()
+    if not resp_doc.exists:
+        raise HTTPException(status_code=404, detail="Response not found")
+
+    attachments = resp_doc.to_dict().get("attachments", [])
+    updated_attachment = None
+    for attachment in attachments:
+        if attachment.get("id") == attachment_id:
+            attachment["is_report_relevant"] = is_report_relevant
+            updated_attachment = attachment
+            break
+
+    if updated_attachment is None:
+        raise HTTPException(status_code=404, detail="Attachment not found")
+
+    resp_ref.update({"attachments": attachments})
+    return updated_attachment
 
 
 @router.get("/{audit_id}/responses/{question_id}/attachments/{attachment_id}/download")
@@ -600,6 +652,26 @@ def _safe(text):
     for orig, repl in replacements.items():
         text = text.replace(orig, repl)
     return text.encode('latin-1', 'replace').decode('latin-1')
+
+
+def _resolve_attachment_file(att):
+    """Resolve attachment file path even if stored_name was lost in Firestore."""
+    stored_name = att.get("stored_name", "")
+    if stored_name:
+        file_path = os.path.join(UPLOAD_DIR, stored_name)
+        if os.path.isfile(file_path):
+            return stored_name, file_path
+
+    attachment_id = att.get("id", "")
+    filename = att.get("filename", "") or ""
+    _, ext = os.path.splitext(filename)
+    if attachment_id and ext:
+        fallback_name = "{}{}".format(attachment_id, ext.lower())
+        file_path = os.path.join(UPLOAD_DIR, fallback_name)
+        if os.path.isfile(file_path):
+            return fallback_name, file_path
+
+    return "", ""
 
 
 @router.get("/{audit_id}/export/pdf")
@@ -734,21 +806,42 @@ async def export_audit_pdf(audit_id: str, user: dict = Depends(get_current_user)
                 pdf.cell(10, 5, "", border=0)
                 pdf.cell(0, 5, _safe("Massnahme: " + measure[:120]), border=0, ln=True)
 
-            # Report-relevant image attachments
+            # Report-relevant attachments
             attachments = resp.get("attachments", [])
             for att in attachments:
                 if not att.get("is_report_relevant", False):
                     continue
-                if att.get("type") != "image":
+                filename = att.get("filename") or att.get("stored_name") or "Anhang"
+                att_type = att.get("type", "document")
+
+                if att_type != "image":
+                    pdf.set_font("Arial", "I", 8)
+                    pdf.cell(10, 5, "", border=0)
+                    pdf.cell(
+                        0,
+                        5,
+                        _safe("Report-Anhang: {} ({})".format(filename[:80], att_type)),
+                        border=0,
+                        ln=True,
+                    )
                     continue
-                stored = att.get("stored_name", "")
-                img_path = os.path.join(UPLOAD_DIR, stored)
-                if not stored or not os.path.isfile(img_path):
+                stored, img_path = _resolve_attachment_file(att)
+                if not stored or not img_path:
                     continue
                 # Embed image – max width 80mm, auto height
                 pdf.cell(10, 5, "", border=0)
                 try:
                     pdf.image(img_path, x=pdf.get_x(), w=80)
+                    pdf.ln(1)
+                    pdf.set_font("Arial", "I", 8)
+                    pdf.cell(10, 5, "", border=0)
+                    pdf.cell(
+                        0,
+                        5,
+                        _safe("Bild-Anhang: {}".format(filename[:80])),
+                        border=0,
+                        ln=True,
+                    )
                 except Exception:
                     pdf.set_font("Arial", "I", 8)
                     pdf.cell(0, 5, _safe("[Bild konnte nicht geladen werden]"), border=0, ln=True)

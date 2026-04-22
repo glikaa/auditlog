@@ -102,6 +102,8 @@
   "attachmentReadError": "Datoteka se ne može pročitati",
   "attachmentUploadSuccess": "Privitak \"{fileName}\" učitan",
   "attachmentUploadError": "Pogreška pri učitavanju \"{fileName}\"",
+  "attachmentReportRelevant": "Prikazi u izvjescu",
+  "attachmentReportRelevantUpdateError": "Relevantnost priloga za izvjesce nije moguce azurirati.",
   "attachmentUnnamed": "Nepoznata datoteka",
   "@attachmentUnnamed": {},
   "internalAuditHint": "Interni revizijski savjet",
