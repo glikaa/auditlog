@@ -132,6 +132,7 @@ Der Server laeuft dann unter:
 
 ### 6. Frontend starten (neues Terminal)
 
+
 ```powershell
 cd c:\flutter_dev\my_app
 
