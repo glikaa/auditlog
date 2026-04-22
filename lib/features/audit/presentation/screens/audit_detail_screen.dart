@@ -14,12 +14,10 @@ import '../../domain/entities/audit.dart';
 import '../../domain/entities/audit_response.dart';
 import '../../domain/entities/question.dart';
 import '../../../settings/presentation/state/settings_cubit.dart';
-import '../../../settings/presentation/state/settings_state.dart';
 import '../state/audit_detail_cubit.dart';
 import '../state/audit_detail_state.dart';
 import '../state/audit_list_cubit.dart';
 import '../widgets/question_card.dart';
-import '../../../settings/presentation/state/settings_cubit.dart';
 
 class AuditDetailScreen extends StatefulWidget {
   final String auditId;
@@ -402,20 +400,6 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
                 ],
               ),
             ),
-            ...category.value.map((question) {
-              final response = state.responses[question.id];
-              return QuestionCard(
-                question: question,
-                response: response,
-                auditId: state.audit.id,
-                canViewInternalHints: canViewInternalHints,
-                isEditable: state.audit.status == AuditStatus.inProgress ||
-                    state.audit.status == AuditStatus.draft,
-              );
-            }),
-          ],
-        );
-      },
           ),
 
         // --- Category sections ---
@@ -441,6 +425,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
                   question: question,
                   response: response,
                   auditId: state.audit.id,
+                  canViewInternalHints: canViewInternalHints,
                   isEditable: state.audit.status == AuditStatus.inProgress ||
                       state.audit.status == AuditStatus.draft,
                 );

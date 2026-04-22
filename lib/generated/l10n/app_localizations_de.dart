@@ -260,14 +260,27 @@ class AppLocalizationsDe extends AppLocalizations {
   String get attachmentReadError => 'Datei konnte nicht gelesen werden';
 
   @override
-  String attachmentUploadSuccess(String fileName) => 'Anhang "$fileName" hochgeladen';
+  String attachmentUploadSuccess(String fileName) {
+    return 'Anhang \"$fileName\" hochgeladen';
+  }
 
   @override
-  String attachmentUploadError(String fileName) => 'Fehler beim Hochladen von "$fileName"';
+  String attachmentUploadError(String fileName) {
+    return 'Fehler beim Hochladen von \"$fileName\"';
+  }
 
   @override
   String get attachmentUnnamed => 'Unbekannte Datei';
+
+  @override
   String get internalAuditHint => 'Interner Prüfhinweis';
+
+  @override
+  String passwordMinLength(int count) {
+    return 'Passwort muss mindestens $count Zeichen lang sein';
+  }
+
+  @override
   String get createAudit => 'Audit erstellen';
 
   @override

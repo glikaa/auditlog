@@ -601,13 +601,13 @@ abstract class AppLocalizations {
   /// No description provided for @attachmentUploadSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Attachment "{fileName}" uploaded'**
+  /// **'Attachment \"{fileName}\" uploaded'**
   String attachmentUploadSuccess(String fileName);
 
   /// No description provided for @attachmentUploadError.
   ///
   /// In en, this message translates to:
-  /// **'Error uploading "{fileName}"'**
+  /// **'Error uploading \"{fileName}\"'**
   String attachmentUploadError(String fileName);
 
   /// No description provided for @attachmentUnnamed.
@@ -615,11 +615,19 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unknown file'**
   String get attachmentUnnamed;
+
   /// Label for internal audit hint visible to auditors/admins only
   ///
   /// In en, this message translates to:
   /// **'Internal Audit Hint'**
   String get internalAuditHint;
+
+  /// No description provided for @passwordMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least {count} characters'**
+  String passwordMinLength(int count);
+
   /// No description provided for @createAudit.
   ///
   /// In en, this message translates to:

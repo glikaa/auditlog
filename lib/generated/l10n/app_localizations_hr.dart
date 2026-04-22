@@ -259,14 +259,27 @@ class AppLocalizationsHr extends AppLocalizations {
   String get attachmentReadError => 'Datoteka se ne može pročitati';
 
   @override
-  String attachmentUploadSuccess(String fileName) => 'Privitak "$fileName" učitan';
+  String attachmentUploadSuccess(String fileName) {
+    return 'Privitak \"$fileName\" učitan';
+  }
 
   @override
-  String attachmentUploadError(String fileName) => 'Pogreška pri učitavanju "$fileName"';
+  String attachmentUploadError(String fileName) {
+    return 'Pogreška pri učitavanju \"$fileName\"';
+  }
 
   @override
   String get attachmentUnnamed => 'Nepoznata datoteka';
+
+  @override
   String get internalAuditHint => 'Interni revizijski savjet';
+
+  @override
+  String passwordMinLength(int count) {
+    return 'Lozinka mora imati najmanje $count znakova';
+  }
+
+  @override
   String get createAudit => 'Kreiraj audit';
 
   @override
