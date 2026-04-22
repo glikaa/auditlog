@@ -151,12 +151,13 @@ class _UploadButton extends StatelessWidget {
     if (!context.mounted) return;
 
     final l10n = AppLocalizations.of(context)!;
+    final displayName = file.name.trim().isNotEmpty ? file.name : l10n.attachmentUnnamed;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           success
-              ? l10n.attachmentUploadSuccess(file.name)
-              : l10n.attachmentUploadError(file.name),
+              ? l10n.attachmentUploadSuccess(displayName)
+              : l10n.attachmentUploadError(displayName),
         ),
         backgroundColor: success ? null : Colors.red,
         duration: const Duration(seconds: 2),
@@ -186,12 +187,13 @@ class _UploadButton extends StatelessWidget {
     if (!context.mounted) return;
 
     final l10n = AppLocalizations.of(context)!;
+    final displayName = xFile.name.trim().isNotEmpty ? xFile.name : l10n.attachmentUnnamed;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           success
-              ? l10n.attachmentUploadSuccess(xFile.name)
-              : l10n.attachmentUploadError(xFile.name),
+              ? l10n.attachmentUploadSuccess(displayName)
+              : l10n.attachmentUploadError(displayName),
         ),
         backgroundColor: success ? null : Colors.red,
         duration: const Duration(seconds: 2),
@@ -222,37 +224,43 @@ class _AttachmentChip extends StatelessWidget {
         ? attachment.filename!
         : attachment.id.substring(0, 8);
 
-    return Chip(
-      avatar: Icon(
-        icon,
-        size: 18,
-        color: iconColor,
-      ),
-      label: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            label,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.bodySmall,
-          ),
-          if (attachment.isReportRelevant) ...[
-            const SizedBox(width: 4),
-            Icon(Icons.visibility, size: 14, color: theme.colorScheme.primary),
+    return Tooltip(
+      message: label,
+      child: Chip(
+        avatar: Icon(
+          icon,
+          size: 18,
+          color: iconColor,
+        ),
+        label: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 120),
+              child: Text(
+                label,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall,
+              ),
+            ),
+            if (attachment.isReportRelevant) ...[
+              const SizedBox(width: 4),
+              Icon(Icons.visibility, size: 14, color: theme.colorScheme.primary),
+            ],
           ],
-        ],
+        ),
+        deleteIcon: isEditable ? const Icon(Icons.close, size: 16) : null,
+        onDeleted: isEditable
+            ? () {
+                context.read<AuditDetailCubit>().deleteAttachment(
+                      auditId: auditId,
+                      questionId: questionId,
+                      attachmentId: attachment.id,
+                    );
+              }
+            : null,
+        visualDensity: VisualDensity.compact,
       ),
-      deleteIcon: isEditable ? const Icon(Icons.close, size: 16) : null,
-      onDeleted: isEditable
-          ? () {
-              context.read<AuditDetailCubit>().deleteAttachment(
-                    auditId: auditId,
-                    questionId: questionId,
-                    attachmentId: attachment.id,
-                  );
-            }
-          : null,
-      visualDensity: VisualDensity.compact,
     );
   }
 

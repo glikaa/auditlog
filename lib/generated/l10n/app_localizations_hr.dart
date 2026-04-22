@@ -218,4 +218,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String attachmentUploadError(String fileName) => 'Pogreška pri učitavanju "$fileName"';
+
+  @override
+  String get attachmentUnnamed => 'Nepoznata datoteka';
 }

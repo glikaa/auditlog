@@ -519,6 +519,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error uploading "{fileName}"'**
   String attachmentUploadError(String fileName);
+
+  /// No description provided for @attachmentUnnamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown file'**
+  String get attachmentUnnamed;
 }
 
 class _AppLocalizationsDelegate

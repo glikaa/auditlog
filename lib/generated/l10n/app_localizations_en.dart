@@ -219,4 +219,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String attachmentUploadError(String fileName) => 'Error uploading "$fileName"';
+
+  @override
+  String get attachmentUnnamed => 'Unknown file';
 }

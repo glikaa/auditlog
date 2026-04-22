@@ -82,5 +82,6 @@
   "attachmentCamera": "Kamera",
   "attachmentReadError": "Datoteka se ne može pročitati",
   "attachmentUploadSuccess": "Privitak \"{fileName}\" učitan",
-  "attachmentUploadError": "Pogreška pri učitavanju \"{fileName}\""
+  "attachmentUploadError": "Pogreška pri učitavanju \"{fileName}\"",
+  "attachmentUnnamed": "Nepoznata datoteka"
 }

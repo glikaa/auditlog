@@ -160,5 +160,7 @@
     "placeholders": {
       "fileName": { "type": "String" }
     }
-  }
+  },
+  "attachmentUnnamed": "Unbekannte Datei",
+  "@attachmentUnnamed": {}
 }
