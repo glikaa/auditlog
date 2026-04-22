@@ -244,6 +244,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get pdfExportFailed => 'Izvoz PDF-a nije uspio';
 
   @override
+  String get internalAuditHint => 'Interni revizijski savjet';
   String get createAudit => 'Kreiraj audit';
 
   @override

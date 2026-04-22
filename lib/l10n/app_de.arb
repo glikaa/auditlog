@@ -170,6 +170,8 @@
   "pdfExportFailed": "PDF-Export fehlgeschlagen",
   "@pdfExportFailed": {},
 
+  "internalAuditHint": "Interner Prüfhinweis",
+  "@internalAuditHint": { "description": "Label for internal audit hint visible to auditors/admins only" }
   "createAudit": "Audit erstellen",
   "@createAudit": {},
   "auditCatalog": "Prüfkatalog",

@@ -17,6 +17,7 @@ import '../state/audit_detail_cubit.dart';
 import '../state/audit_detail_state.dart';
 import '../state/audit_list_cubit.dart';
 import '../widgets/question_card.dart';
+import '../../../settings/presentation/state/settings_cubit.dart';
 
 class AuditDetailScreen extends StatefulWidget {
   final String auditId;
@@ -42,7 +43,12 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<AuditDetailCubit>().loadAudit(widget.auditId);
+    final userRole = context.read<SettingsCubit>().state.userRole ?? '';
+    final canViewInternalHints = userRole == 'auditor' || userRole == 'admin';
+    context.read<AuditDetailCubit>().loadAudit(
+          widget.auditId,
+          canViewInternalHints: canViewInternalHints,
+        );
   }
 
   @override
@@ -317,6 +323,9 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
   }) {
     final entries = categories.entries.toList();
     final lang = Localizations.localeOf(context).languageCode;
+    final userRole = context.read<SettingsCubit>().state.userRole ?? '';
+    final canViewInternalHints =
+        userRole == 'auditor' || userRole == 'admin';
 
     // Pre-register all keys so they exist before any TOC tap fires.
     for (final entry in entries) {
@@ -391,6 +400,20 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
                 ],
               ),
             ),
+            ...category.value.map((question) {
+              final response = state.responses[question.id];
+              return QuestionCard(
+                question: question,
+                response: response,
+                auditId: state.audit.id,
+                canViewInternalHints: canViewInternalHints,
+                isEditable: state.audit.status == AuditStatus.inProgress ||
+                    state.audit.status == AuditStatus.draft,
+              );
+            }),
+          ],
+        );
+      },
           ),
 
         // --- Category sections ---

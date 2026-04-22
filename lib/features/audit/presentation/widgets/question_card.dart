@@ -15,11 +15,13 @@ class QuestionCard extends StatefulWidget {
   final AuditResponse? response;
   final String auditId;
   final bool isEditable;
+  final bool canViewInternalHints;
 
   const QuestionCard({
     required this.question,
     required this.response,
     required this.auditId,
+    required this.canViewInternalHints,
     this.isEditable = true,
     super.key,
   });
@@ -103,6 +105,7 @@ class _QuestionCardState extends State<QuestionCard> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     final lang = Localizations.localeOf(context).languageCode;
+    final internalHint = widget.question.internalNote(lang);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -128,6 +131,13 @@ class _QuestionCardState extends State<QuestionCard> {
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
+            ],
+
+            if (widget.canViewInternalHints &&
+                internalHint != null &&
+                internalHint.trim().isNotEmpty) ...[
+              const SizedBox(height: 12),
+              _InternalHintCard(hint: internalHint.trim(), label: l10n.internalAuditHint),
             ],
 
             const SizedBox(height: 12),
@@ -190,6 +200,56 @@ class _QuestionCardState extends State<QuestionCard> {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _InternalHintCard extends StatelessWidget {
+  final String hint;
+  final String label;
+
+  const _InternalHintCard({required this.hint, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.visibility,
+                size: 18,
+                color: theme.colorScheme.onSecondaryContainer,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.onSecondaryContainer,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            hint,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSecondaryContainer,
+            ),
+          ),
+        ],
       ),
     );
   }

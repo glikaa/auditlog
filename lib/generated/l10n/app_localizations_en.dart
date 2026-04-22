@@ -245,6 +245,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pdfExportFailed => 'PDF export failed';
 
   @override
+  String get internalAuditHint => 'Internal Audit Hint';
   String get createAudit => 'Create Audit';
 
   @override

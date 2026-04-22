@@ -34,6 +34,19 @@ class SettingsCubit extends Cubit<SettingsState> {
     emit(state.copyWith(themeMode: mode));
   }
 
+  void setProfile({
+    required String userName,
+    required String userEmail,
+    required String userRole,
+    required String userCountry,
+  }) {
+    emit(state.copyWith(
+      userName: userName,
+      userEmail: userEmail,
+      userRole: userRole,
+      userCountry: userCountry,
+      isLoadingProfile: false,
+    ));
   Future<void> _persistLocale(Locale locale) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_localeKey, locale.languageCode);

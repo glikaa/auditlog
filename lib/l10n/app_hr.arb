@@ -92,6 +92,7 @@
   "pdfDownloaded": "PDF preuzet!",
   "pdfExportFailed": "Izvoz PDF-a nije uspio",
 
+  "internalAuditHint": "Interni revizijski savjet"
   "createAudit": "Kreiraj audit",
   "auditCatalog": "Katalog revizije",
   "selectCatalog": "Odaberi katalog",

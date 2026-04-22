@@ -568,6 +568,11 @@ abstract class AppLocalizations {
   /// **'PDF export failed'**
   String get pdfExportFailed;
 
+  /// Label for internal audit hint visible to auditors/admins only
+  ///
+  /// In en, this message translates to:
+  /// **'Internal Audit Hint'**
+  String get internalAuditHint;
   /// No description provided for @createAudit.
   ///
   /// In en, this message translates to:

@@ -170,6 +170,8 @@
   "pdfExportFailed": "PDF export failed",
   "@pdfExportFailed": {},
 
+  "internalAuditHint": "Internal Audit Hint",
+  "@internalAuditHint": { "description": "Label for internal audit hint visible to auditors/admins only" }
   "createAudit": "Create Audit",
   "@createAudit": {},
   "auditCatalog": "Audit Catalog",
