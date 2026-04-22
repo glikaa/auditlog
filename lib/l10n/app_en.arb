@@ -137,5 +137,28 @@
   "pdfDownloaded": "PDF downloaded!",
   "@pdfDownloaded": {},
   "pdfExportFailed": "PDF export failed",
-  "@pdfExportFailed": {}
+  "@pdfExportFailed": {},
+
+  "addAttachment": "Add attachment",
+  "@addAttachment": {},
+  "attachmentFile": "File",
+  "@attachmentFile": {},
+  "attachmentGallery": "Gallery",
+  "@attachmentGallery": {},
+  "attachmentCamera": "Camera",
+  "@attachmentCamera": {},
+  "attachmentReadError": "File could not be read",
+  "@attachmentReadError": {},
+  "attachmentUploadSuccess": "Attachment \"{fileName}\" uploaded",
+  "@attachmentUploadSuccess": {
+    "placeholders": {
+      "fileName": { "type": "String" }
+    }
+  },
+  "attachmentUploadError": "Error uploading \"{fileName}\"",
+  "@attachmentUploadError": {
+    "placeholders": {
+      "fileName": { "type": "String" }
+    }
+  }
 }

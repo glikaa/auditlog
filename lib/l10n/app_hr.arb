@@ -74,5 +74,13 @@
 
   "pdfCreating": "Izrada PDF-a...",
   "pdfDownloaded": "PDF preuzet!",
-  "pdfExportFailed": "Izvoz PDF-a nije uspio"
+  "pdfExportFailed": "Izvoz PDF-a nije uspio",
+
+  "addAttachment": "Dodaj privitak",
+  "attachmentFile": "Datoteka",
+  "attachmentGallery": "Galerija",
+  "attachmentCamera": "Kamera",
+  "attachmentReadError": "Datoteka se ne može pročitati",
+  "attachmentUploadSuccess": "Privitak \"{fileName}\" učitan",
+  "attachmentUploadError": "Pogreška pri učitavanju \"{fileName}\""
 }

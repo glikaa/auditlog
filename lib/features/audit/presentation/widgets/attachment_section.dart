@@ -73,9 +73,10 @@ class _UploadButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return PopupMenuButton<String>(
       icon: const Icon(Icons.add_photo_alternate_outlined, size: 20),
-      tooltip: 'Anhang hinzufuegen',
+      tooltip: l10n.addAttachment,
       onSelected: (value) async {
         if (value == 'camera') {
           await _pickImage(context, ImageSource.camera);
@@ -86,35 +87,35 @@ class _UploadButton extends StatelessWidget {
         }
       },
       itemBuilder: (context) => [
-        const PopupMenuItem(
-          value: 'file',
-          child: ListTile(
-            leading: Icon(Icons.upload_file),
-            title: Text('Datei'),
-            subtitle: Text('PDF, DOCX, XLSX'),
-            contentPadding: EdgeInsets.zero,
-            dense: true,
+          PopupMenuItem(
+            value: 'file',
+            child: ListTile(
+              leading: const Icon(Icons.upload_file),
+              title: Text(l10n.attachmentFile),
+              subtitle: const Text('PDF, DOCX, XLSX'),
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+            ),
           ),
-        ),
-        const PopupMenuItem(
-          value: 'gallery',
-          child: ListTile(
-            leading: Icon(Icons.photo_library),
-            title: Text('Galerie'),
-            contentPadding: EdgeInsets.zero,
-            dense: true,
+          PopupMenuItem(
+            value: 'gallery',
+            child: ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: Text(l10n.attachmentGallery),
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+            ),
           ),
-        ),
-        const PopupMenuItem(
-          value: 'camera',
-          child: ListTile(
-            leading: Icon(Icons.camera_alt),
-            title: Text('Kamera'),
-            contentPadding: EdgeInsets.zero,
-            dense: true,
+          PopupMenuItem(
+            value: 'camera',
+            child: ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: Text(l10n.attachmentCamera),
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+            ),
           ),
-        ),
-      ],
+        ],
     );
   }
 
@@ -131,9 +132,10 @@ class _UploadButton extends StatelessWidget {
     final bytes = file.bytes;
     if (bytes == null) {
       if (!context.mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Datei konnte nicht gelesen werden'),
+        SnackBar(
+          content: Text(l10n.attachmentReadError),
           backgroundColor: Colors.red,
         ),
       );
@@ -148,12 +150,13 @@ class _UploadButton extends StatelessWidget {
         );
     if (!context.mounted) return;
 
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           success
-              ? 'Anhang "${file.name}" hochgeladen'
-              : 'Fehler beim Hochladen von "${file.name}"',
+              ? l10n.attachmentUploadSuccess(file.name)
+              : l10n.attachmentUploadError(file.name),
         ),
         backgroundColor: success ? null : Colors.red,
         duration: const Duration(seconds: 2),
@@ -182,12 +185,13 @@ class _UploadButton extends StatelessWidget {
         );
     if (!context.mounted) return;
 
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           success
-              ? 'Anhang "${xFile.name}" hochgeladen'
-              : 'Fehler beim Hochladen von "${xFile.name}"',
+              ? l10n.attachmentUploadSuccess(xFile.name)
+              : l10n.attachmentUploadError(xFile.name),
         ),
         backgroundColor: success ? null : Colors.red,
         duration: const Duration(seconds: 2),

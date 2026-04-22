@@ -137,5 +137,28 @@
   "pdfDownloaded": "PDF heruntergeladen!",
   "@pdfDownloaded": {},
   "pdfExportFailed": "PDF-Export fehlgeschlagen",
-  "@pdfExportFailed": {}
+  "@pdfExportFailed": {},
+
+  "addAttachment": "Anhang hinzufügen",
+  "@addAttachment": {},
+  "attachmentFile": "Datei",
+  "@attachmentFile": {},
+  "attachmentGallery": "Galerie",
+  "@attachmentGallery": {},
+  "attachmentCamera": "Kamera",
+  "@attachmentCamera": {},
+  "attachmentReadError": "Datei konnte nicht gelesen werden",
+  "@attachmentReadError": {},
+  "attachmentUploadSuccess": "Anhang \"{fileName}\" hochgeladen",
+  "@attachmentUploadSuccess": {
+    "placeholders": {
+      "fileName": { "type": "String" }
+    }
+  },
+  "attachmentUploadError": "Fehler beim Hochladen von \"{fileName}\"",
+  "@attachmentUploadError": {
+    "placeholders": {
+      "fileName": { "type": "String" }
+    }
+  }
 }

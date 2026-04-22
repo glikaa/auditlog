@@ -197,4 +197,25 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get pdfExportFailed => 'Izvoz PDF-a nije uspio';
+
+  @override
+  String get addAttachment => 'Dodaj privitak';
+
+  @override
+  String get attachmentFile => 'Datoteka';
+
+  @override
+  String get attachmentGallery => 'Galerija';
+
+  @override
+  String get attachmentCamera => 'Kamera';
+
+  @override
+  String get attachmentReadError => 'Datoteka se ne može pročitati';
+
+  @override
+  String attachmentUploadSuccess(String fileName) => 'Privitak "$fileName" učitan';
+
+  @override
+  String attachmentUploadError(String fileName) => 'Pogreška pri učitavanju "$fileName"';
 }

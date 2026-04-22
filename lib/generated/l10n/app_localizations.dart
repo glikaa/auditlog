@@ -477,6 +477,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'PDF export failed'**
   String get pdfExportFailed;
+
+  /// No description provided for @addAttachment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add attachment'**
+  String get addAttachment;
+
+  /// No description provided for @attachmentFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get attachmentFile;
+
+  /// No description provided for @attachmentGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get attachmentGallery;
+
+  /// No description provided for @attachmentCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get attachmentCamera;
+
+  /// No description provided for @attachmentReadError.
+  ///
+  /// In en, this message translates to:
+  /// **'File could not be read'**
+  String get attachmentReadError;
+
+  /// No description provided for @attachmentUploadSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachment "{fileName}" uploaded'**
+  String attachmentUploadSuccess(String fileName);
+
+  /// No description provided for @attachmentUploadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error uploading "{fileName}"'**
+  String attachmentUploadError(String fileName);
 }
 
 class _AppLocalizationsDelegate

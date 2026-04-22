@@ -198,4 +198,25 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get pdfExportFailed => 'PDF-Export fehlgeschlagen';
+
+  @override
+  String get addAttachment => 'Anhang hinzufügen';
+
+  @override
+  String get attachmentFile => 'Datei';
+
+  @override
+  String get attachmentGallery => 'Galerie';
+
+  @override
+  String get attachmentCamera => 'Kamera';
+
+  @override
+  String get attachmentReadError => 'Datei konnte nicht gelesen werden';
+
+  @override
+  String attachmentUploadSuccess(String fileName) => 'Anhang "$fileName" hochgeladen';
+
+  @override
+  String attachmentUploadError(String fileName) => 'Fehler beim Hochladen von "$fileName"';
 }
