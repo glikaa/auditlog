@@ -34,8 +34,10 @@ async def list_audits(user: dict = Depends(get_current_user)):
     db = get_db()
     query = db.collection("audits")
 
-    # Branch managers only see released audits
-    if user["role"] in ("branch_manager", "district_manager"):
+    _VIEWER_ROLES = ("branch_manager", "district_manager", "department_head")
+
+    # These roles only see released audits (no drafts/in-progress/completed)
+    if user["role"] in _VIEWER_ROLES:
         query = query.where("status", "==", "released")
 
     docs = query.stream()
@@ -44,6 +46,9 @@ async def list_audits(user: dict = Depends(get_current_user)):
     for doc in docs:
         data = doc.to_dict()
         data["id"] = doc.id
+        # Viewer roles must not see Nachrevisionen
+        if user["role"] in _VIEWER_ROLES and data.get("is_nachrevision"):
+            continue
         audits.append(AuditOut(**data))
     audits.sort(key=lambda a: a.created_at, reverse=True)
     return audits
@@ -55,7 +60,7 @@ async def create_audit(
     user: dict = Depends(get_current_user),
 ):
     """Create a new audit."""
-    if user["role"] in ("branch_manager", "district_manager"):
+    if user["role"] in ("branch_manager", "district_manager", "department_head"):
         raise HTTPException(status_code=403, detail="Not allowed to create audits")
 
     db = get_db()
@@ -90,10 +95,12 @@ async def get_audit(audit_id: str, user: dict = Depends(get_current_user)):
     data = doc.to_dict()
     data["id"] = doc.id
 
-    # Access control
-    if user["role"] in ("branch_manager", "district_manager"):
+    # Access control – viewer roles only see released, non-Nachrevision audits
+    if user["role"] in ("branch_manager", "district_manager", "department_head"):
         if data.get("status") != "released":
             raise HTTPException(status_code=403, detail="Audit not released yet")
+        if data.get("is_nachrevision"):
+            raise HTTPException(status_code=403, detail="Not allowed to view Nachrevision")
 
     return AuditOut(**data)
 

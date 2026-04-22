@@ -129,6 +129,7 @@ Der Server laeuft dann unter:
 > **Wichtig:** Das Backend muss laufen, bevor die Flutter-App gestartet wird!
 > Ohne laufendes Backend schlaegt jeder HTTP-Request fehl
 > (`XMLHttpRequest error` / `DioException`).
+> Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }
 
 ### 6. Frontend starten (neues Terminal)
 

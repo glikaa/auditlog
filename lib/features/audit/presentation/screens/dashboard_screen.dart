@@ -94,17 +94,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return const SizedBox.shrink();
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          final repository = context.read<AuditListCubit>().repository;
-          Navigator.pushNamed(
-            context,
-            AppRouter.createAudit,
-            arguments: CreateAuditCubit(repository: repository),
+      floatingActionButton: BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (context, settings) {
+          const viewerRoles = {'branch_manager', 'district_manager', 'department_head'};
+          final userRole = settings.userRole?.trim();
+          if (settings.isLoadingProfile || userRole == null || userRole.isEmpty) {
+            return const SizedBox.shrink();
+          }
+          if (viewerRoles.contains(userRole)) {
+            return const SizedBox.shrink();
+          }
+          return FloatingActionButton.extended(
+            onPressed: () {
+              final repository = context.read<AuditListCubit>().repository;
+              Navigator.pushNamed(
+                context,
+                AppRouter.createAudit,
+                arguments: CreateAuditCubit(repository: repository),
+              );
+            },
+            icon: const Icon(Icons.add),
+            label: Text(l10n.newAudit),
           );
         },
-        icon: const Icon(Icons.add),
-        label: Text(l10n.newAudit),
       ),
     );
   }
@@ -150,10 +162,19 @@ class _AuditCard extends StatelessWidget {
             if ((audit.status == AuditStatus.completed ||
                     audit.status == AuditStatus.released) &&
                 !audit.isNachrevision)
-              IconButton(
-                icon: const Icon(Icons.compare_arrows, size: 20),
-                tooltip: l10n.startNachrevision,
-                onPressed: () => _startNachrevision(context, audit.id),
+              BlocBuilder<SettingsCubit, SettingsState>(
+                builder: (context, settings) {
+                  const viewerRoles = {'branch_manager', 'district_manager', 'department_head'};
+                  final role = settings.userRole?.trim();
+                  if (settings.isLoadingProfile || role == null || role.isEmpty || viewerRoles.contains(role)) {
+                    return const SizedBox.shrink();
+                  }
+                  return IconButton(
+                    icon: const Icon(Icons.compare_arrows, size: 20),
+                    tooltip: l10n.startNachrevision,
+                    onPressed: () => _startNachrevision(context, audit.id),
+                  );
+                },
               ),
             BlocBuilder<SettingsCubit, SettingsState>(
               builder: (context, settings) {

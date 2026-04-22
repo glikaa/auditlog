@@ -11,6 +11,8 @@ import '../../../../generated/l10n/app_localizations.dart';
 import '../../domain/entities/audit.dart';
 import '../../domain/entities/audit_response.dart';
 import '../../domain/entities/question.dart';
+import '../../../settings/presentation/state/settings_cubit.dart';
+import '../../../settings/presentation/state/settings_state.dart';
 import '../state/audit_detail_cubit.dart';
 import '../state/audit_detail_state.dart';
 import '../state/audit_list_cubit.dart';
@@ -26,6 +28,12 @@ class AuditDetailScreen extends StatefulWidget {
 }
 
 class _AuditDetailScreenState extends State<AuditDetailScreen> {
+  static const Set<String> _viewerRoles = {
+    'branch_manager',
+    'district_manager',
+    'department_head',
+  };
+
   // Shared keys: both the info-panel TOC and the question list use these.
   final _categoryKeys = <String, GlobalKey>{};
   final _questionScrollController = ScrollController();
@@ -53,6 +61,16 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
+  }
+
+  bool _canManageAuditActions({
+    required bool isLoadingProfile,
+    required String? userRole,
+  }) {
+    if (isLoadingProfile) return false;
+    final trimmedUserRole = userRole?.trim();
+    return (trimmedUserRole?.isNotEmpty ?? false) &&
+        !_viewerRoles.contains(trimmedUserRole);
   }
 
   @override
@@ -87,6 +105,16 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AppLocalizations l10n,
   ) {
     final categories = state.questionsByCategory;
+    final settings = context.select(
+      (SettingsCubit cubit) => (
+        isLoadingProfile: cubit.state.isLoadingProfile,
+        userRole: cubit.state.userRole,
+      ),
+    );
+    final canManageAuditActions = _canManageAuditActions(
+      isLoadingProfile: settings.isLoadingProfile,
+      userRole: settings.userRole,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -109,7 +137,8 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
             tooltip: 'PDF Export',
             onPressed: () => _exportPdf(context, state.audit.id),
           ),
-          if ((state.audit.status == AuditStatus.completed ||
+          if (canManageAuditActions &&
+              (state.audit.status == AuditStatus.completed ||
                   state.audit.status == AuditStatus.released) &&
               !state.audit.isNachrevision)
             IconButton(
@@ -117,14 +146,15 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
               tooltip: l10n.startNachrevision,
               onPressed: () => _startNachrevision(context, state.audit.id),
             ),
-          if (state.audit.status == AuditStatus.draft ||
-              state.audit.status == AuditStatus.inProgress)
+          if (canManageAuditActions &&
+              (state.audit.status == AuditStatus.draft ||
+                  state.audit.status == AuditStatus.inProgress))
             TextButton.icon(
               onPressed: () => _completeAudit(context, state.audit.id),
               icon: const Icon(Icons.check),
               label: Text(l10n.completeAudit),
             ),
-          if (state.audit.status == AuditStatus.completed)
+          if (canManageAuditActions && state.audit.status == AuditStatus.completed)
             TextButton.icon(
               onPressed: () => _releaseAudit(context, state.audit.id),
               icon: const Icon(Icons.verified),
