@@ -46,7 +46,6 @@ DEMO_USERS = [
         "role": "branch_manager",
         "language": "de",
         "country_code": "DE",
-        "branch_id": "branch-berlin",
     },
     {
         "name": "Peter Bezirksleiter",

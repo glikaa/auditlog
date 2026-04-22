@@ -513,6 +513,7 @@ BRANCHES = [
         "name": "Filiale Berlin Mitte",
         "country_code": "DE",
         "address": "Friedrichstr. 100, 10117 Berlin",
+        "manager_email": "branch_berlin@audit.de",
     },
     {
         "id": "branch-munich",
@@ -557,10 +558,25 @@ def seed():
     cat_ref.update({"question_count": len(QUESTIONS)})
     print("\n  {} new questions added (total {}).".format(q_count, len(QUESTIONS)))
 
-    # --- 3. Create branches ---
+    # --- 3. Create branches and assign manager ---
     for b in BRANCHES:
         b_ref = db.collection("branches").document(b["id"])
+        manager_email = b.pop("manager_email", None)
+        # Look up manager user and link both ways
+        manager_id = None
+        if manager_email:
+            mgr_docs = db.collection("users").where("email", "==", manager_email).limit(1).stream()
+            mgr_doc = next(mgr_docs, None)
+            if mgr_doc:
+                manager_id = mgr_doc.id
+                b["manager_id"] = manager_id
+                # Assign branch_id to the manager user
+                mgr_doc.reference.update({"branch_id": b["id"]})
+                print("  LINK  {} -> {}".format(manager_email, b["id"]))
         if b_ref.get().exists:
+            # Update existing branch with manager_id if needed
+            if manager_id:
+                b_ref.update({"manager_id": manager_id})
             print("  SKIP  Branch '{}' (exists)".format(b["name"]))
         else:
             b_ref.set(b)
