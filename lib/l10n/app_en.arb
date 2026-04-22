@@ -11,6 +11,12 @@
   "@email": {},
   "password": "Password",
   "@password": {},
+  "passwordMinLength": "Password must be at least {count} characters.",
+  "@passwordMinLength": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "fieldRequired": "This field is required.",
   "@fieldRequired": {},
   "invalidEmail": "Please enter a valid email address.",
@@ -193,9 +199,9 @@
     }
   },
   "attachmentUnnamed": "Unknown file",
-  "@attachmentUnnamed": {}
+  "@attachmentUnnamed": {},
   "internalAuditHint": "Internal Audit Hint",
-  "@internalAuditHint": { "description": "Label for internal audit hint visible to auditors/admins only" }
+  "@internalAuditHint": { "description": "Label for internal audit hint visible to auditors/admins only" },
   "createAudit": "Create Audit",
   "@createAudit": {},
   "auditCatalog": "Audit Catalog",
