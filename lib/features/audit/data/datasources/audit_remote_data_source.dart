@@ -131,6 +131,7 @@ class AuditRemoteDataSource {
         url: data['url'] as String,
         type: data['type'] as String,
         isReportRelevant: data['is_report_relevant'] as bool? ?? true,
+        filename: data['filename'] as String?,
       );
     } on DioException catch (e) {
       throw ApiClient.mapDioError(e);

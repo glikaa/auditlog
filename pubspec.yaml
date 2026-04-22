@@ -23,6 +23,9 @@ dependencies:
   # Image picking (avatar upload)
   image_picker: ^1.1.2
 
+  # Picking arbitrary files such as pdf, docx and xlsx
+  file_picker: ^8.1.2
+
   # Functional programming / error handling
   dartz: ^0.10.1
 

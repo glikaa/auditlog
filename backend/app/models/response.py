@@ -20,8 +20,9 @@ class ComparisonResult(str, Enum):
 class AttachmentData(BaseModel):
     id: str
     url: str
-    type: str  # "image" or "pdf"
+    type: str  # "image", "pdf", or "document"
     is_report_relevant: bool = True
+    filename: Optional[str] = None
 
 
 class ResponseUpdate(BaseModel):
