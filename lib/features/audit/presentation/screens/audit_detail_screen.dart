@@ -15,6 +15,7 @@ import '../state/audit_detail_cubit.dart';
 import '../state/audit_detail_state.dart';
 import '../state/audit_list_cubit.dart';
 import '../widgets/question_card.dart';
+import '../../../settings/presentation/state/settings_cubit.dart';
 
 class AuditDetailScreen extends StatefulWidget {
   final String auditId;
@@ -215,6 +216,9 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
   ) {
     final entries = categories.entries.toList();
     final lang = Localizations.localeOf(context).languageCode;
+    final userRole = context.read<SettingsCubit>().state.userRole ?? '';
+    final canViewInternalHints =
+        userRole == 'auditor' || userRole == 'admin';
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -241,6 +245,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
                 question: question,
                 response: response,
                 auditId: state.audit.id,
+                canViewInternalHints: canViewInternalHints,
                 isEditable: state.audit.status == AuditStatus.inProgress ||
                     state.audit.status == AuditStatus.draft,
               );

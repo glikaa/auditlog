@@ -15,6 +15,21 @@ class SettingsCubit extends Cubit<SettingsState> {
     emit(state.copyWith(themeMode: mode));
   }
 
+  void setProfile({
+    required String userName,
+    required String userEmail,
+    required String userRole,
+    required String userCountry,
+  }) {
+    emit(state.copyWith(
+      userName: userName,
+      userEmail: userEmail,
+      userRole: userRole,
+      userCountry: userCountry,
+      isLoadingProfile: false,
+    ));
+  }
+
   Future<void> loadProfile() async {
     emit(state.copyWith(isLoadingProfile: true));
     try {
