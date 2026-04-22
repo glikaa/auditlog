@@ -30,7 +30,12 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<AuditDetailCubit>().loadAudit(widget.auditId);
+    final userRole = context.read<SettingsCubit>().state.userRole ?? '';
+    final canViewInternalHints = userRole == 'auditor' || userRole == 'admin';
+    context.read<AuditDetailCubit>().loadAudit(
+          widget.auditId,
+          canViewInternalHints: canViewInternalHints,
+        );
   }
 
   @override

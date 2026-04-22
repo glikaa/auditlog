@@ -10,7 +10,7 @@ class AuditDetailCubit extends Cubit<AuditDetailState> {
   AuditDetailCubit({required this.repository})
       : super(const AuditDetailInitial());
 
-  Future<void> loadAudit(String auditId) async {
+  Future<void> loadAudit(String auditId, {bool canViewInternalHints = false}) async {
     emit(const AuditDetailLoading());
 
     final auditResult = await repository.getAudit(auditId);
@@ -25,6 +25,13 @@ class AuditDetailCubit extends Cubit<AuditDetailState> {
         questionsResult.fold(
           (failure) => emit(AuditDetailError(failure.message)),
           (questions) {
+            // Strip internal notes from memory for users without permission
+            final processedQuestions = canViewInternalHints
+                ? questions
+                : questions
+                    .map((q) => q.copyWithoutInternalNotes())
+                    .toList();
+
             final responses = <String, AuditResponse>{};
             responsesResult.fold(
               (_) {}, // Ignore response errors, start with empty
@@ -37,7 +44,7 @@ class AuditDetailCubit extends Cubit<AuditDetailState> {
 
             emit(AuditDetailLoaded(
               audit: audit,
-              questions: questions,
+              questions: processedQuestions,
               responses: responses,
             ));
           },
