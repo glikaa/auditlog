@@ -1065,13 +1065,15 @@ def seed_multi_country():
             print("  OK    Catalog '{}' ({}) created.".format(cat_id, country_code))
 
         # --- Questions (overwrite to fix language mapping) ---
+        # Map local order (1-10) to shared DE master-question IDs
+        _MASTER_MAP = {1: 1, 2: 3, 3: 8, 4: 9, 5: 12, 6: 13, 7: 16, 8: 17, 9: 20, 10: 21}
         for q in questions:
             q_id = "q-{}-{}".format(country_code.lower(), q["order"])
             q_ref = db.collection("questions").document(q_id)
             q_data = dict(q)
             q_data["id"] = q_id
             q_data["catalog_id"] = cat_id
-            q_data["master_question_id"] = "master-{}-{}".format(country_code.lower(), q["order"])
+            q_data["master_question_id"] = "master-{}".format(_MASTER_MAP.get(q["order"], q["order"]))
             q_ref.set(q_data)
         print("  OK    {} questions seeded for {}.".format(len(questions), country_code))
 

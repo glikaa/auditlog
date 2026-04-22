@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../domain/entities/branch_report.dart';
 import '../../domain/entities/country_comparison.dart';
+import '../../domain/entities/master_question.dart';
 import '../../domain/entities/question_stat.dart';
 
 abstract class ReportState extends Equatable {
@@ -47,6 +48,15 @@ class CountryComparisonLoaded extends ReportState {
 
   @override
   List<Object?> get props => [comparison];
+}
+
+class MasterQuestionsLoaded extends ReportState {
+  final List<MasterQuestion> questions;
+
+  const MasterQuestionsLoaded(this.questions);
+
+  @override
+  List<Object?> get props => [questions];
 }
 
 class ReportError extends ReportState {

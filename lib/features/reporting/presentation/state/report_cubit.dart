@@ -38,4 +38,13 @@ class ReportCubit extends Cubit<ReportState> {
       (comparison) => emit(CountryComparisonLoaded(comparison)),
     );
   }
+
+  Future<void> loadMasterQuestions() async {
+    emit(const ReportLoading());
+    final result = await repository.getMasterQuestions();
+    result.fold(
+      (failure) => emit(ReportError(failure.message)),
+      (questions) => emit(MasterQuestionsLoaded(questions)),
+    );
+  }
 }
