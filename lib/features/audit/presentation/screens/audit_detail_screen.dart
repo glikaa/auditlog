@@ -28,6 +28,12 @@ class AuditDetailScreen extends StatefulWidget {
 }
 
 class _AuditDetailScreenState extends State<AuditDetailScreen> {
+  static const Set<String> _viewerRoles = {
+    'branch_manager',
+    'district_manager',
+    'department_head',
+  };
+
   // Shared keys: both the info-panel TOC and the question list use these.
   final _categoryKeys = <String, GlobalKey>{};
   final _questionScrollController = ScrollController();
@@ -55,6 +61,16 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
+  }
+
+  bool _canManageAuditActions({
+    required bool isLoadingProfile,
+    required String? userRole,
+  }) {
+    if (isLoadingProfile) return false;
+    final trimmedUserRole = userRole?.trim();
+    return (trimmedUserRole?.isNotEmpty ?? false) &&
+        !_viewerRoles.contains(trimmedUserRole);
   }
 
   @override
@@ -89,13 +105,16 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AppLocalizations l10n,
   ) {
     final categories = state.questionsByCategory;
-    final settings = context.watch<SettingsCubit>().state;
-    const viewerRoles = {'branch_manager', 'district_manager', 'department_head'};
-    final role = settings.userRole?.trim();
-    final canManageAuditActions = !settings.isLoadingProfile &&
-        role != null &&
-        role.isNotEmpty &&
-        !viewerRoles.contains(role);
+    final settings = context.select(
+      (SettingsCubit cubit) => (
+        isLoadingProfile: cubit.state.isLoadingProfile,
+        userRole: cubit.state.userRole,
+      ),
+    );
+    final canManageAuditActions = _canManageAuditActions(
+      isLoadingProfile: settings.isLoadingProfile,
+      userRole: settings.userRole,
+    );
 
     return Scaffold(
       appBar: AppBar(
