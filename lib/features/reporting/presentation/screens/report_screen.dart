@@ -6,6 +6,7 @@ import '../../../../core/router.dart';
 import '../../../../generated/l10n/app_localizations.dart';
 import '../../domain/entities/branch_report.dart';
 import '../../domain/entities/country_comparison.dart';
+import '../../domain/entities/master_question.dart';
 import '../../domain/entities/question_stat.dart';
 import '../state/report_cubit.dart';
 import '../state/report_state.dart';
@@ -51,7 +52,7 @@ class _ReportScreenState extends State<ReportScreen>
         cubit.loadTop5(country: _top5Country, year: _top5Year);
         break;
       case 2:
-        // Wait for user to enter a master question ID
+        cubit.loadMasterQuestions();
         break;
     }
   }
@@ -115,6 +116,8 @@ class _ReportScreenState extends State<ReportScreen>
             controller: _masterIdController,
             onSearch: (id) =>
                 context.read<ReportCubit>().loadCountryComparison(id),
+            onLoadQuestions: () =>
+                context.read<ReportCubit>().loadMasterQuestions(),
           ),
         ],
       ),
@@ -468,14 +471,24 @@ class _Top5Section extends StatelessWidget {
 
 // ─── Tab 3: Country Comparison ─────────────────────────────────────────────
 
-class _CountryComparisonTab extends StatelessWidget {
+class _CountryComparisonTab extends StatefulWidget {
   final TextEditingController controller;
   final ValueChanged<String> onSearch;
+  final VoidCallback onLoadQuestions;
 
   const _CountryComparisonTab({
     required this.controller,
     required this.onSearch,
+    required this.onLoadQuestions,
   });
+
+  @override
+  State<_CountryComparisonTab> createState() => _CountryComparisonTabState();
+}
+
+class _CountryComparisonTabState extends State<_CountryComparisonTab> {
+  List<MasterQuestion> _masterQuestions = [];
+  String? _selectedMasterId;
 
   @override
   Widget build(BuildContext context) {
@@ -485,32 +498,53 @@ class _CountryComparisonTab extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextFormField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                    labelText: l10n.reportMasterQuestionId,
-                    border: const OutlineInputBorder(),
-                    isDense: true,
+          child: BlocListener<ReportCubit, ReportState>(
+            listenWhen: (_, s) => s is MasterQuestionsLoaded,
+            listener: (context, state) {
+              if (state is MasterQuestionsLoaded) {
+                setState(() => _masterQuestions = state.questions);
+              }
+            },
+            child: Row(
+              children: [
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedMasterId,
+                    isExpanded: true,
+                    decoration: InputDecoration(
+                      labelText: l10n.reportMasterQuestionId,
+                      border: const OutlineInputBorder(),
+                      isDense: true,
+                    ),
+                    items: _masterQuestions.map((mq) {
+                      return DropdownMenuItem(
+                        value: mq.masterQuestionId,
+                        child: Text(
+                          mq.textDe,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (v) {
+                      setState(() => _selectedMasterId = v);
+                      if (v != null) widget.onSearch(v);
+                    },
+                    hint: _masterQuestions.isEmpty
+                        ? Text(l10n.reportNoData)
+                        : null,
                   ),
-                  textInputAction: TextInputAction.search,
-                  onFieldSubmitted: (v) {
-                    if (v.trim().isNotEmpty) onSearch(v.trim());
-                  },
                 ),
-              ),
-              const SizedBox(width: 8),
-              FilledButton.icon(
-                onPressed: () {
-                  final v = controller.text.trim();
-                  if (v.isNotEmpty) onSearch(v);
-                },
-                icon: const Icon(Icons.search),
-                label: Text(MaterialLocalizations.of(context).searchFieldLabel),
-              ),
-            ],
+                if (_masterQuestions.isEmpty) ...[
+                  const SizedBox(width: 8),
+                  FilledButton.icon(
+                    onPressed: widget.onLoadQuestions,
+                    icon: const Icon(Icons.refresh),
+                    label: Text(l10n.retry),
+                  ),
+                ],
+              ],
+            ),
           ),
         ),
         Expanded(
@@ -527,8 +561,9 @@ class _CountryComparisonTab extends StatelessWidget {
                 return _ErrorView(
                   message: state.message,
                   onRetry: () {
-                    final v = controller.text.trim();
-                    if (v.isNotEmpty) onSearch(v);
+                    if (_selectedMasterId != null) {
+                      widget.onSearch(_selectedMasterId!);
+                    }
                   },
                 );
               }

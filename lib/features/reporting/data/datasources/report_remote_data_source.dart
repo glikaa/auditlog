@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/network/api_client.dart';
 import '../models/branch_report_model.dart';
 import '../models/country_comparison_model.dart';
+import '../models/master_question_model.dart';
 import '../models/question_stat_model.dart';
 
 class ReportRemoteDataSource {
@@ -55,6 +56,15 @@ class ReportRemoteDataSource {
       return CountryComparisonModel.fromJson(
         response.data as Map<String, dynamic>,
       );
+    } on DioException catch (e) {
+      throw ApiClient.mapDioError(e);
+    }
+  }
+
+  Future<List<MasterQuestionModel>> getMasterQuestions() async {
+    try {
+      final response = await _dio.get('/reports/master-questions');
+      return MasterQuestionModel.fromJsonList(response.data as List<dynamic>);
     } on DioException catch (e) {
       throw ApiClient.mapDioError(e);
     }
