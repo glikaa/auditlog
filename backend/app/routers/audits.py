@@ -21,7 +21,10 @@ router = APIRouter()
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".pdf"}
+ALLOWED_EXTENSIONS = {
+    ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp",
+    ".pdf", ".docx", ".xlsx",
+}
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 
@@ -434,7 +437,7 @@ async def upload_attachment(
     if ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(
             status_code=400,
-            detail="File type not allowed. Allowed: " + ", ".join(ALLOWED_EXTENSIONS),
+            detail="File type not allowed. Allowed: " + ", ".join(sorted(ALLOWED_EXTENSIONS)),
         )
 
     # Read file content with size check
@@ -450,7 +453,12 @@ async def upload_attachment(
         f.write(content)
 
     # Determine file type
-    file_type = "image" if ext in {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"} else "pdf"
+    if ext in {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"}:
+        file_type = "image"
+    elif ext == ".pdf":
+        file_type = "pdf"
+    else:
+        file_type = "document"
     download_url = "/audits/{}/responses/{}/attachments/{}/download".format(audit_id, question_id, attachment_id)
 
     # Save attachment reference in Firestore response

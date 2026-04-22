@@ -245,6 +245,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pdfExportFailed => 'PDF export failed';
 
   @override
+  String get addAttachment => 'Add attachment';
+
+  @override
+  String get attachmentFile => 'File';
+
+  @override
+  String get attachmentGallery => 'Gallery';
+
+  @override
+  String get attachmentCamera => 'Camera';
+
+  @override
+  String get attachmentReadError => 'File could not be read';
+
+  @override
+  String attachmentUploadSuccess(String fileName) => 'Attachment "$fileName" uploaded';
+
+  @override
+  String attachmentUploadError(String fileName) => 'Error uploading "$fileName"';
+
+  @override
+  String get attachmentUnnamed => 'Unknown file';
   String get internalAuditHint => 'Internal Audit Hint';
   String get createAudit => 'Create Audit';
 

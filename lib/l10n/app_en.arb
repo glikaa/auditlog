@@ -170,6 +170,30 @@
   "pdfExportFailed": "PDF export failed",
   "@pdfExportFailed": {},
 
+  "addAttachment": "Add attachment",
+  "@addAttachment": {},
+  "attachmentFile": "File",
+  "@attachmentFile": {},
+  "attachmentGallery": "Gallery",
+  "@attachmentGallery": {},
+  "attachmentCamera": "Camera",
+  "@attachmentCamera": {},
+  "attachmentReadError": "File could not be read",
+  "@attachmentReadError": {},
+  "attachmentUploadSuccess": "Attachment \"{fileName}\" uploaded",
+  "@attachmentUploadSuccess": {
+    "placeholders": {
+      "fileName": { "type": "String" }
+    }
+  },
+  "attachmentUploadError": "Error uploading \"{fileName}\"",
+  "@attachmentUploadError": {
+    "placeholders": {
+      "fileName": { "type": "String" }
+    }
+  },
+  "attachmentUnnamed": "Unknown file",
+  "@attachmentUnnamed": {}
   "internalAuditHint": "Internal Audit Hint",
   "@internalAuditHint": { "description": "Label for internal audit hint visible to auditors/admins only" }
   "createAudit": "Create Audit",

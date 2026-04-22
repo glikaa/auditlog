@@ -92,6 +92,14 @@
   "pdfDownloaded": "PDF preuzet!",
   "pdfExportFailed": "Izvoz PDF-a nije uspio",
 
+  "addAttachment": "Dodaj privitak",
+  "attachmentFile": "Datoteka",
+  "attachmentGallery": "Galerija",
+  "attachmentCamera": "Kamera",
+  "attachmentReadError": "Datoteka se ne može pročitati",
+  "attachmentUploadSuccess": "Privitak \"{fileName}\" učitan",
+  "attachmentUploadError": "Pogreška pri učitavanju \"{fileName}\"",
+  "attachmentUnnamed": "Nepoznata datoteka"
   "internalAuditHint": "Interni revizijski savjet"
   "createAudit": "Kreiraj audit",
   "auditCatalog": "Katalog revizije",

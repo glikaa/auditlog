@@ -8,18 +8,20 @@ enum ComparisonResult { improved, worsened, unchanged }
 class Attachment extends Equatable {
   final String id;
   final String url;
-  final String type; // 'image' or 'pdf'
+  final String type; // 'image', 'pdf', or 'document'
   final bool isReportRelevant;
+  final String? filename;
 
   const Attachment({
     required this.id,
     required this.url,
     required this.type,
     this.isReportRelevant = true,
+    this.filename,
   });
 
   @override
-  List<Object?> get props => [id, url, type, isReportRelevant];
+  List<Object?> get props => [id, url, type, isReportRelevant, filename];
 }
 
 class AuditResponse extends Equatable {
