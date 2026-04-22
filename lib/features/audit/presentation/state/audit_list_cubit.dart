@@ -17,6 +17,18 @@ class AuditListCubit extends Cubit<AuditListState> {
     );
   }
 
+  /// Delete an audit (admin only). Returns true on success.
+  Future<bool> deleteAudit(String auditId) async {
+    final result = await repository.deleteAudit(auditId);
+    return result.fold(
+      (_) => false,
+      (_) {
+        loadAudits();
+        return true;
+      },
+    );
+  }
+
   /// Create a Nachrevision for the given audit. Returns the new audit ID or null.
   Future<String?> createNachrevision(String auditId) async {
     final result = await repository.createNachrevision(auditId);

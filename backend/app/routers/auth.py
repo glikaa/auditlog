@@ -1,6 +1,8 @@
 """Auth endpoints – login, logout, current user."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import List
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.models.user import LoginRequest, TokenResponse, UserCreate, UserOut, UserRole
 from app.services.auth_service import create_token, get_current_user
@@ -40,6 +42,7 @@ async def login(body: LoginRequest):
             role=user_data.get("role", "auditor"),
             language=user_data.get("language", "de"),
             country_code=user_data.get("country_code", "DE"),
+            branch_id=user_data.get("branch_id"),
         ),
     )
 
@@ -66,4 +69,35 @@ async def get_me(user: dict = Depends(get_current_user)):
         role=data.get("role", "auditor"),
         language=data.get("language", "de"),
         country_code=data.get("country_code", "DE"),
+        branch_id=data.get("branch_id"),
     )
+
+
+@router.get("/users", response_model=List[UserOut])
+async def get_users_by_role(
+    roles: str = Query(default="auditor,preparer"),
+    user: dict = Depends(get_current_user),
+):
+    """Return users filtered by role (comma-separated list)."""
+    db = get_db()
+    role_list = [r.strip() for r in roles.split(",") if r.strip()]
+    results: List[UserOut] = []
+    seen_ids: set = set()
+    for role in role_list:
+        docs = db.collection("users").where("role", "==", role).stream()
+        for doc in docs:
+            if doc.id in seen_ids:
+                continue
+            seen_ids.add(doc.id)
+            data = doc.to_dict()
+            results.append(
+                UserOut(
+                    id=doc.id,
+                    name=data.get("name", ""),
+                    email=data.get("email", ""),
+                    role=data.get("role", role),
+                    language=data.get("language", "de"),
+                    country_code=data.get("country_code", "DE"),
+                )
+            )
+    return results

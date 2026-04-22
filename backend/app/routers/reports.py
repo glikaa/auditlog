@@ -17,17 +17,33 @@ async def report_branches(
 ):
     """Audit results per branch over time."""
     db = get_db()
-    query = db.collection("audits").where("status", "==", "released")
+    query = db.collection("audits").where("status", "in", ["released", "completed"])
+    audit_docs = list(query.stream())
 
-    if country:
-        # Would need branch lookup for country filter in production
-        pass
+    # Build branch→country map for filtering
+    branch_country = {}
+    for b in db.collection("branches").stream():
+        b_data = b.to_dict()
+        branch_country[b.id] = (b_data.get("country_code") or "").upper()
 
-    docs = query.stream()
+    # Also build catalog→country as fallback
+    catalog_country = {}
+    for cat in db.collection("auditCatalogs").stream():
+        cat_data = cat.to_dict()
+        catalog_country[cat.id] = (cat_data.get("country_code") or "").upper()
 
     branch_results = {}  # type: Dict[str, List[dict]]
-    for doc in docs:
+    for doc in audit_docs:
         data = doc.to_dict()
+
+        # Country filter
+        if country:
+            branch_id = data.get("branch_id", "")
+            catalog_id = data.get("catalog_id", "")
+            audit_country = branch_country.get(branch_id, "") or catalog_country.get(catalog_id, "")
+            if audit_country.upper() != country.upper():
+                continue
+
         branch_name = data.get("branch_name", "Unknown")
         branch_results.setdefault(branch_name, []).append({
             "audit_id": doc.id,
@@ -48,13 +64,39 @@ async def report_top5_questions(
     """Top 5 questions with most 'yes' and most 'no' ratings."""
     db = get_db()
 
-    # Get all released audits
-    query = db.collection("audits").where("status", "==", "released")
-    audit_docs = list(query.stream())
+    # Get all released/completed audits
+    audit_docs = list(
+        db.collection("audits").where("status", "in", ["released", "completed"]).stream()
+    )
+
+    # Build catalog→country map so we can filter by country
+    catalog_country = {}  # catalog_id → country_code
+    for cat in db.collection("auditCatalogs").stream():
+        cat_data = cat.to_dict()
+        catalog_country[cat.id] = (cat_data.get("country_code") or "").upper()
+
+    # Filter audits by country and year
+    filtered_audits = []
+    for audit_doc in audit_docs:
+        data = audit_doc.to_dict()
+
+        # Country filter via catalog
+        if country:
+            cat_id = data.get("catalog_id", "")
+            if catalog_country.get(cat_id, "").upper() != country.upper():
+                continue
+
+        # Year filter via created_at
+        if year:
+            created_at = data.get("created_at", "")
+            if not created_at or str(year) not in created_at[:4]:
+                continue
+
+        filtered_audits.append(audit_doc)
 
     question_stats = {}  # type: Dict[str, Dict[str, int]]
 
-    for audit_doc in audit_docs:
+    for audit_doc in filtered_audits:
         responses = (
             db.collection("audits")
             .document(audit_doc.id)
@@ -70,6 +112,17 @@ async def report_top5_questions(
             if rating in ("yes", "no", "na"):
                 question_stats[q_id][rating] += 1
 
+    # Resolve question texts (question_id → text_de)
+    q_ids = set(question_stats.keys())
+    question_texts = {}
+    for q_id in q_ids:
+        q_doc = db.collection("questions").document(q_id).get()
+        if q_doc.exists:
+            q_data = q_doc.to_dict()
+            question_texts[q_id] = q_data.get("text_de", q_id)
+        else:
+            question_texts[q_id] = q_id
+
     # Sort for top 5 yes and top 5 no
     sorted_by_yes = sorted(
         question_stats.items(), key=lambda x: x[1]["yes"], reverse=True
@@ -80,10 +133,12 @@ async def report_top5_questions(
 
     return {
         "top5_yes": [
-            {"question_id": q_id, **stats} for q_id, stats in sorted_by_yes
+            {"question_id": q_id, "question_text": question_texts.get(q_id, q_id), **stats}
+            for q_id, stats in sorted_by_yes
         ],
         "top5_no": [
-            {"question_id": q_id, **stats} for q_id, stats in sorted_by_no
+            {"question_id": q_id, "question_text": question_texts.get(q_id, q_id), **stats}
+            for q_id, stats in sorted_by_no
         ],
     }
 
@@ -97,30 +152,41 @@ async def report_compare(
     db = get_db()
 
     # Find all questions with this master ID
-    q_docs = (
+    q_docs = list(
         db.collection("questions")
         .where("master_question_id", "==", master_question_id)
         .stream()
     )
 
-    question_ids = {}  # type: Dict[str, str]
+    # Build catalog→country map
+    catalog_country = {}
+    for cat in db.collection("auditCatalogs").stream():
+        cat_data = cat.to_dict()
+        catalog_country[cat.id] = (cat_data.get("country_code") or "").upper()
+
+    # Map question_id → (country, order, text_de)
+    question_info = {}  # type: Dict[str, dict]
+    master_text = ""
     for q_doc in q_docs:
         q_data = q_doc.to_dict()
-        catalog_id = q_data.get("catalog_id")
-        # Look up country from catalog
-        cat_doc = db.collection("auditCatalogs").document(catalog_id).get()
-        if cat_doc.exists:
-            country = cat_doc.to_dict().get("country_code", "??")
-            question_ids[q_doc.id] = country
+        catalog_id = q_data.get("catalog_id", "")
+        country = catalog_country.get(catalog_id, "??")
+        question_info[q_doc.id] = {
+            "country": country,
+            "order": q_data.get("order", 0),
+            "text_de": q_data.get("text_de", ""),
+        }
+        if not master_text:
+            master_text = q_data.get("text_de", "")
 
-    # Now gather ratings per country
+    # Gather ratings per country from released/completed audits
     country_stats = {}  # type: Dict[str, Dict[str, int]]
     audit_docs = list(
-        db.collection("audits").where("status", "==", "released").stream()
+        db.collection("audits").where("status", "in", ["released", "completed"]).stream()
     )
 
     for audit_doc in audit_docs:
-        for q_id, country in question_ids.items():
+        for q_id, info in question_info.items():
             resp_doc = (
                 db.collection("audits")
                 .document(audit_doc.id)
@@ -130,12 +196,59 @@ async def report_compare(
             )
             if resp_doc.exists:
                 rating = resp_doc.to_dict().get("rating")
+                country = info["country"]
                 if country not in country_stats:
                     country_stats[country] = {"yes": 0, "no": 0, "na": 0}
                 if rating in ("yes", "no", "na"):
                     country_stats[country][rating] += 1
 
+    # Build structured results list matching Flutter model
+    results = []
+    for q_id, info in question_info.items():
+        country = info["country"]
+        stats = country_stats.get(country, {"yes": 0, "no": 0, "na": 0})
+        results.append({
+            "country_code": country,
+            "local_question_id": q_id,
+            "local_question_order": info["order"],
+            "yes": stats["yes"],
+            "no": stats["no"],
+            "na": stats["na"],
+        })
+
+    # Sort by country code
+    results.sort(key=lambda r: r["country_code"])
+
     return {
         "master_question_id": master_question_id,
-        "countries": country_stats,
+        "master_question_text": master_text,
+        "results": results,
     }
+
+
+@router.get("/master-questions")
+async def list_master_questions(
+    user: dict = Depends(get_current_user),
+):
+    """List all unique master questions with their text (for dropdown)."""
+    db = get_db()
+
+    master_map = {}  # master_id → {text, country_count}
+    for q_doc in db.collection("questions").stream():
+        q_data = q_doc.to_dict()
+        mid = q_data.get("master_question_id", "")
+        if not mid:
+            continue
+        if mid not in master_map:
+            master_map[mid] = {
+                "master_question_id": mid,
+                "text_de": q_data.get("text_de", mid),
+                "country_count": 0,
+            }
+        master_map[mid]["country_count"] += 1
+
+    # Only return master questions that appear in more than 1 catalog (cross-country)
+    result = [v for v in master_map.values() if v["country_count"] > 1]
+    result.sort(key=lambda x: x["master_question_id"])
+
+    return result

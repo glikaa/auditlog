@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import auth, audits, catalogs, reports
+from app.routers import auth, audits, branches, catalogs, reports
 
 app = FastAPI(
     title="Audit API",
@@ -12,7 +12,12 @@ app = FastAPI(
 # CORS – allow Flutter web app to connect
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # restrict in production
+    allow_origins=[
+        "http://localhost:*",
+        "http://127.0.0.1:*",
+        "http://localhost:52634",  # Flutter web dev port (varies; wildcard above covers it)
+    ],
+    allow_origin_regex=r"http://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -20,6 +25,7 @@ app.add_middleware(
 
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 app.include_router(audits.router, prefix="/audits", tags=["Audits"])
+app.include_router(branches.router, prefix="/branches", tags=["Branches"])
 app.include_router(catalogs.router, prefix="/catalogs", tags=["Catalogs"])
 app.include_router(reports.router, prefix="/reports", tags=["Reports"])
 

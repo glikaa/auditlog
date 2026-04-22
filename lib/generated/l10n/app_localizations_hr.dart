@@ -66,6 +66,9 @@ class AppLocalizationsHr extends AppLocalizations {
   String get statistics => 'Statistika';
 
   @override
+  String get tableOfContents => 'Sadržaj';
+
+  @override
   String get yes => 'Da';
 
   @override
@@ -103,6 +106,48 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get previousAudit => 'Prethodni audit';
+
+  @override
+  String get reporting => 'Izvješćivanje';
+
+  @override
+  String get reportBranchResults => 'Rezultati poslovnica';
+
+  @override
+  String get reportTop5 => 'Top-5 pitanja';
+
+  @override
+  String get reportCountryComparison => 'Usporedba zemalja';
+
+  @override
+  String get reportAllCountries => 'Sve zemlje';
+
+  @override
+  String get reportAllYears => 'Sve godine';
+
+  @override
+  String get reportNoData => 'Nema dostupnih podataka.';
+
+  @override
+  String get reportMasterQuestionId => 'ID glavnog pitanja';
+
+  @override
+  String get reportTop5YesTitle => 'Top-5: Najčešći odgovori Da';
+
+  @override
+  String get reportTop5NoTitle => 'Top-5: Najčešći odgovori Ne';
+
+  @override
+  String get reportLocalQuestionNo => 'Lokalni br. pitanja';
+
+  @override
+  String get reportYesPercent => 'Udio Da (%)';
+
+  @override
+  String get reportLatestResult => 'Zadnji rezultat';
+
+  @override
+  String get reportAuditCount => 'Broj audita';
 
   @override
   String get settings => 'Postavke';
@@ -221,4 +266,28 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get attachmentUnnamed => 'Nepoznata datoteka';
+  String get internalAuditHint => 'Interni revizijski savjet';
+  String get createAudit => 'Kreiraj audit';
+
+  @override
+  String get auditCatalog => 'Katalog revizije';
+
+  @override
+  String get selectCatalog => 'Odaberi katalog';
+
+  @override
+  String get selectBranch => 'Odaberi poslovnicu';
+
+  @override
+  String get selectAuditor => 'Odaberi revizora';
+
+  @override
+  String get deleteAudit => 'Obriši audit';
+
+  @override
+  String get deleteAuditConfirm =>
+      'Jeste li sigurni da želite obrisati ovaj audit? Svi odgovori i prilozi bit će trajno uklonjeni.';
+
+  @override
+  String get auditDeleted => 'Audit je obrisan.';
 }

@@ -103,6 +103,36 @@ class Question extends Equatable {
     }
   }
 
+  /// Returns a copy of this question with all internal note fields cleared.
+  /// Used to ensure sensitive audit hints are not held in memory for
+  /// users without the auditor/admin role.
+  Question copyWithoutInternalNotes() {
+    return Question(
+      id: id,
+      catalogId: catalogId,
+      masterQuestionId: masterQuestionId,
+      order: order,
+      category: category,
+      categoryEn: categoryEn,
+      categoryHr: categoryHr,
+      textDe: textDe,
+      textEn: textEn,
+      textHr: textHr,
+      explanationTextDe: explanationTextDe,
+      explanationTextEn: explanationTextEn,
+      explanationTextHr: explanationTextHr,
+      internalNoteDe: null,
+      internalNoteEn: null,
+      internalNoteHr: null,
+      defaultFindingDe: defaultFindingDe,
+      defaultFindingEn: defaultFindingEn,
+      defaultFindingHr: defaultFindingHr,
+      defaultMeasureDe: defaultMeasureDe,
+      defaultMeasureEn: defaultMeasureEn,
+      defaultMeasureHr: defaultMeasureHr,
+    );
+  }
+
   @override
   List<Object?> get props => [
         id, catalogId, masterQuestionId, order, category,

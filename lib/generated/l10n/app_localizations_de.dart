@@ -66,6 +66,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get statistics => 'Statistiken';
 
   @override
+  String get tableOfContents => 'Inhaltsverzeichnis';
+
+  @override
   String get yes => 'Ja';
 
   @override
@@ -104,6 +107,48 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get previousAudit => 'Erstprüfung';
+
+  @override
+  String get reporting => 'Reporting';
+
+  @override
+  String get reportBranchResults => 'Filialergebnisse';
+
+  @override
+  String get reportTop5 => 'Top-5 Fragen';
+
+  @override
+  String get reportCountryComparison => 'Ländervergleich';
+
+  @override
+  String get reportAllCountries => 'Alle Länder';
+
+  @override
+  String get reportAllYears => 'Alle Jahre';
+
+  @override
+  String get reportNoData => 'Keine Daten vorhanden.';
+
+  @override
+  String get reportMasterQuestionId => 'Master-Fragen-ID';
+
+  @override
+  String get reportTop5YesTitle => 'Top-5: häufigste Ja-Antworten';
+
+  @override
+  String get reportTop5NoTitle => 'Top-5: häufigste Nein-Antworten';
+
+  @override
+  String get reportLocalQuestionNo => 'Lokale Frage-Nr.';
+
+  @override
+  String get reportYesPercent => 'Ja-Anteil (%)';
+
+  @override
+  String get reportLatestResult => 'Letztes Ergebnis';
+
+  @override
+  String get reportAuditCount => 'Anzahl Audits';
 
   @override
   String get settings => 'Einstellungen';
@@ -222,4 +267,28 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get attachmentUnnamed => 'Unbekannte Datei';
+  String get internalAuditHint => 'Interner Prüfhinweis';
+  String get createAudit => 'Audit erstellen';
+
+  @override
+  String get auditCatalog => 'Prüfkatalog';
+
+  @override
+  String get selectCatalog => 'Katalog auswählen';
+
+  @override
+  String get selectBranch => 'Filiale auswählen';
+
+  @override
+  String get selectAuditor => 'Prüfer auswählen';
+
+  @override
+  String get deleteAudit => 'Audit löschen';
+
+  @override
+  String get deleteAuditConfirm =>
+      'Soll dieses Audit wirklich gelöscht werden? Alle Antworten und Anhänge werden unwiderruflich entfernt.';
+
+  @override
+  String get auditDeleted => 'Audit wurde gelöscht.';
 }

@@ -2,8 +2,11 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
+import '../../../../features/auth/domain/entities/app_user.dart';
 import '../../domain/entities/audit.dart';
+import '../../domain/entities/audit_catalog.dart';
 import '../../domain/entities/audit_response.dart';
+import '../../domain/entities/branch.dart';
 import '../../domain/entities/question.dart';
 import '../../domain/repositories/audit_repository.dart';
 import '../datasources/audit_remote_data_source.dart';
@@ -14,6 +17,30 @@ class AuditRepositoryImpl implements AuditRepository {
   final AuditRemoteDataSource remote;
 
   AuditRepositoryImpl({required this.remote});
+
+  @override
+  Future<Either<Failure, List<AuditCatalog>>> getCatalogs({String? country}) async {
+    try {
+      final catalogs = await remote.getCatalogs(country: country);
+      return Right(catalogs);
+    } on UnauthorizedException {
+      return const Left(UnauthorizedFailure());
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Branch>>> getBranches() async {
+    try {
+      final branches = await remote.getBranches();
+      return Right(branches);
+    } on UnauthorizedException {
+      return const Left(UnauthorizedFailure());
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    }
+  }
 
   @override
   Future<Either<Failure, List<Audit>>> getAudits() async {
@@ -206,10 +233,32 @@ class AuditRepositoryImpl implements AuditRepository {
   }
 
   @override
+  Future<Either<Failure, void>> deleteAudit(String auditId) async {
+    try {
+      await remote.deleteAudit(auditId);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    }
+  }
+
+  @override
   Future<Either<Failure, Audit>> createNachrevision(String auditId) async {
     try {
       final result = await remote.createNachrevision(auditId);
       return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<AppUser>>> getAuditors() async {
+    try {
+      final users = await remote.getAuditors();
+      return Right(users);
+    } on UnauthorizedException {
+      return const Left(UnauthorizedFailure());
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/network/api_client.dart';
 import '../../../../core/router.dart';
+import '../../../settings/presentation/state/settings_cubit.dart';
 import '../../../../generated/l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -37,17 +39,31 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final dio = ApiClient.instance.dio;
+      final settingsCubit = context.read<SettingsCubit>();
+      final navigator = Navigator.of(context);
       final response = await dio.post('/auth/login', data: {
         'email': _emailController.text.trim(),
         'password': _passwordController.text,
       });
 
-      final token = response.data['access_token'] as String;
+      final data = response.data as Map<String, dynamic>;
+      final user = data['user'] as Map<String, dynamic>? ?? const {};
+      final token = data['access_token'];
+      if (token is! String || token.isEmpty) {
+        throw Exception('Ungültige Anmeldeantwort: Zugriffstoken fehlt.');
+      }
       ApiClient.updateAuthToken(token);
 
-      if (mounted) {
-        Navigator.of(context).pushReplacementNamed(AppRouter.dashboard);
-      }
+      settingsCubit.setProfile(
+        userName: user['name'] as String? ?? '',
+        userEmail: user['email'] as String? ?? _emailController.text.trim(),
+        userRole: user['role'] as String? ?? '',
+        userCountry: user['country_code'] as String? ?? '',
+      );
+
+      if (!mounted) return;
+
+      navigator.pushReplacementNamed(AppRouter.dashboard);
     } on DioException catch (e) {
       final msg = e.response?.data?['detail'] as String? ?? 'Login fehlgeschlagen';
       if (mounted) {
