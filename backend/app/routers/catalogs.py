@@ -335,9 +335,11 @@ async def create_question(
     except (ValueError, IndexError):
         version_number = 1
 
+    resolved_catalog_id = f"{catalog_id}/versions/{version}" if version else catalog_id
+
     data = body.dict()
     data["id"] = question_id
-    data["catalog_id"] = catalog_id
+    data["catalog_id"] = resolved_catalog_id
     data["introducedInVersionId"] = version_id
     data["introducedInVersionNumber"] = version_number
 
