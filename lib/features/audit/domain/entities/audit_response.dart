@@ -11,6 +11,7 @@ class Attachment extends Equatable {
   final String type; // 'image', 'pdf', or 'document'
   final bool isReportRelevant;
   final String? filename;
+  final String? storedName;
 
   const Attachment({
     required this.id,
@@ -18,10 +19,11 @@ class Attachment extends Equatable {
     required this.type,
     this.isReportRelevant = true,
     this.filename,
+    this.storedName,
   });
 
   @override
-  List<Object?> get props => [id, url, type, isReportRelevant, filename];
+  List<Object?> get props => [id, url, type, isReportRelevant, filename, storedName];
 }
 
 class AuditResponse extends Equatable {

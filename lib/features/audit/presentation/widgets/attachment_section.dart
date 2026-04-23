@@ -120,6 +120,10 @@ class _UploadButton extends StatelessWidget {
   }
 
   Future<void> _pickDocument(BuildContext context) async {
+    final cubit = context.read<AuditDetailCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: const ['pdf', 'docx', 'xlsx'],
@@ -132,8 +136,7 @@ class _UploadButton extends StatelessWidget {
     final bytes = file.bytes;
     if (bytes == null) {
       if (!context.mounted) return;
-      final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text(l10n.attachmentReadError),
           backgroundColor: Colors.red,
@@ -142,7 +145,7 @@ class _UploadButton extends StatelessWidget {
       return;
     }
 
-    final success = await context.read<AuditDetailCubit>().uploadAttachment(
+    final success = await cubit.uploadAttachment(
           auditId: auditId,
           questionId: questionId,
           fileBytes: bytes,
@@ -150,9 +153,8 @@ class _UploadButton extends StatelessWidget {
         );
     if (!context.mounted) return;
 
-    final l10n = AppLocalizations.of(context)!;
     final displayName = file.name.trim().isNotEmpty ? file.name : l10n.attachmentUnnamed;
-    ScaffoldMessenger.of(context).showSnackBar(
+    messenger.showSnackBar(
       SnackBar(
         content: Text(
           success
@@ -166,6 +168,9 @@ class _UploadButton extends StatelessWidget {
   }
 
   Future<void> _pickImage(BuildContext context, ImageSource source) async {
+    final cubit = context.read<AuditDetailCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final picker = ImagePicker();
     final xFile = await picker.pickImage(
       source: source,
@@ -178,7 +183,7 @@ class _UploadButton extends StatelessWidget {
     final bytes = await xFile.readAsBytes();
     if (!context.mounted) return;
 
-    final success = await context.read<AuditDetailCubit>().uploadAttachment(
+    final success = await cubit.uploadAttachment(
           auditId: auditId,
           questionId: questionId,
           fileBytes: bytes,
@@ -186,9 +191,8 @@ class _UploadButton extends StatelessWidget {
         );
     if (!context.mounted) return;
 
-    final l10n = AppLocalizations.of(context)!;
     final displayName = xFile.name.trim().isNotEmpty ? xFile.name : l10n.attachmentUnnamed;
-    ScaffoldMessenger.of(context).showSnackBar(
+    messenger.showSnackBar(
       SnackBar(
         content: Text(
           success
@@ -218,6 +222,7 @@ class _AttachmentChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final icon = _attachmentIcon(attachment.type, attachment.filename);
     final iconColor = _attachmentColor(attachment.type, attachment.filename);
     final label = attachment.filename?.trim().isNotEmpty == true
@@ -226,40 +231,113 @@ class _AttachmentChip extends StatelessWidget {
 
     return Tooltip(
       message: label,
-      child: Chip(
-        avatar: Icon(
-          icon,
-          size: 18,
-          color: iconColor,
+      child: Container(
+        constraints: const BoxConstraints(minWidth: 250, maxWidth: 360),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
         ),
-        label: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 120),
-              child: Text(
-                label,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodySmall,
-              ),
+            Row(
+              children: [
+                Icon(
+                  icon,
+                  size: 18,
+                  color: iconColor,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    label,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                if (isEditable)
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 18),
+                    visualDensity: VisualDensity.compact,
+                    tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
+                    onPressed: () {
+                      context.read<AuditDetailCubit>().deleteAttachment(
+                            auditId: auditId,
+                            questionId: questionId,
+                            attachmentId: attachment.id,
+                          );
+                    },
+                  ),
+              ],
             ),
-            if (attachment.isReportRelevant) ...[
-              const SizedBox(width: 4),
-              Icon(Icons.visibility, size: 14, color: theme.colorScheme.primary),
-            ],
+            const SizedBox(height: 8),
+            Text(
+              l10n.attachmentReportRelevant,
+              style: theme.textTheme.labelMedium,
+            ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Text(
+                  l10n.no,
+                  style: theme.textTheme.bodySmall,
+                ),
+                Transform.scale(
+                  scale: 0.82,
+                  child: Switch(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    value: attachment.isReportRelevant,
+                    onChanged: isEditable
+                        ? (value) async {
+                            final messenger = ScaffoldMessenger.of(context);
+                            final success = await context
+                                .read<AuditDetailCubit>()
+                                .updateAttachmentReportRelevance(
+                                  auditId: auditId,
+                                  questionId: questionId,
+                                  attachmentId: attachment.id,
+                                  isReportRelevant: value,
+                                );
+                            if (!context.mounted || success) return;
+                            messenger.showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  l10n.attachmentReportRelevantUpdateError,
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        : null,
+                  ),
+                ),
+                Text(
+                  l10n.yes,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontWeight: attachment.isReportRelevant
+                        ? FontWeight.w700
+                        : FontWeight.w400,
+                    color: attachment.isReportRelevant
+                        ? theme.colorScheme.primary
+                        : null,
+                  ),
+                ),
+                const Spacer(),
+                if (attachment.isReportRelevant)
+                  Icon(
+                    Icons.visibility,
+                    size: 16,
+                    color: theme.colorScheme.primary,
+                  ),
+              ],
+            ),
           ],
         ),
-        deleteIcon: isEditable ? const Icon(Icons.close, size: 16) : null,
-        onDeleted: isEditable
-            ? () {
-                context.read<AuditDetailCubit>().deleteAttachment(
-                      auditId: auditId,
-                      questionId: questionId,
-                      attachmentId: attachment.id,
-                    );
-              }
-            : null,
-        visualDensity: VisualDensity.compact,
       ),
     );
   }

@@ -23,6 +23,7 @@ class Audit extends Equatable {
   final DateTime? completedAt;
   final bool isNachrevision;
   final String? linkedAuditId; // Reference to original audit for Nachrevision
+  final DateTime? acknowledgedAt;
 
   const Audit({
     required this.id,
@@ -43,6 +44,7 @@ class Audit extends Equatable {
     this.completedAt,
     this.isNachrevision = false,
     this.linkedAuditId,
+    this.acknowledgedAt,
   });
 
   /// Calculates result: yes / (total - na) * 100
@@ -71,6 +73,7 @@ class Audit extends Equatable {
     DateTime? completedAt,
     bool? isNachrevision,
     String? linkedAuditId,
+    DateTime? acknowledgedAt,
   }) {
     return Audit(
       id: id ?? this.id,
@@ -91,6 +94,7 @@ class Audit extends Equatable {
       completedAt: completedAt ?? this.completedAt,
       isNachrevision: isNachrevision ?? this.isNachrevision,
       linkedAuditId: linkedAuditId ?? this.linkedAuditId,
+      acknowledgedAt: acknowledgedAt ?? this.acknowledgedAt,
     );
   }
 
@@ -99,5 +103,6 @@ class Audit extends Equatable {
         id, type, catalogId, branchId, branchName, auditorId, auditorName,
         preparerId, status, resultPercent, countYes, countNo, countNA,
         managementSummary, createdAt, completedAt, isNachrevision, linkedAuditId,
+        acknowledgedAt,
       ];
 }

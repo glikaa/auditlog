@@ -4,12 +4,21 @@ import uuid
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from pydantic import BaseModel
+
+import re
 
 from app.models.user import LoginRequest, TokenResponse, UserCreate, UserOut, UserRole
 from app.services.auth_service import create_token, get_current_user
 from app.services.firebase_service import get_db
 
 router = APIRouter()
+
+_BRANCH_NUMBER_RE = re.compile(r"^\d{7}$")
+
+
+class BranchLoginRequest(BaseModel):
+    branch_id: str
 
 
 @router.post("/login", response_model=TokenResponse)
@@ -44,6 +53,50 @@ async def login(body: LoginRequest):
             language=user_data.get("language", "de"),
             country_code=user_data.get("country_code", "DE"),
             branch_id=user_data.get("branch_id"),
+        ),
+    )
+
+
+@router.post("/branch-login", response_model=TokenResponse)
+async def branch_login(body: BranchLoginRequest):
+    """Login with a 7-digit branch number (no password).
+
+    Looks up the branch in Firestore, creates a virtual branch_manager
+    session scoped to that branch.
+    """
+    branch_id = body.branch_id.strip()
+    if not _BRANCH_NUMBER_RE.match(branch_id):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Branch number must be exactly 7 digits",
+        )
+
+    db = get_db()
+    branch_doc = db.collection("branches").document(branch_id).get()
+
+    if not branch_doc.exists:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Branch not found",
+        )
+
+    branch_data = branch_doc.to_dict()
+    # Use the branch doc ID as user ID so the token identifies this branch
+    token = create_token(
+        user_id=f"branch:{branch_doc.id}",
+        role="branch_manager",
+    )
+
+    return TokenResponse(
+        access_token=token,
+        user=UserOut(
+            id=f"branch:{branch_doc.id}",
+            name=branch_data.get("name", branch_doc.id),
+            email="",
+            role="branch_manager",
+            language="de",
+            country_code=branch_data.get("country_code", "DE"),
+            branch_id=branch_doc.id,
         ),
     )
 

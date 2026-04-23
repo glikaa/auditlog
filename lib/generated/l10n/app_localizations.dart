@@ -133,7 +133,7 @@ abstract class AppLocalizations {
   /// No description provided for @passwordMinLength.
   ///
   /// In en, this message translates to:
-  /// **'Password must be at least {count} characters.'**
+  /// **'Password must be at least {count} characters'**
   String passwordMinLength(int count);
 
   /// No description provided for @fieldRequired.
@@ -267,6 +267,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Attachments'**
   String get attachments;
+
+  /// No description provided for @auditClosingNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional Remarks'**
+  String get auditClosingNote;
+
+  /// No description provided for @auditClosingNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a summary or final note for this audit'**
+  String get auditClosingNoteHint;
 
   /// No description provided for @completeAudit.
   ///
@@ -616,6 +628,18 @@ abstract class AppLocalizations {
   /// **'Error uploading \"{fileName}\"'**
   String attachmentUploadError(String fileName);
 
+  /// No description provided for @attachmentReportRelevant.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in report'**
+  String get attachmentReportRelevant;
+
+  /// No description provided for @attachmentReportRelevantUpdateError.
+  ///
+  /// In en, this message translates to:
+  /// **'The attachment report relevance could not be updated.'**
+  String get attachmentReportRelevantUpdateError;
+
   /// No description provided for @attachmentUnnamed.
   ///
   /// In en, this message translates to:
@@ -879,6 +903,71 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New Country...'**
   String get catalogNewCountry;
+  /// No description provided for @loginTabStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get loginTabStaff;
+
+  /// No description provided for @loginTabBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch'**
+  String get loginTabBranch;
+
+  /// No description provided for @branchNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch Number'**
+  String get branchNumber;
+
+  /// No description provided for @branchNumberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'7-digit number, e.g. 1001001'**
+  String get branchNumberHint;
+
+  /// No description provided for @branchLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Branch'**
+  String get branchLogin;
+
+  /// No description provided for @branchNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch not found.'**
+  String get branchNotFound;
+
+  /// No description provided for @branchNumberInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a 7-digit branch number.'**
+  String get branchNumberInvalid;
+
+  /// No description provided for @acknowledgeAuditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread Audits'**
+  String get acknowledgeAuditTitle;
+
+  /// No description provided for @acknowledgeAuditMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You have released audits that have not been marked as read yet. Please open the audits and confirm with the \"Read\" button.'**
+  String get acknowledgeAuditMessage;
+
+  /// No description provided for @acknowledgeAuditButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Read / Acknowledged'**
+  String get acknowledgeAuditButton;
+
+  /// No description provided for @auditAcknowledged.
+  ///
+  /// In en, this message translates to:
+  /// **'Audit has been acknowledged.'**
+  String get auditAcknowledged;
 }
 
 class _AppLocalizationsDelegate

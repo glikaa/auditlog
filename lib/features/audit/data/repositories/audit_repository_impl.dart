@@ -145,6 +145,16 @@ class AuditRepositoryImpl implements AuditRepository {
   }
 
   @override
+  Future<Either<Failure, Audit>> acknowledgeAudit(String auditId) async {
+    try {
+      final result = await remote.acknowledgeAudit(auditId);
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<Question>>> getQuestions(String catalogId) async {
     try {
       final questions = await remote.getQuestions(catalogId);
@@ -225,6 +235,28 @@ class AuditRepositoryImpl implements AuditRepository {
         attachmentId: attachmentId,
       );
       return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Attachment>> updateAttachmentReportRelevance({
+    required String auditId,
+    required String questionId,
+    required String attachmentId,
+    required bool isReportRelevant,
+  }) async {
+    try {
+      final attachment = await remote.updateAttachmentReportRelevance(
+        auditId: auditId,
+        questionId: questionId,
+        attachmentId: attachmentId,
+        isReportRelevant: isReportRelevant,
+      );
+      return Right(attachment);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {

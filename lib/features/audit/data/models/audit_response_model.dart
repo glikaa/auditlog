@@ -31,6 +31,7 @@ class AuditResponseModel extends AuditResponse {
                     type: a['type'] as String,
                     isReportRelevant: a['is_report_relevant'] as bool? ?? true,
                     filename: a['filename'] as String?,
+                    storedName: a['stored_name'] as String?,
                   ))
               .toList() ??
           [],
@@ -64,6 +65,7 @@ class AuditResponseModel extends AuditResponse {
                 'type': a.type,
                 'is_report_relevant': a.isReportRelevant,
                 'filename': a.filename,
+                'stored_name': a.storedName,
               })
           .toList(),
       'updated_at': updatedAt?.toIso8601String(),

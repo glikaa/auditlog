@@ -53,3 +53,4 @@ class AuditOut(BaseModel):
     completed_at: Optional[datetime] = None
     is_nachrevision: bool = False
     linked_audit_id: Optional[str] = None
+    acknowledged_at: Optional[datetime] = None

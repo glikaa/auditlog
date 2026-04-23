@@ -25,7 +25,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String passwordMinLength(int count) {
-    return 'Passwort muss mindestens $count Zeichen lang sein.';
+    return 'Passwort muss mindestens $count Zeichen lang sein';
   }
 
   @override
@@ -93,6 +93,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get attachments => 'Anhänge';
+
+  @override
+  String get auditClosingNote => 'Zusätzliche Bemerkungen';
+
+  @override
+  String get auditClosingNoteHint =>
+      'Zusammenfassung oder Abschlussbemerkung zum Audit eingeben';
 
   @override
   String get completeAudit => 'Abschließen';
@@ -275,6 +282,13 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get attachmentReportRelevant => 'Im Bericht anzeigen';
+
+  @override
+  String get attachmentReportRelevantUpdateError =>
+      'Die Berichtsrelevanz des Anhangs konnte nicht aktualisiert werden.';
+
+  @override
   String get attachmentUnnamed => 'Unbekannte Datei';
 
   @override
@@ -408,4 +422,37 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get catalogNewCountry => 'Neues Land...';
+  String get loginTabStaff => 'Mitarbeiter';
+
+  @override
+  String get loginTabBranch => 'Filiale';
+
+  @override
+  String get branchNumber => 'Filialnummer';
+
+  @override
+  String get branchNumberHint => '7-stellige Nummer, z.B. 1001001';
+
+  @override
+  String get branchLogin => 'Filiale öffnen';
+
+  @override
+  String get branchNotFound => 'Filiale nicht gefunden.';
+
+  @override
+  String get branchNumberInvalid =>
+      'Bitte eine 7-stellige Filialnummer eingeben.';
+
+  @override
+  String get acknowledgeAuditTitle => 'Ungelesene Audits';
+
+  @override
+  String get acknowledgeAuditMessage =>
+      'Sie haben freigegebene Audits, die noch nicht als gelesen bestätigt wurden. Bitte öffnen Sie die Audits und bestätigen Sie mit dem Button \"Gelesen\".';
+
+  @override
+  String get acknowledgeAuditButton => 'Gelesen / Wahrgenommen';
+
+  @override
+  String get auditAcknowledged => 'Audit wurde zur Kenntnis genommen.';
 }

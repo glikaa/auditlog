@@ -25,7 +25,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String passwordMinLength(int count) {
-    return 'Password must be at least $count characters.';
+    return 'Password must be at least $count characters';
   }
 
   @override
@@ -93,6 +93,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get attachments => 'Attachments';
+
+  @override
+  String get auditClosingNote => 'Additional Remarks';
+
+  @override
+  String get auditClosingNoteHint =>
+      'Enter a summary or final note for this audit';
 
   @override
   String get completeAudit => 'Complete';
@@ -275,6 +282,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get attachmentReportRelevant => 'Show in report';
+
+  @override
+  String get attachmentReportRelevantUpdateError =>
+      'The attachment report relevance could not be updated.';
+
+  @override
   String get attachmentUnnamed => 'Unknown file';
 
   @override
@@ -408,4 +422,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get catalogNewCountry => 'New Country...';
+  String get loginTabStaff => 'Staff';
+
+  @override
+  String get loginTabBranch => 'Branch';
+
+  @override
+  String get branchNumber => 'Branch Number';
+
+  @override
+  String get branchNumberHint => '7-digit number, e.g. 1001001';
+
+  @override
+  String get branchLogin => 'Open Branch';
+
+  @override
+  String get branchNotFound => 'Branch not found.';
+
+  @override
+  String get branchNumberInvalid => 'Please enter a 7-digit branch number.';
+
+  @override
+  String get acknowledgeAuditTitle => 'Unread Audits';
+
+  @override
+  String get acknowledgeAuditMessage =>
+      'You have released audits that have not been marked as read yet. Please open the audits and confirm with the \"Read\" button.';
+
+  @override
+  String get acknowledgeAuditButton => 'Read / Acknowledged';
+
+  @override
+  String get auditAcknowledged => 'Audit has been acknowledged.';
 }

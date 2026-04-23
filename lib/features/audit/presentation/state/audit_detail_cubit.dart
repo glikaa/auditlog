@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/entities/audit.dart';
 import '../../domain/entities/audit_response.dart';
 import '../../domain/repositories/audit_repository.dart';
 import 'audit_detail_state.dart';
@@ -64,6 +65,20 @@ class AuditDetailCubit extends Cubit<AuditDetailState> {
     await repository.saveResponse(auditId, response);
   }
 
+  /// Auto-save audit-level fields such as the closing summary.
+  Future<void> saveAudit(Audit audit) async {
+    final currentState = state;
+    if (currentState is! AuditDetailLoaded) return;
+
+    emit(AuditDetailLoaded(
+      audit: audit,
+      questions: currentState.questions,
+      responses: currentState.responses,
+    ));
+
+    await repository.updateAudit(audit);
+  }
+
   /// Complete the audit.
   Future<void> completeAudit(String auditId) async {
     final result = await repository.completeAudit(auditId);
@@ -85,6 +100,24 @@ class AuditDetailCubit extends Cubit<AuditDetailState> {
   /// Release the audit to the branch.
   Future<void> releaseAudit(String auditId) async {
     final result = await repository.releaseAudit(auditId);
+    result.fold(
+      (failure) => emit(AuditDetailError(failure.message)),
+      (audit) {
+        final currentState = state;
+        if (currentState is AuditDetailLoaded) {
+          emit(AuditDetailLoaded(
+            audit: audit,
+            questions: currentState.questions,
+            responses: currentState.responses,
+          ));
+        }
+      },
+    );
+  }
+
+  /// Branch acknowledges a released audit.
+  Future<void> acknowledgeAudit(String auditId) async {
+    final result = await repository.acknowledgeAudit(auditId);
     result.fold(
       (failure) => emit(AuditDetailError(failure.message)),
       (audit) {
@@ -169,6 +202,80 @@ class AuditDetailCubit extends Cubit<AuditDetailState> {
       auditId: auditId,
       questionId: questionId,
       attachmentId: attachmentId,
+    );
+  }
+
+  Future<bool> updateAttachmentReportRelevance({
+    required String auditId,
+    required String questionId,
+    required String attachmentId,
+    required bool isReportRelevant,
+  }) async {
+    final currentState = state;
+    if (currentState is! AuditDetailLoaded) return false;
+
+    final updatedResponses =
+        Map<String, AuditResponse>.from(currentState.responses);
+    final existing = updatedResponses[questionId];
+    if (existing == null) return false;
+
+    final originalAttachments = existing.attachments;
+    final optimisticAttachments = originalAttachments
+        .map(
+          (attachment) => attachment.id == attachmentId
+              ? Attachment(
+                  id: attachment.id,
+                  url: attachment.url,
+                  type: attachment.type,
+                  isReportRelevant: isReportRelevant,
+                  filename: attachment.filename,
+                  storedName: attachment.storedName,
+                )
+              : attachment,
+        )
+        .toList();
+
+    updatedResponses[questionId] = existing.copyWith(
+      attachments: optimisticAttachments,
+    );
+    emit(AuditDetailLoaded(
+      audit: currentState.audit,
+      questions: currentState.questions,
+      responses: updatedResponses,
+    ));
+
+    final result = await repository.updateAttachmentReportRelevance(
+      auditId: auditId,
+      questionId: questionId,
+      attachmentId: attachmentId,
+      isReportRelevant: isReportRelevant,
+    );
+
+    return result.fold(
+      (_) {
+        updatedResponses[questionId] = existing.copyWith(
+          attachments: originalAttachments,
+        );
+        emit(AuditDetailLoaded(
+          audit: currentState.audit,
+          questions: currentState.questions,
+          responses: updatedResponses,
+        ));
+        return false;
+      },
+      (attachment) {
+        updatedResponses[questionId] = existing.copyWith(
+          attachments: originalAttachments
+              .map((item) => item.id == attachmentId ? attachment : item)
+              .toList(),
+        );
+        emit(AuditDetailLoaded(
+          audit: currentState.audit,
+          questions: currentState.questions,
+          responses: updatedResponses,
+        ));
+        return true;
+      },
     );
   }
 }

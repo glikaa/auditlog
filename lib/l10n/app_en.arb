@@ -65,6 +65,10 @@
   "@rating": {},
   "attachments": "Attachments",
   "@attachments": {},
+  "auditClosingNote": "Additional Remarks",
+  "@auditClosingNote": {},
+  "auditClosingNoteHint": "Enter a summary or final note for this audit",
+  "@auditClosingNoteHint": {},
 
   "completeAudit": "Complete",
   "@completeAudit": {},
@@ -198,10 +202,20 @@
       "fileName": { "type": "String" }
     }
   },
+  "attachmentReportRelevant": "Show in report",
+  "@attachmentReportRelevant": {},
+  "attachmentReportRelevantUpdateError": "The attachment report relevance could not be updated.",
+  "@attachmentReportRelevantUpdateError": {},
   "attachmentUnnamed": "Unknown file",
   "@attachmentUnnamed": {},
   "internalAuditHint": "Internal Audit Hint",
   "@internalAuditHint": { "description": "Label for internal audit hint visible to auditors/admins only" },
+  "passwordMinLength": "Password must be at least {count} characters",
+  "@passwordMinLength": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "createAudit": "Create Audit",
   "@createAudit": {},
   "auditCatalog": "Audit Catalog",
@@ -292,4 +306,28 @@
   "@catalogBaseVersion": {},
   "catalogNewCountry": "New Country...",
   "@catalogNewCountry": {}
+
+  "loginTabStaff": "Staff",
+  "@loginTabStaff": {},
+  "loginTabBranch": "Branch",
+  "@loginTabBranch": {},
+  "branchNumber": "Branch Number",
+  "@branchNumber": {},
+  "branchNumberHint": "7-digit number, e.g. 1001001",
+  "@branchNumberHint": {},
+  "branchLogin": "Open Branch",
+  "@branchLogin": {},
+  "branchNotFound": "Branch not found.",
+  "@branchNotFound": {},
+  "branchNumberInvalid": "Please enter a 7-digit branch number.",
+  "@branchNumberInvalid": {},
+
+  "acknowledgeAuditTitle": "Unread Audits",
+  "@acknowledgeAuditTitle": {},
+  "acknowledgeAuditMessage": "You have released audits that have not been marked as read yet. Please open the audits and confirm with the \"Read\" button.",
+  "@acknowledgeAuditMessage": {},
+  "acknowledgeAuditButton": "Read / Acknowledged",
+  "@acknowledgeAuditButton": {},
+  "auditAcknowledged": "Audit has been acknowledged.",
+  "@auditAcknowledged": {}
 }

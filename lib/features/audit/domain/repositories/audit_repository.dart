@@ -33,6 +33,9 @@ abstract class AuditRepository {
   /// Release an audit (make visible to branch).
   Future<Either<Failure, Audit>> releaseAudit(String auditId);
 
+  /// Branch acknowledges a released audit.
+  Future<Either<Failure, Audit>> acknowledgeAudit(String auditId);
+
   /// Get questions for a catalog.
   Future<Either<Failure, List<Question>>> getQuestions(String catalogId);
 
@@ -59,6 +62,14 @@ abstract class AuditRepository {
     required String auditId,
     required String questionId,
     required String attachmentId,
+  });
+
+  /// Update whether an attachment should appear in the PDF report.
+  Future<Either<Failure, Attachment>> updateAttachmentReportRelevance({
+    required String auditId,
+    required String questionId,
+    required String attachmentId,
+    required bool isReportRelevant,
   });
 
   /// Delete an audit (admin only).

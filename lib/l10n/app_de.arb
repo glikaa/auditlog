@@ -65,6 +65,10 @@
   "@rating": {},
   "attachments": "Anhänge",
   "@attachments": {},
+  "auditClosingNote": "Zusätzliche Bemerkungen",
+  "@auditClosingNote": {},
+  "auditClosingNoteHint": "Zusammenfassung oder Abschlussbemerkung zum Audit eingeben",
+  "@auditClosingNoteHint": {},
 
   "completeAudit": "Abschließen",
   "@completeAudit": {},
@@ -198,10 +202,20 @@
       "fileName": { "type": "String" }
     }
   },
+  "attachmentReportRelevant": "Im Bericht anzeigen",
+  "@attachmentReportRelevant": {},
+  "attachmentReportRelevantUpdateError": "Die Berichtsrelevanz des Anhangs konnte nicht aktualisiert werden.",
+  "@attachmentReportRelevantUpdateError": {},
   "attachmentUnnamed": "Unbekannte Datei",
   "@attachmentUnnamed": {},
   "internalAuditHint": "Interner Prüfhinweis",
   "@internalAuditHint": { "description": "Label for internal audit hint visible to auditors/admins only" },
+  "passwordMinLength": "Passwort muss mindestens {count} Zeichen lang sein",
+  "@passwordMinLength": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "createAudit": "Audit erstellen",
   "@createAudit": {},
   "auditCatalog": "Prüfkatalog",
@@ -292,4 +306,28 @@
   "@catalogBaseVersion": {},
   "catalogNewCountry": "Neues Land...",
   "@catalogNewCountry": {}
+
+  "loginTabStaff": "Mitarbeiter",
+  "@loginTabStaff": {},
+  "loginTabBranch": "Filiale",
+  "@loginTabBranch": {},
+  "branchNumber": "Filialnummer",
+  "@branchNumber": {},
+  "branchNumberHint": "7-stellige Nummer, z.B. 1001001",
+  "@branchNumberHint": {},
+  "branchLogin": "Filiale öffnen",
+  "@branchLogin": {},
+  "branchNotFound": "Filiale nicht gefunden.",
+  "@branchNotFound": {},
+  "branchNumberInvalid": "Bitte eine 7-stellige Filialnummer eingeben.",
+  "@branchNumberInvalid": {},
+
+  "acknowledgeAuditTitle": "Ungelesene Audits",
+  "@acknowledgeAuditTitle": {},
+  "acknowledgeAuditMessage": "Sie haben freigegebene Audits, die noch nicht als gelesen best\u00e4tigt wurden. Bitte \u00f6ffnen Sie die Audits und best\u00e4tigen Sie mit dem Button \"Gelesen\".",
+  "@acknowledgeAuditMessage": {},
+  "acknowledgeAuditButton": "Gelesen / Wahrgenommen",
+  "@acknowledgeAuditButton": {},
+  "auditAcknowledged": "Audit wurde zur Kenntnis genommen.",
+  "@auditAcknowledged": {}
 }

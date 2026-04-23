@@ -41,6 +41,9 @@ dependencies:
   # Google Fonts – Noto Sans for full Latin Extended + Emoji support
   google_fonts: ^6.2.1
 
+  # Rich Text Editor (works on Web, Desktop, Mobile)
+  flutter_quill: ^11.5.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

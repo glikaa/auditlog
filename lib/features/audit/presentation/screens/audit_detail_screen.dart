@@ -1,5 +1,6 @@
 import 'dart:js_interop';
 import 'dart:typed_data';
+import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:web/web.dart' as web;
@@ -39,15 +40,20 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
   final _categoryKeys = <String, GlobalKey>{};
   final _questionScrollController = ScrollController();
   final _questionListKey = GlobalKey();
+  late final TextEditingController _managementSummaryController;
+  Timer? _managementSummaryDebounce;
 
   @override
   void initState() {
     super.initState();
+    _managementSummaryController = TextEditingController();
     context.read<AuditDetailCubit>().loadAudit(widget.auditId);
   }
 
   @override
   void dispose() {
+    _managementSummaryDebounce?.cancel();
+    _managementSummaryController.dispose();
     _questionScrollController.dispose();
     super.dispose();
   }
@@ -72,6 +78,31 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     final trimmedUserRole = userRole?.trim();
     return (trimmedUserRole?.isNotEmpty ?? false) &&
         !_viewerRoles.contains(trimmedUserRole);
+  }
+
+  bool _isAuditEditable(Audit audit) {
+    return audit.status == AuditStatus.inProgress ||
+        audit.status == AuditStatus.draft;
+  }
+
+  void _syncManagementSummaryController(Audit audit) {
+    final nextText = audit.managementSummary ?? '';
+    if (_managementSummaryController.text == nextText) return;
+
+    _managementSummaryController.value = TextEditingValue(
+      text: nextText,
+      selection: TextSelection.collapsed(offset: nextText.length),
+    );
+  }
+
+  void _onManagementSummaryChanged(Audit audit, String value) {
+    _managementSummaryDebounce?.cancel();
+    _managementSummaryDebounce = Timer(const Duration(milliseconds: 800), () {
+      if (!mounted) return;
+      context.read<AuditDetailCubit>().saveAudit(
+            audit.copyWith(managementSummary: value),
+          );
+    });
   }
 
   @override
@@ -105,6 +136,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AuditDetailLoaded state,
     AppLocalizations l10n,
   ) {
+    _syncManagementSummaryController(state.audit);
     final categories = state.questionsByCategory;
     final settings = context.select(
       (SettingsCubit cubit) => (
@@ -167,9 +199,9 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
         ],
       ),
       body: ResponsiveLayout(
-        mobile: _buildMobileLayout(categories, state, l10n, canViewInternalHints),
-        tablet: _buildTabletLayout(categories, state, l10n, canViewInternalHints),
-        desktop: _buildTabletLayout(categories, state, l10n, canViewInternalHints),
+        mobile: _buildMobileLayout(categories, state, l10n, canViewInternalHints, userRole),
+        tablet: _buildTabletLayout(categories, state, l10n, canViewInternalHints, userRole),
+        desktop: _buildTabletLayout(categories, state, l10n, canViewInternalHints, userRole),
       ),
     );
   }
@@ -179,9 +211,10 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AuditDetailLoaded state,
     AppLocalizations l10n,
     bool canViewInternalHints,
+    String userRole,
   ) {
     return _buildQuestionList(categories, state, l10n,
-        canViewInternalHints: canViewInternalHints);
+        canViewInternalHints: canViewInternalHints, userRole: userRole);
   }
 
   Widget _buildTabletLayout(
@@ -189,6 +222,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AuditDetailLoaded state,
     AppLocalizations l10n,
     bool canViewInternalHints,
+    String userRole,
   ) {
     return Row(
       children: [
@@ -201,7 +235,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
         // Right: Questions list (TOC is in the info panel on tablet/desktop)
         Expanded(
           child: _buildQuestionList(categories, state, l10n,
-              showToc: false, canViewInternalHints: canViewInternalHints),
+              showToc: false, canViewInternalHints: canViewInternalHints, userRole: userRole),
         ),
       ],
     );
@@ -323,6 +357,7 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
     AppLocalizations l10n, {
     bool showToc = true,
     bool canViewInternalHints = false,
+    String userRole = '',
   }) {
     final entries = categories.entries.toList();
     final lang = Localizations.localeOf(context).languageCode;
@@ -426,13 +461,45 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
                   response: response,
                   auditId: state.audit.id,
                   canViewInternalHints: canViewInternalHints,
-                  isEditable: state.audit.status == AuditStatus.inProgress ||
-                      state.audit.status == AuditStatus.draft,
+                  isEditable: _isAuditEditable(state.audit),
                 );
               }),
             ],
           );
         }),
+        const SizedBox(height: 12),
+        _ManagementSummaryCard(
+          controller: _managementSummaryController,
+          isEditable: _isAuditEditable(state.audit),
+          label: l10n.auditClosingNote,
+          hintText: l10n.auditClosingNoteHint,
+          onChanged: (value) => _onManagementSummaryChanged(state.audit, value),
+        ),
+        // Acknowledge button for branch managers on released, unacknowledged audits
+        if (userRole == 'branch_manager' &&
+            state.audit.status == AuditStatus.released &&
+            state.audit.acknowledgedAt == null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 24),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  context
+                      .read<AuditDetailCubit>()
+                      .acknowledgeAudit(state.audit.id);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.auditAcknowledged)),
+                  );
+                },
+                icon: const Icon(Icons.check_circle_outline),
+                label: Text(l10n.acknowledgeAuditButton),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -550,6 +617,56 @@ class _AuditDetailScreenState extends State<AuditDetailScreen> {
       case AuditStatus.released:
         return l10n.statusReleased;
     }
+  }
+}
+
+class _ManagementSummaryCard extends StatelessWidget {
+  final TextEditingController controller;
+  final bool isEditable;
+  final String label;
+  final String hintText;
+  final ValueChanged<String> onChanged;
+
+  const _ManagementSummaryCard({
+    required this.controller,
+    required this.isEditable,
+    required this.label,
+    required this.hintText,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              enabled: isEditable,
+              decoration: InputDecoration(
+                labelText: label,
+                hintText: hintText,
+                alignLabelWithHint: true,
+              ),
+              maxLines: null,
+              minLines: 4,
+              onChanged: onChanged,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

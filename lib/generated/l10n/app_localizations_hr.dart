@@ -25,7 +25,7 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String passwordMinLength(int count) {
-    return 'Lozinka mora imati najmanje $count znakova.';
+    return 'Lozinka mora imati najmanje $count znakova';
   }
 
   @override
@@ -93,6 +93,13 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get attachments => 'Prilozi';
+
+  @override
+  String get auditClosingNote => 'Dodatne napomene';
+
+  @override
+  String get auditClosingNoteHint =>
+      'Unesite sažetak ili završnu napomenu za ovaj audit';
 
   @override
   String get completeAudit => 'Završi';
@@ -274,6 +281,13 @@ class AppLocalizationsHr extends AppLocalizations {
   }
 
   @override
+  String get attachmentReportRelevant => 'Prikazi u izvjescu';
+
+  @override
+  String get attachmentReportRelevantUpdateError =>
+      'Relevantnost priloga za izvjesce nije moguce azurirati.';
+
+  @override
   String get attachmentUnnamed => 'Nepoznata datoteka';
 
   @override
@@ -407,4 +421,36 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get catalogNewCountry => 'Nova država...';
+  String get loginTabStaff => 'Osoblje';
+
+  @override
+  String get loginTabBranch => 'Poslovnica';
+
+  @override
+  String get branchNumber => 'Broj poslovnice';
+
+  @override
+  String get branchNumberHint => '7-znamenkasti broj, npr. 1001001';
+
+  @override
+  String get branchLogin => 'Otvori poslovnicu';
+
+  @override
+  String get branchNotFound => 'Poslovnica nije pronađena.';
+
+  @override
+  String get branchNumberInvalid => 'Unesite 7-znamenkasti broj poslovnice.';
+
+  @override
+  String get acknowledgeAuditTitle => 'Nepročitani auditi';
+
+  @override
+  String get acknowledgeAuditMessage =>
+      'Imate objavljene audite koji još nisu označeni kao pročitani. Molimo otvorite audite i potvrdite s gumbom \"Pročitano\".';
+
+  @override
+  String get acknowledgeAuditButton => 'Pročitano / Primljeno na znanje';
+
+  @override
+  String get auditAcknowledged => 'Audit je primljen na znanje.';
 }

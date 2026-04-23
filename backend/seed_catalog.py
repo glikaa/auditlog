@@ -506,23 +506,23 @@ QUESTIONS = [
     },
 ]
 
-# Demo branches
+# Demo branches – IDs are 7-digit branch numbers
 BRANCHES = [
     {
-        "id": "branch-berlin",
+        "id": "1001001",
         "name": "Filiale Berlin Mitte",
         "country_code": "DE",
         "address": "Friedrichstr. 100, 10117 Berlin",
         "manager_email": "branch_berlin@audit.de",
     },
     {
-        "id": "branch-munich",
+        "id": "1001002",
         "name": "Filiale Muenchen Zentrum",
         "country_code": "DE",
         "address": "Maximilianstr. 20, 80539 Muenchen",
     },
     {
-        "id": "branch-zagreb",
+        "id": "1002001",
         "name": "Poslovnica Zagreb Centar",
         "country_code": "HR",
         "address": "Ilica 10, 10000 Zagreb",
@@ -631,7 +631,7 @@ def seed():
             "id": audit_id,
             "type": "filialrevision",
             "catalog_id": CATALOG_ID,
-            "branch_id": "branch-berlin",
+            "branch_id": "1001001",
             "branch_name": "Filiale Berlin Mitte",
             "auditor_id": auditor_doc.id,
             "auditor_name": auditor_data.get("name", ""),
@@ -1025,56 +1025,56 @@ MULTI_COUNTRY_DATA = {
         "catalog_id": "catalog-at-2025",
         "catalog": {"country_code": "AT", "version": "v1.0", "year": 2025, "language": "de"},
         "branches": [
-            {"id": "branch-vienna", "name": "Filiale Wien Zentrum", "country_code": "AT", "address": "Stephansplatz 1, 1010 Wien"},
-            {"id": "branch-graz",   "name": "Filiale Graz",         "country_code": "AT", "address": "Hauptplatz 5, 8010 Graz"},
+            {"id": "1007001", "name": "Filiale Wien Zentrum", "country_code": "AT", "address": "Stephansplatz 1, 1010 Wien"},
+            {"id": "1007002",   "name": "Filiale Graz",         "country_code": "AT", "address": "Hauptplatz 5, 8010 Graz"},
         ],
     },
     "CH": {
         "catalog_id": "catalog-ch-2025",
         "catalog": {"country_code": "CH", "version": "v1.0", "year": 2025, "language": "de"},
         "branches": [
-            {"id": "branch-zurich", "name": "Filiale Zürich Zentrum", "country_code": "CH", "address": "Bahnhofstrasse 10, 8001 Zürich"},
-            {"id": "branch-basel",  "name": "Filiale Basel",           "country_code": "CH", "address": "Marktplatz 3, 4001 Basel"},
+            {"id": "1008001", "name": "Filiale Zürich Zentrum", "country_code": "CH", "address": "Bahnhofstrasse 10, 8001 Zürich"},
+            {"id": "1008002",  "name": "Filiale Basel",           "country_code": "CH", "address": "Marktplatz 3, 4001 Basel"},
         ],
     },
     "HR": {
         "catalog_id": "catalog-hr-2025",
         "catalog": {"country_code": "HR", "version": "v1.0", "year": 2025, "language": "hr"},
         "branches": [
-            {"id": "branch-zagreb",  "name": "Poslovnica Zagreb Centar", "country_code": "HR", "address": "Ilica 10, 10000 Zagreb"},
-            {"id": "branch-split",   "name": "Poslovnica Split",          "country_code": "HR", "address": "Marmontova 5, 21000 Split"},
+            {"id": "1002001",  "name": "Poslovnica Zagreb Centar", "country_code": "HR", "address": "Ilica 10, 10000 Zagreb"},
+            {"id": "1002002",  "name": "Poslovnica Split",          "country_code": "HR", "address": "Marmontova 5, 21000 Split"},
         ],
     },
     "SI": {
         "catalog_id": "catalog-si-2025",
         "catalog": {"country_code": "SI", "version": "v1.0", "year": 2025, "language": "sl"},
         "branches": [
-            {"id": "branch-ljubljana", "name": "Poslovalnica Ljubljana Center", "country_code": "SI", "address": "Prešernov trg 1, 1000 Ljubljana"},
-            {"id": "branch-maribor",   "name": "Poslovalnica Maribor",           "country_code": "SI", "address": "Glavni trg 10, 2000 Maribor"},
+            {"id": "1003001", "name": "Poslovalnica Ljubljana Center", "country_code": "SI", "address": "Prešernov trg 1, 1000 Ljubljana"},
+            {"id": "1003002", "name": "Poslovalnica Maribor",           "country_code": "SI", "address": "Glavni trg 10, 2000 Maribor"},
         ],
     },
     "HU": {
         "catalog_id": "catalog-hu-2025",
         "catalog": {"country_code": "HU", "version": "v1.0", "year": 2025, "language": "hu"},
         "branches": [
-            {"id": "branch-budapest",  "name": "Budapest Belváros fiók", "country_code": "HU", "address": "Váci utca 1, 1052 Budapest"},
-            {"id": "branch-debrecen",  "name": "Debrecen fiók",           "country_code": "HU", "address": "Piac utca 10, 4024 Debrecen"},
+            {"id": "1004001",  "name": "Budapest Belváros fiók", "country_code": "HU", "address": "Váci utca 1, 1052 Budapest"},
+            {"id": "1004002",  "name": "Debrecen fiók",           "country_code": "HU", "address": "Piac utca 10, 4024 Debrecen"},
         ],
     },
     "ES": {
         "catalog_id": "catalog-es-2025",
         "catalog": {"country_code": "ES", "version": "v1.0", "year": 2025, "language": "es"},
         "branches": [
-            {"id": "branch-madrid",    "name": "Sucursal Madrid Centro", "country_code": "ES", "address": "Gran Vía 1, 28013 Madrid"},
-            {"id": "branch-barcelona", "name": "Sucursal Barcelona",      "country_code": "ES", "address": "Las Ramblas 20, 08002 Barcelona"},
+            {"id": "1005001",    "name": "Sucursal Madrid Centro", "country_code": "ES", "address": "Gran Vía 1, 28013 Madrid"},
+            {"id": "1005002", "name": "Sucursal Barcelona",      "country_code": "ES", "address": "Las Ramblas 20, 08002 Barcelona"},
         ],
     },
     "SK": {
         "catalog_id": "catalog-sk-2025",
         "catalog": {"country_code": "SK", "version": "v1.0", "year": 2025, "language": "sk"},
         "branches": [
-            {"id": "branch-bratislava", "name": "Pobočka Bratislava Centrum", "country_code": "SK", "address": "Obchodná 1, 811 06 Bratislava"},
-            {"id": "branch-kosice",     "name": "Pobočka Košice",              "country_code": "SK", "address": "Hlavná 5, 040 01 Košice"},
+            {"id": "1006001", "name": "Pobočka Bratislava Centrum", "country_code": "SK", "address": "Obchodná 1, 811 06 Bratislava"},
+            {"id": "1006002", "name": "Pobočka Košice",              "country_code": "SK", "address": "Hlavná 5, 040 01 Košice"},
         ],
     },
 }
