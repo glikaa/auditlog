@@ -47,11 +47,15 @@ async def list_audits(user: dict = Depends(get_current_user)):
     user_branch_id = None
     user_country = None
     if user["role"] in ("branch_manager", "department_head"):
-        user_doc = db.collection("users").document(user["id"]).get()
-        if user_doc.exists:
-            u_data = user_doc.to_dict()
-            user_branch_id = u_data.get("branch_id")
-            user_country = (u_data.get("country_code") or "").upper()
+        # Branch-login tokens use "branch:<id>" as user ID
+        if user["id"].startswith("branch:"):
+            user_branch_id = user["id"][len("branch:"):]
+        else:
+            user_doc = db.collection("users").document(user["id"]).get()
+            if user_doc.exists:
+                u_data = user_doc.to_dict()
+                user_branch_id = u_data.get("branch_id")
+                user_country = (u_data.get("country_code") or "").upper()
 
     # Build branch→country map for department_head filtering
     branch_country = {}  # type: dict
@@ -217,6 +221,30 @@ async def release_audit(audit_id: str, user: dict = Depends(get_current_user)):
     ref.update({"status": AuditStatus.released.value})
 
     data["status"] = AuditStatus.released.value
+    data["id"] = doc.id
+    return AuditOut(**data)
+
+
+@router.post("/{audit_id}/acknowledge", response_model=AuditOut)
+async def acknowledge_audit(audit_id: str, user: dict = Depends(get_current_user)):
+    """Branch acknowledges that they have read a released audit."""
+    if user["role"] not in ("branch_manager",):
+        raise HTTPException(status_code=403, detail="Only branch managers can acknowledge audits")
+
+    db = get_db()
+    ref = db.collection("audits").document(audit_id)
+    doc = ref.get()
+    if not doc.exists:
+        raise HTTPException(status_code=404, detail="Audit not found")
+
+    data = doc.to_dict()
+    if data.get("status") != AuditStatus.released.value:
+        raise HTTPException(status_code=400, detail="Only released audits can be acknowledged")
+
+    now = datetime.now(timezone.utc).isoformat()
+    ref.update({"acknowledged_at": now})
+
+    data["acknowledged_at"] = now
     data["id"] = doc.id
     return AuditOut(**data)
 

@@ -164,9 +164,31 @@ flutter run -d chrome
 | admin@audit.de | admin123 | Administrator |
 | auditor@audit.de | auditor123 | Pruefer / Revision |
 | preparer@audit.de | preparer123 | Vorbereitende Person |
-| branch_berlin@audit.de | branch123 | Filialleitung | -> 1 Filiale
 | department@audit.de | department123 | Abteilungsleitung | -> 1 Land
 | district@audit.de | district123 | Bezirksleitung | -> alle Länder
+
+### Filial-Login (ohne Passwort)
+
+Alternativ kann man sich direkt mit einer 7-stelligen Filialnummer einloggen (Tab "Filiale").
+
+| Filialnummer | Name | Land |
+|---|---|---|
+| 1001001 | Filiale Berlin Mitte | DE |
+| 1001002 | Filiale Muenchen Zentrum | DE |
+| 1002001 | Poslovnica Zagreb Centar | HR |
+| 1002002 | Poslovnica Split | HR |
+| 1003001 | Poslovalnica Ljubljana Center | SI |
+| 1003002 | Poslovalnica Maribor | SI |
+| 1004001 | Budapest Belváros fiók | HU |
+| 1004002 | Debrecen fiók | HU |
+| 1005001 | Sucursal Madrid Centro | ES |
+| 1005002 | Sucursal Barcelona | ES |
+| 1006001 | Pobočka Bratislava Centrum | SK |
+| 1006002 | Pobočka Košice | SK |
+| 1007001 | Filiale Wien Zentrum | AT |
+| 1007002 | Filiale Graz | AT |
+| 1008001 | Filiale Zürich Zentrum | CH |
+| 1008002 | Filiale Basel | CH |
 
 ---
 
@@ -175,6 +197,7 @@ flutter run -d chrome
 | Methode | Pfad | Beschreibung |
 |---|---|---|
 | POST | /auth/login | Login (JSON: email, password) |
+| POST | /auth/branch-login | Filial-Login (JSON: branch_id, 7-stellig) |
 | GET | /audits | Audit-Liste (gefiltert nach Rolle) |
 | GET | /audits/{id} | Einzelnes Audit |
 | POST | /audits/{id}/complete | Audit abschliessen |

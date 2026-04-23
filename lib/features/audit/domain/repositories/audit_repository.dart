@@ -33,6 +33,9 @@ abstract class AuditRepository {
   /// Release an audit (make visible to branch).
   Future<Either<Failure, Audit>> releaseAudit(String auditId);
 
+  /// Branch acknowledges a released audit.
+  Future<Either<Failure, Audit>> acknowledgeAudit(String auditId);
+
   /// Get questions for a catalog.
   Future<Either<Failure, List<Question>>> getQuestions(String catalogId);
 

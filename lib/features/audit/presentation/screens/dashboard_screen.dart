@@ -18,6 +18,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  bool _acknowledgeDialogShown = false;
+
   @override
   void initState() {
     super.initState();
@@ -84,6 +86,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
             if (state.audits.isEmpty) {
               return Center(child: Text(l10n.noAuditsFound));
             }
+
+            // Show acknowledge reminder for branch managers
+            final userRole = settings.userRole?.trim() ?? '';
+            if (userRole == 'branch_manager' && !_acknowledgeDialogShown) {
+              final unacknowledged = state.audits.where((a) =>
+                  a.status == AuditStatus.released &&
+                  a.acknowledgedAt == null).toList();
+              if (unacknowledged.isNotEmpty) {
+                _acknowledgeDialogShown = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (!mounted) return;
+                  _showAcknowledgeReminder(context, l10n, unacknowledged);
+                });
+              }
+            }
+
             return ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: state.audits.length,
@@ -122,6 +140,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
+  void _showAcknowledgeReminder(
+    BuildContext context,
+    AppLocalizations l10n,
+    List<Audit> unacknowledged,
+  ) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.mark_email_unread, color: Colors.orange, size: 40),
+        title: Text(l10n.acknowledgeAuditTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.acknowledgeAuditMessage),
+            const SizedBox(height: 12),
+            ...unacknowledged.map((a) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Row(
+                children: [
+                  const Icon(Icons.circle, size: 8, color: Colors.orange),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(a.branchName, style: const TextStyle(fontWeight: FontWeight.w600))),
+                ],
+              ),
+            )),
+          ],
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _AuditCard extends StatelessWidget {
@@ -137,7 +194,9 @@ class _AuditCard extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: _statusColor(audit.status),
+          backgroundColor: (audit.status == AuditStatus.released && audit.acknowledgedAt != null)
+              ? Colors.deepPurple
+              : _statusColor(audit.status),
           child: Icon(_statusIcon(audit.status), color: Colors.white, size: 20),
         ),
         title: Row(

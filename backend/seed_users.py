@@ -40,14 +40,6 @@ DEMO_USERS = [
         "country_code": "DE",
     },
     {
-        "name": "Anna Filialleiter",
-        "email": "branch_berlin@audit.de",
-        "password": "branch123",
-        "role": "branch_manager",
-        "language": "de",
-        "country_code": "DE",
-    },
-    {
         "name": "Peter Bezirksleiter",
         "email": "district@audit.de",
         "password": "district123",

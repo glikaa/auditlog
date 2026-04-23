@@ -115,6 +115,24 @@ class AuditDetailCubit extends Cubit<AuditDetailState> {
     );
   }
 
+  /// Branch acknowledges a released audit.
+  Future<void> acknowledgeAudit(String auditId) async {
+    final result = await repository.acknowledgeAudit(auditId);
+    result.fold(
+      (failure) => emit(AuditDetailError(failure.message)),
+      (audit) {
+        final currentState = state;
+        if (currentState is AuditDetailLoaded) {
+          emit(AuditDetailLoaded(
+            audit: audit,
+            questions: currentState.questions,
+            responses: currentState.responses,
+          ));
+        }
+      },
+    );
+  }
+
   /// Upload an attachment for a question. Returns true on success.
   Future<bool> uploadAttachment({
     required String auditId,
