@@ -380,6 +380,53 @@ class AppLocalizationsDe extends AppLocalizations {
   String get newCategoryLabel => 'Neue Kategorie';
 
   @override
+  String get questionListTitle => 'Fragenkatalog';
+
+  @override
+  String get reorderSaved => 'Reihenfolge gespeichert.';
+
+  @override
+  String get reorderError => 'Reihenfolge konnte nicht gespeichert werden.';
+
+  @override
+  String insertAtPosition(int pos) {
+    return 'Position $pos';
+  }
+
+  @override
+  String get createCatalog => 'Katalog anlegen';
+
+  @override
+  String get catalogCountryCode => 'Länderkennzeichen';
+
+  @override
+  String get catalogVersion => 'Version';
+
+  @override
+  String get catalogYear => 'Jahr';
+
+  @override
+  String get catalogLanguage => 'Standardsprache';
+
+  @override
+  String get catalogCreated => 'Katalog wurde angelegt.';
+
+  @override
+  String get catalogListTitle => 'Vorhandene Kataloge';
+
+  @override
+  String get catalogYearInvalid => 'Bitte ein gültiges Jahr eingeben.';
+
+  @override
+  String get catalogBaseVersion => 'Basisversion (Fragen übernehmen aus)';
+
+  @override
+  String get catalogNewCountry => 'Neues Land...';
+
+  @override
+  String get noCatalogsYet => 'Noch keine Kataloge vorhanden.';
+
+  @override
   String get loginTabStaff => 'Mitarbeiter';
 
   @override

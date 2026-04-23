@@ -8,7 +8,7 @@ class Question extends Equatable {
   final String category;
   final String? categoryEn;
   final String? categoryHr;
-  final String textDe;
+  final String? textDe;
   final String? textEn;
   final String? textHr;
   final String? explanationTextDe;
@@ -32,7 +32,7 @@ class Question extends Equatable {
     required this.category,
     this.categoryEn,
     this.categoryHr,
-    required this.textDe,
+    this.textDe,
     this.textEn,
     this.textHr,
     this.explanationTextDe,
@@ -61,9 +61,9 @@ class Question extends Equatable {
   /// Returns the question text in the given language.
   String text(String lang) {
     switch (lang) {
-      case 'en': return textEn ?? textDe;
-      case 'hr': return textHr ?? textDe;
-      default: return textDe;
+      case 'en': return textEn ?? textDe ?? '';
+      case 'hr': return textHr ?? textDe ?? '';
+      default: return textDe ?? '';
     }
   }
 

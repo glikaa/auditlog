@@ -437,6 +437,14 @@ class _AdminDrawer extends StatelessWidget {
               Navigator.pushNamed(context, AppRouter.adminAddQuestion);
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.folder_copy_outlined),
+            title: Text(l10n.createCatalog),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, AppRouter.adminCreateCatalog);
+          },
+          ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.bar_chart_outlined),

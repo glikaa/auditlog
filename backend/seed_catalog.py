@@ -541,19 +541,48 @@ def seed():
         cat_ref.set(CATALOG)
         print("  OK    Catalog '{}' created.".format(CATALOG_ID))
 
+    # --- Version (REQUIRED for incremental model) ---
+    version_id = "2025-v1"
+    version_number = 1
+
+    version_ref = cat_ref.collection("versions").document(version_id)
+
+    if not version_ref.get().exists:
+        version_ref.set({
+            "version": version_id,
+            "versionNumber": version_number,
+            "year": CATALOG_ID.get("year", 2025),
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        })
+        print("  OK    Version '{}' created.".format(version_id))
+    else:
+        print("  SKIP  Version '{}' exists.".format(version_id))
+
     # --- 2. Create questions ---
     q_count = 0
+
+    version_id = "2025-v1"
+    version_number = 1
+
     for q in QUESTIONS:
         q_id = "q-de-{}".format(q["order"])
-        q_ref = db.collection("questions").document(q_id)
+        q_ref = cat_ref.collection("questions").document(q_id)
+
         data = dict(q)
         data["id"] = q_id
-        data["catalog_id"] = CATALOG_ID
+
+        # versioning (correct)
+        data["introducedInVersionId"] = version_id
+        data["introducedInVersionNumber"] = version_number
+
+        # stable linking
         data["master_question_id"] = "master-{}".format(q["order"])
+
         q_ref.set(data)
+
         q_count += 1
         print("  OK    Q{}: {}".format(q["order"], q["text_de"][:50]))
-
+        
     # Update question count
     cat_ref.update({"question_count": len(QUESTIONS)})
     print("\n  {} new questions added (total {}).".format(q_count, len(QUESTIONS)))

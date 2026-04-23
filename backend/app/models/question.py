@@ -10,7 +10,7 @@ class QuestionCreate(BaseModel):
     category: str
     category_en: Optional[str] = None
     category_hr: Optional[str] = None
-    text_de: str
+    text_de: Optional[str] = None
     text_en: Optional[str] = None
     text_hr: Optional[str] = None
     explanation_text_de: Optional[str] = None
@@ -31,8 +31,20 @@ class QuestionOut(QuestionCreate):
     id: str
 
 
+class QuestionReorder(BaseModel):
+    id: str
+    order: int
+
+
 class CatalogCreate(BaseModel):
     country_code: str
+    version: str
+    year: int
+    language: str = "de"
+
+
+class CatalogClone(BaseModel):
+    """Payload for cloning an existing catalog into a new version."""
     version: str
     year: int
     language: str = "de"

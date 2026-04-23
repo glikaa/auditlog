@@ -1,0 +1,7 @@
+{
+  "name": "auditlog",
+  "private": true,
+  "dependencies": {
+    "firebase-admin": "^13.8.0"
+  }
+}

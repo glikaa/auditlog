@@ -3,10 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../features/admin/presentation/screens/add_question_screen.dart';
 import '../features/admin/presentation/screens/add_user_screen.dart';
+import '../features/admin/presentation/screens/create_catalog_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/audit/presentation/screens/audit_detail_screen.dart';
 import '../features/audit/presentation/screens/create_audit_screen.dart';
 import '../features/audit/presentation/screens/dashboard_screen.dart';
+import '../features/audit/presentation/state/audit_detail_cubit.dart';
+import '../features/audit/domain/repositories/audit_repository.dart';
 import '../features/audit/presentation/state/create_audit_cubit.dart';
 import '../features/reporting/presentation/screens/report_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
@@ -22,6 +25,7 @@ class AppRouter {
   static const String reports = '/reports';
   static const String adminAddUser = '/admin/add-user';
   static const String adminAddQuestion = '/admin/add-question';
+  static const String adminCreateCatalog = '/admin/create-catalog';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -34,7 +38,12 @@ class AppRouter {
       case auditDetail:
         final auditId = settings.arguments as String;
         return MaterialPageRoute(
-          builder: (_) => AuditDetailScreen(auditId: auditId),
+          builder: (ctx) => BlocProvider(
+            create: (_) => AuditDetailCubit(
+              repository: ctx.read<AuditRepository>(),
+            ),
+            child: AuditDetailScreen(auditId: auditId),
+          ),
         );
 
       case createAudit:
@@ -57,6 +66,9 @@ class AppRouter {
 
       case adminAddQuestion:
         return MaterialPageRoute(builder: (_) => const AddQuestionScreen());
+
+      case adminCreateCatalog:
+        return MaterialPageRoute(builder: (_) => const CreateCatalogScreen());
 
       default:
         return MaterialPageRoute(builder: (_) => const LoginScreen());

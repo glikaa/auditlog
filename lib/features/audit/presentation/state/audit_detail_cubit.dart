@@ -11,17 +11,23 @@ class AuditDetailCubit extends Cubit<AuditDetailState> {
   AuditDetailCubit({required this.repository})
       : super(const AuditDetailInitial());
 
+  // Incremented on every loadAudit call so stale responses from a previous
+  // navigation can be discarded before they overwrite the current audit.
+  int _loadGeneration = 0;
+
   Future<void> loadAudit(String auditId) async {
+    final generation = ++_loadGeneration;
     emit(const AuditDetailLoading());
 
     final auditResult = await repository.getAudit(auditId);
+    if (generation != _loadGeneration) return;
 
     await auditResult.fold(
       (failure) async => emit(AuditDetailError(failure.message)),
       (audit) async {
-        // Load questions and responses in parallel
         final questionsResult = await repository.getQuestions(audit.catalogId);
         final responsesResult = await repository.getResponses(auditId);
+        if (generation != _loadGeneration) return;
 
         questionsResult.fold(
           (failure) => emit(AuditDetailError(failure.message)),
