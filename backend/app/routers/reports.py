@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, Query
 
 from app.services.auth_service import get_current_user
 from app.services.firebase_service import get_db
+from app.routers.catalogs import _normalize_question
 
 router = APIRouter()
 
@@ -95,8 +96,10 @@ async def report_top5_questions(
         filtered_audits.append(audit_doc)
 
     question_stats = {}  # type: Dict[str, Dict[str, int]]
+    q_to_catalog = {}  # type: Dict[str, str]  # question_id → catalog_id
 
     for audit_doc in filtered_audits:
+        catalog_id = audit_doc.to_dict().get("catalog_id", "")
         responses = (
             db.collection("audits")
             .document(audit_doc.id)
@@ -111,15 +114,27 @@ async def report_top5_questions(
                 question_stats[q_id] = {"yes": 0, "no": 0, "na": 0}
             if rating in ("yes", "no", "na"):
                 question_stats[q_id][rating] += 1
+            if catalog_id and q_id not in q_to_catalog:
+                q_to_catalog[q_id] = catalog_id
 
     # Resolve question texts (question_id → text_de)
     q_ids = set(question_stats.keys())
     question_texts = {}
     for q_id in q_ids:
-        q_doc = db.collection("questions").document(q_id).get()
-        if q_doc.exists:
-            q_data = q_doc.to_dict()
-            question_texts[q_id] = q_data.get("text_de", q_id)
+        cat_id = q_to_catalog.get(q_id, "")
+        if cat_id:
+            q_doc = (
+                db.collection("auditCatalogs")
+                .document(cat_id)
+                .collection("questions")
+                .document(q_id)
+                .get()
+            )
+            if q_doc.exists:
+                q_data = _normalize_question(q_doc.id, q_doc.to_dict())
+                question_texts[q_id] = q_data.get("text_de", q_id) or q_id
+            else:
+                question_texts[q_id] = q_id
         else:
             question_texts[q_id] = q_id
 
@@ -153,7 +168,7 @@ async def report_compare(
 
     # Find all questions with this master ID
     q_docs = list(
-        db.collection("questions")
+        db.collection_group("questions")
         .where("master_question_id", "==", master_question_id)
         .stream()
     )
@@ -168,7 +183,7 @@ async def report_compare(
     question_info = {}  # type: Dict[str, dict]
     master_text = ""
     for q_doc in q_docs:
-        q_data = q_doc.to_dict()
+        q_data = _normalize_question(q_doc.id, q_doc.to_dict())
         catalog_id = q_data.get("catalog_id", "")
         country = catalog_country.get(catalog_id, "??")
         question_info[q_doc.id] = {
@@ -234,8 +249,8 @@ async def list_master_questions(
     db = get_db()
 
     master_map = {}  # master_id → {text, country_count}
-    for q_doc in db.collection("questions").stream():
-        q_data = q_doc.to_dict()
+    for q_doc in db.collection_group("questions").stream():
+        q_data = _normalize_question(q_doc.id, q_doc.to_dict())
         mid = q_data.get("master_question_id", "")
         if not mid:
             continue

@@ -1,8 +1,16 @@
 {
-  "mcpServers": {
+  "servers": {
     "firebase": {
       "command": "npx",
-      "args": ["-y", "firebase-tools@latest", "mcp"]
+      "args": [
+        "-y",
+        "firebase-tools@latest",
+        "mcp",
+        "--dir",
+        "C:/Users/KOUTSIG/Desktop/SMT/Seminare/audit/auditlog",
+        "--only",
+        "auth,firestore"
+      ]
     }
   }
 }

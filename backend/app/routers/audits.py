@@ -13,6 +13,7 @@ from fpdf import FPDF
 from app.models.audit import AuditCreate, AuditOut, AuditStatus, AuditUpdate
 from app.models.response import ResponseOut, ResponseUpdate
 from app.services.auth_service import get_current_user
+from app.routers.catalogs import _normalize_question
 from app.services.firebase_service import get_db
 
 router = APIRouter()
@@ -376,9 +377,9 @@ async def save_response(
         if audit_doc.exists:
             catalog_id = audit_doc.to_dict().get("catalog_id")
             if catalog_id:
-                q_doc = db.collection("questions").document(question_id).get()
+                q_doc = db.collection("auditCatalogs").document(catalog_id).collection("questions").document(question_id).get()
                 if q_doc.exists:
-                    q_data = q_doc.to_dict()
+                    q_data = _normalize_question(q_doc.id, q_doc.to_dict())
                     data["measure"] = q_data.get("default_measure_de", "")
 
     data["updated_at"] = datetime.now(timezone.utc).isoformat()
@@ -610,12 +611,10 @@ async def export_audit_pdf(audit_id: str, user: dict = Depends(get_current_user)
 
     # Load questions
     catalog_id = audit.get("catalog_id", "")
-    q_docs = db.collection("questions").where("catalog_id", "==", catalog_id).stream()
+    q_docs = db.collection("auditCatalogs").document(catalog_id).collection("questions").stream()
     questions = []
     for doc in q_docs:
-        qdata = doc.to_dict()
-        qdata["id"] = doc.id
-        questions.append(qdata)
+        questions.append(_normalize_question(doc.id, doc.to_dict()))
     questions.sort(key=lambda q: q.get("order", 0))
 
     # Count ratings
