@@ -293,10 +293,31 @@ async def list_questions(
     """Get all questions for a catalog, ordered by 'order' field.
 
     Pass ``?version=2025-v2`` to read from a version subcollection.
+    If the resolved collection is empty and no version was explicitly requested,
+    falls back to the latest version subcollection automatically.
     """
     db = get_db()
     _, q_ref = _catalog_ref(db, catalog_id, version)
-    docs = q_ref.stream()
+    docs = list(q_ref.stream())
+
+    # Fall back to latest version when the top-level questions collection is
+    # empty and no specific version was requested (supports plain catalog IDs
+    # stored on older audit documents, e.g. "catalog-at" instead of
+    # "catalog-at/versions/2025-v1").
+    if not docs and "/versions/" not in catalog_id and not version:
+        v_stream = (
+            db.collection("auditCatalogs")
+            .document(catalog_id)
+            .collection("versions")
+            .stream()
+        )
+        latest_v = max(
+            v_stream,
+            key=lambda d: (d.to_dict().get("year") or 0, d.id),
+            default=None,
+        )
+        if latest_v is not None:
+            docs = list(latest_v.reference.collection("questions").stream())
 
     questions = []  # type: List[QuestionOut]
     for doc in docs:

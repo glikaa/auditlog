@@ -421,6 +421,11 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get catalogNewCountry => 'Nova država...';
+
+  @override
+  String get noCatalogsYet => 'Još nema kataloga.';
+
+  @override
   String get loginTabStaff => 'Osoblje';
 
   @override

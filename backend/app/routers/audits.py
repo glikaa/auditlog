@@ -13,7 +13,7 @@ from fpdf import FPDF
 from app.models.audit import AuditCreate, AuditOut, AuditStatus, AuditUpdate
 from app.models.response import ResponseOut, ResponseUpdate
 from app.services.auth_service import get_current_user
-from app.routers.catalogs import _normalize_question
+from app.routers.catalogs import _catalog_ref, _normalize_question
 from app.services.firebase_service import get_db
 
 router = APIRouter()
@@ -420,7 +420,23 @@ async def save_response(
         if audit_doc.exists:
             catalog_id = audit_doc.to_dict().get("catalog_id")
             if catalog_id:
-                q_doc = db.collection("auditCatalogs").document(catalog_id).collection("questions").document(question_id).get()
+                _, q_collection = _catalog_ref(db, catalog_id)
+                q_doc = q_collection.document(question_id).get()
+                # Fall back to latest version if not found at the top-level path.
+                if not q_doc.exists and "/versions/" not in catalog_id:
+                    v_stream = (
+                        db.collection("auditCatalogs")
+                        .document(catalog_id)
+                        .collection("versions")
+                        .stream()
+                    )
+                    latest_v = max(
+                        v_stream,
+                        key=lambda d: (d.to_dict().get("year") or 0, d.id),
+                        default=None,
+                    )
+                    if latest_v is not None:
+                        q_doc = latest_v.reference.collection("questions").document(question_id).get()
                 if q_doc.exists:
                     q_data = _normalize_question(q_doc.id, q_doc.to_dict())
                     data["measure"] = q_data.get("default_measure_de", "")
@@ -724,12 +740,26 @@ async def export_audit_pdf(audit_id: str, user: dict = Depends(get_current_user)
         data = doc.to_dict()
         responses[doc.id] = data
 
-    # Load questions
+    # Load questions – resolve version subcollection when the top-level
+    # questions collection is empty (plain catalog_id like "catalog-at").
     catalog_id = audit.get("catalog_id", "")
-    q_docs = db.collection("auditCatalogs").document(catalog_id).collection("questions").stream()
-    questions = []
-    for doc in q_docs:
-        questions.append(_normalize_question(doc.id, doc.to_dict()))
+    _, q_collection = _catalog_ref(db, catalog_id)
+    q_doc_list = list(q_collection.stream())
+    if not q_doc_list and "/versions/" not in catalog_id:
+        v_stream = (
+            db.collection("auditCatalogs")
+            .document(catalog_id)
+            .collection("versions")
+            .stream()
+        )
+        latest_v = max(
+            v_stream,
+            key=lambda d: (d.to_dict().get("year") or 0, d.id),
+            default=None,
+        )
+        if latest_v is not None:
+            q_doc_list = list(latest_v.reference.collection("questions").stream())
+    questions = [_normalize_question(doc.id, doc.to_dict()) for doc in q_doc_list]
     questions.sort(key=lambda q: q.get("order", 0))
 
     # Count ratings

@@ -443,6 +443,8 @@ class _AdminDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, AppRouter.adminCreateCatalog);
+          },
+          ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.bar_chart_outlined),

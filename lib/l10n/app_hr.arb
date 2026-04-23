@@ -172,8 +172,9 @@
   "catalogBaseVersion": "Bazna verzija (kopiraj pitanja iz)",
   "@catalogBaseVersion": {},
   "catalogNewCountry": "Nova država...",
-  "@catalogNewCountry": {}
-
+  "@catalogNewCountry": {},
+  "noCatalogsYet": "Još nema kataloga.",
+  "@noCatalogsYet": {},
   "loginTabStaff": "Osoblje",
   "loginTabBranch": "Poslovnica",
   "branchNumber": "Broj poslovnice",

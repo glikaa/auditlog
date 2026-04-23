@@ -422,6 +422,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get catalogNewCountry => 'Neues Land...';
+
+  @override
+  String get noCatalogsYet => 'Noch keine Kataloge vorhanden.';
+
+  @override
   String get loginTabStaff => 'Mitarbeiter';
 
   @override

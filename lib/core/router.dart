@@ -8,6 +8,8 @@ import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/audit/presentation/screens/audit_detail_screen.dart';
 import '../features/audit/presentation/screens/create_audit_screen.dart';
 import '../features/audit/presentation/screens/dashboard_screen.dart';
+import '../features/audit/presentation/state/audit_detail_cubit.dart';
+import '../features/audit/domain/repositories/audit_repository.dart';
 import '../features/audit/presentation/state/create_audit_cubit.dart';
 import '../features/reporting/presentation/screens/report_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
@@ -36,7 +38,12 @@ class AppRouter {
       case auditDetail:
         final auditId = settings.arguments as String;
         return MaterialPageRoute(
-          builder: (_) => AuditDetailScreen(auditId: auditId),
+          builder: (ctx) => BlocProvider(
+            create: (_) => AuditDetailCubit(
+              repository: ctx.read<AuditRepository>(),
+            ),
+            child: AuditDetailScreen(auditId: auditId),
+          ),
         );
 
       case createAudit:

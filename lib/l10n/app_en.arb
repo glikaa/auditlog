@@ -305,8 +305,9 @@
   "catalogBaseVersion": "Base Version (copy questions from)",
   "@catalogBaseVersion": {},
   "catalogNewCountry": "New Country...",
-  "@catalogNewCountry": {}
-
+  "@catalogNewCountry": {},
+  "noCatalogsYet": "No catalogs yet.",
+  "@noCatalogsYet": {},
   "loginTabStaff": "Staff",
   "@loginTabStaff": {},
   "loginTabBranch": "Branch",

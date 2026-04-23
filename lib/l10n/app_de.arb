@@ -305,8 +305,9 @@
   "catalogBaseVersion": "Basisversion (Fragen übernehmen aus)",
   "@catalogBaseVersion": {},
   "catalogNewCountry": "Neues Land...",
-  "@catalogNewCountry": {}
-
+  "@catalogNewCountry": {},
+  "noCatalogsYet": "Noch keine Kataloge vorhanden.",
+  "@noCatalogsYet": {},
   "loginTabStaff": "Mitarbeiter",
   "@loginTabStaff": {},
   "loginTabBranch": "Filiale",

@@ -903,6 +903,13 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New Country...'**
   String get catalogNewCountry;
+
+  /// No description provided for @noCatalogsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No catalogs yet.'**
+  String get noCatalogsYet;
+
   /// No description provided for @loginTabStaff.
   ///
   /// In en, this message translates to:
