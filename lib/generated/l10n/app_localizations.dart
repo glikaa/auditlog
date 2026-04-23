@@ -795,6 +795,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New Category'**
   String get newCategoryLabel;
+
+  /// No description provided for @questionListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Question Catalog'**
+  String get questionListTitle;
+
+  /// No description provided for @reorderSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Order saved.'**
+  String get reorderSaved;
+
+  /// No description provided for @reorderError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save order.'**
+  String get reorderError;
+
+  /// No description provided for @insertAtPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Position {pos}'**
+  String insertAtPosition(int pos);
+
+  /// No description provided for @createCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Catalog'**
+  String get createCatalog;
+
+  /// No description provided for @catalogCountryCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Country Code'**
+  String get catalogCountryCode;
+
+  /// No description provided for @catalogVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get catalogVersion;
+
+  /// No description provided for @catalogYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get catalogYear;
+
+  /// No description provided for @catalogLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Language'**
+  String get catalogLanguage;
+
+  /// No description provided for @catalogCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Catalog created.'**
+  String get catalogCreated;
+
+  /// No description provided for @catalogListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Existing Catalogs'**
+  String get catalogListTitle;
+
+  /// No description provided for @catalogYearInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid year.'**
+  String get catalogYearInvalid;
+
+  /// No description provided for @catalogBaseVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Base Version (copy questions from)'**
+  String get catalogBaseVersion;
+
+  /// No description provided for @catalogNewCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'New Country...'**
+  String get catalogNewCountry;
 }
 
 class _AppLocalizationsDelegate

@@ -364,4 +364,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newCategoryLabel => 'New Category';
+
+  @override
+  String get questionListTitle => 'Question Catalog';
+
+  @override
+  String get reorderSaved => 'Order saved.';
+
+  @override
+  String get reorderError => 'Could not save order.';
+
+  @override
+  String insertAtPosition(int pos) {
+    return 'Position $pos';
+  }
+
+  @override
+  String get createCatalog => 'Create Catalog';
+
+  @override
+  String get catalogCountryCode => 'Country Code';
+
+  @override
+  String get catalogVersion => 'Version';
+
+  @override
+  String get catalogYear => 'Year';
+
+  @override
+  String get catalogLanguage => 'Default Language';
+
+  @override
+  String get catalogCreated => 'Catalog created.';
+
+  @override
+  String get catalogListTitle => 'Existing Catalogs';
+
+  @override
+  String get catalogYearInvalid => 'Please enter a valid year.';
+
+  @override
+  String get catalogBaseVersion => 'Base Version (copy questions from)';
+
+  @override
+  String get catalogNewCountry => 'New Country...';
 }

@@ -258,5 +258,38 @@
   "newCategory": "New category...",
   "@newCategory": {},
   "newCategoryLabel": "New Category",
-  "@newCategoryLabel": {}
+  "@newCategoryLabel": {},
+  "questionListTitle": "Question Catalog",
+  "@questionListTitle": {},
+  "reorderSaved": "Order saved.",
+  "@reorderSaved": {},
+  "reorderError": "Could not save order.",
+  "@reorderError": {},
+  "insertAtPosition": "Position {pos}",
+  "@insertAtPosition": {
+    "placeholders": {
+      "pos": { "type": "int" }
+    }
+  },
+
+  "createCatalog": "Create Catalog",
+  "@createCatalog": {},
+  "catalogCountryCode": "Country Code",
+  "@catalogCountryCode": {},
+  "catalogVersion": "Version",
+  "@catalogVersion": {},
+  "catalogYear": "Year",
+  "@catalogYear": {},
+  "catalogLanguage": "Default Language",
+  "@catalogLanguage": {},
+  "catalogCreated": "Catalog created.",
+  "@catalogCreated": {},
+  "catalogListTitle": "Existing Catalogs",
+  "@catalogListTitle": {},
+  "catalogYearInvalid": "Please enter a valid year.",
+  "@catalogYearInvalid": {},
+  "catalogBaseVersion": "Base Version (copy questions from)",
+  "@catalogBaseVersion": {},
+  "catalogNewCountry": "New Country...",
+  "@catalogNewCountry": {}
 }

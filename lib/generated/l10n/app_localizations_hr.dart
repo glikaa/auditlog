@@ -363,4 +363,48 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get newCategoryLabel => 'Nova kategorija';
+
+  @override
+  String get questionListTitle => 'Katalog pitanja';
+
+  @override
+  String get reorderSaved => 'Redoslijed je spremljen.';
+
+  @override
+  String get reorderError => 'Nije moguće spremiti redoslijed.';
+
+  @override
+  String insertAtPosition(int pos) {
+    return 'Pozicija $pos';
+  }
+
+  @override
+  String get createCatalog => 'Stvori katalog';
+
+  @override
+  String get catalogCountryCode => 'Oznaka države';
+
+  @override
+  String get catalogVersion => 'Verzija';
+
+  @override
+  String get catalogYear => 'Godina';
+
+  @override
+  String get catalogLanguage => 'Zadani jezik';
+
+  @override
+  String get catalogCreated => 'Katalog je kreiran.';
+
+  @override
+  String get catalogListTitle => 'Postojeći katalozi';
+
+  @override
+  String get catalogYearInvalid => 'Unesite valjanu godinu.';
+
+  @override
+  String get catalogBaseVersion => 'Bazna verzija (kopiraj pitanja iz)';
+
+  @override
+  String get catalogNewCountry => 'Nova država...';
 }
