@@ -414,7 +414,7 @@ class _CreateCatalogScreenState extends State<CreateCatalogScreen> {
                 : _catalogs.isEmpty
                     ? Center(
                         child: Text(
-                          'No catalogs yet.',
+                          l10n.noCatalogsYet,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       )
