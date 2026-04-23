@@ -6,8 +6,6 @@
         "-y",
         "firebase-tools@latest",
         "mcp",
-        "--dir",
-        "C:/mypath/auditlog",
         "--only",
         "auth,firestore"
       ]
