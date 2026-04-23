@@ -284,7 +284,7 @@ async def clone_catalog(
 # --------------- Questions ---------------
 
 
-@router.get("/{catalog_id}/questions", response_model=List[QuestionOut])
+@router.get("/{catalog_id:path}/questions", response_model=List[QuestionOut])
 async def list_questions(
     catalog_id: str,
     version: Optional[str] = Query(None),
@@ -306,7 +306,7 @@ async def list_questions(
     return questions
 
 
-@router.post("/{catalog_id}/questions", response_model=QuestionOut, status_code=201)
+@router.post("/{catalog_id:path}/questions", response_model=QuestionOut, status_code=201)
 async def create_question(
     catalog_id: str,
     body: QuestionCreate,
@@ -351,7 +351,7 @@ async def create_question(
     return QuestionOut(**data)
 
 
-@router.patch("/{catalog_id}/questions/reorder")
+@router.patch("/{catalog_id:path}/questions/reorder")
 async def reorder_questions(
     catalog_id: str,
     body: List[QuestionReorder],
@@ -371,7 +371,7 @@ async def reorder_questions(
     return {"updated": len(body)}
 
 
-@router.put("/{catalog_id}/questions/{question_id}", response_model=QuestionOut)
+@router.put("/{catalog_id:path}/questions/{question_id}", response_model=QuestionOut)
 async def update_question(
     catalog_id: str,
     question_id: str,
