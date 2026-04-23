@@ -238,6 +238,8 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
   Future<void> _onReorder(int oldIndex, int newIndex) async {
     // ReorderableListView passes newIndex after removal, adjust downward.
     if (newIndex > oldIndex) newIndex--;
+    final previousQuestions = List<Question>.from(_questions);
+    final previousCategories = List<String>.from(_existingCategories);
     final updated = List<Question>.from(_questions);
     final moved = updated.removeAt(oldIndex);
     updated.insert(newIndex, moved);
@@ -265,6 +267,10 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
       }
     } catch (_) {
       if (mounted) {
+        setState(() {
+          _questions = previousQuestions;
+          _existingCategories = previousCategories;
+        });
         final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
